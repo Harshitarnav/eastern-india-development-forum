@@ -49,4 +49,5 @@ lib/supabase/        # client + server helpers
 supabase/schema.sql  # membership_applications, contact_messages
 ```
 
-See [PLAN.md](./PLAN.md) for phases and data model.
+See [PLAN.md](./PLAN.md) for phases and data model.  
+See [HANDOVER.md](./HANDOVER.md) for **keys, setup, and team handover**.
