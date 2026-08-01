@@ -1,26 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: oklch(23% 0.045 260);
+  --navy-deep: oklch(16% 0.04 260);
+  --navy-mid: oklch(30% 0.03 260);
+  --gold: oklch(74% 0.13 85);
+  --gold-label: oklch(52% 0.12 75);
+  --cream: oklch(97% 0.012 85);
+  --cream-warm: oklch(95% 0.015 85);
+  --ink: oklch(20% 0.02 260);
+  --muted: oklch(46% 0.02 260);
+  --line: oklch(90% 0.01 85);
+  --line-strong: oklch(85% 0.01 85);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-mid: var(--navy-mid);
+  --color-gold: var(--gold);
+  --color-gold-label: var(--gold-label);
+  --color-cream: var(--cream);
+  --color-cream-warm: var(--cream-warm);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --font-sans: var(--font-public-sans);
+  --font-display: var(--font-lora);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-public-sans), system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-lora), Georgia, serif;
 }

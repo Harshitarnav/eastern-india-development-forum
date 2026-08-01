@@ -156,11 +156,11 @@ CTAs: **Join Us** (primary) · Donate (secondary outline)
 | Phase | Deliverable | Done? |
 |-------|-------------|-------|
 | 0 | Repo scaffold, plan, schema, env example | Yes |
-| 1 | Design tokens, Nav/Footer, layout chrome | No |
-| 2 | Seven pages desktop + mobile (match creatives) | No |
-| 3 | Membership + Contact → Supabase (+ optional Resend) | No |
-| 4 | Seminar poster template + membership card creative | No |
-| 5 | SEO, OG, Vercel production + domain | No |
+| 1 | Design tokens, Nav/Footer, layout chrome | Yes |
+| 2 | Seven pages desktop + mobile (match creatives) | Yes |
+| 3 | Membership + Contact → Supabase (+ optional Resend) | Yes (Resend optional still) |
+| 4 | Seminar poster template + membership card creative | Yes (`/creatives`) |
+| 5 | SEO, OG, Vercel production + domain | Partial (basic meta) |
 
 ---
 

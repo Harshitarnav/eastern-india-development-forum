@@ -51,3 +51,16 @@ supabase/schema.sql  # membership_applications, contact_messages
 
 See [PLAN.md](./PLAN.md) for phases and data model.  
 See [HANDOVER.md](./HANDOVER.md) for **keys, setup, and team handover**.
+
+## Site routes
+
+| Path | Page |
+|------|------|
+| `/` | Home |
+| `/about` | About / Vision & Mission |
+| `/projects` | Projects |
+| `/membership` | Join Us + application form → Supabase |
+| `/events` | Events & News |
+| `/gallery` | Gallery / Media |
+| `/contact` | Contact form → Supabase |
+| `/creatives` | Seminar poster + membership card |
