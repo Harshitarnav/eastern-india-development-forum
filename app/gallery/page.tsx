@@ -1,9 +1,21 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { PageHero } from "@/components/ui";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Download, ExternalLink, X, ChevronLeft, ChevronRight, Copy, Check, Sparkles, MapPin, Calendar, Image as ImageIcon } from "lucide-react";
+import {
+  Search,
+  Download,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Check,
+  MapPin,
+  Calendar,
+  Image as ImageIcon,
+} from "lucide-react";
+import { PageHero, CtaBand } from "@/components/ui";
 
 interface GalleryImage {
   id: string;
@@ -211,13 +223,31 @@ export default function GalleryPage() {
   };
 
   return (
-    <div className="bg-cream min-h-screen pb-20">
-      <PageHero crumb="Home / Media Hub" title="EIDF Digital Assets & Gallery" compact />
+    <div className="min-h-screen bg-cream">
+      <PageHero
+        crumb="Home / Media Hub"
+        eyebrow="Digital Assets & Gallery"
+        title="EIDF Media Hub"
+        description="Seminars, site visits, community moments, and brand assets from across Eastern India's development journey."
+        compact
+      >
+        <Link
+          href="/creatives"
+          className="rounded-full bg-gold px-6 py-3 text-sm font-bold text-navy-deep shadow-xl transition-transform hover:scale-105 hover:bg-gold-hover"
+        >
+          Brand Creatives
+        </Link>
+        <Link
+          href="/events"
+          className="rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20"
+        >
+          Events & News
+        </Link>
+      </PageHero>
 
-      {/* Modern Filter Panel */}
-      <section className="mx-auto max-w-7xl px-4 pt-12 pb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 bg-white border border-line p-6 rounded-3xl shadow-xl">
-          {/* Categories Tab Bar */}
+      {/* Filter Panel */}
+      <section className="relative z-10 -mt-6 px-4 md:-mt-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 rounded-3xl border border-line bg-white/95 p-5 shadow-2xl backdrop-blur-xl md:flex-row md:items-center md:justify-between md:p-6">
           <div className="flex flex-wrap items-center gap-2">
             {CATEGORIES.map((cat) => (
               <button
@@ -226,9 +256,9 @@ export default function GalleryPage() {
                   setActiveCategory(cat);
                   setSelectedImageIndex(null);
                 }}
-                className={`rounded-full px-5 py-2.5 text-xs font-bold transition-all cursor-pointer ${
+                className={`cursor-pointer rounded-full px-5 py-2.5 text-xs font-bold transition-all ${
                   activeCategory === cat
-                    ? "bg-navy text-gold shadow-md scale-105"
+                    ? "scale-105 bg-navy text-gold shadow-md"
                     : "bg-cream text-muted hover:bg-cream-warm"
                 }`}
               >
@@ -237,33 +267,35 @@ export default function GalleryPage() {
             ))}
           </div>
 
-          {/* Search Box */}
           <div className="relative w-full md:w-80">
-            <Search className="absolute left-4 top-3.5 h-4 w-4 text-muted" />
+            <Search className="absolute top-3.5 left-4 h-4 w-4 text-muted" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search assets by keyword..."
-              className="w-full rounded-full border border-line bg-cream pl-11 pr-4 py-3 text-xs text-navy placeholder-muted focus:border-navy focus:outline-none"
+              className="w-full rounded-full border border-line bg-cream py-3 pr-4 pl-11 text-xs text-navy placeholder-muted outline-none focus:border-gold focus:bg-white"
             />
           </div>
         </div>
       </section>
 
-      {/* Main Asset Grid */}
-      <section className="mx-auto max-w-7xl px-4 pt-4">
+      {/* Asset Grid */}
+      <section className="mx-auto max-w-7xl px-4 pt-10 pb-20">
+        <div className="mb-6 text-sm text-muted">
+          Showing{" "}
+          <span className="font-bold text-navy">{filteredImages.length}</span> asset
+          {filteredImages.length === 1 ? "" : "s"}
+        </div>
+
         {filteredImages.length === 0 ? (
-          <div className="text-center py-20 rounded-3xl border border-dashed border-line bg-white space-y-3">
-            <ImageIcon className="h-12 w-12 text-gold mx-auto" />
+          <div className="space-y-3 rounded-3xl border border-dashed border-line bg-white py-20 text-center">
+            <ImageIcon className="mx-auto h-12 w-12 text-gold" />
             <h3 className="font-display text-lg font-bold text-navy">No media assets found</h3>
             <p className="text-xs text-muted">Try adjusting your filters or search keywords.</p>
           </div>
         ) : (
-          <motion.div
-            layout
-            className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-          >
+          <motion.div layout className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredImages.map((img, index) => (
               <motion.div
                 layout
@@ -272,31 +304,29 @@ export default function GalleryPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="relative overflow-hidden rounded-3xl border border-line bg-white shadow-md hover:shadow-2xl transition-all group cursor-pointer"
+                className="group relative cursor-pointer overflow-hidden rounded-3xl border border-line bg-white shadow-md transition-all hover:-translate-y-1 hover:shadow-2xl"
                 onClick={() => setSelectedImageIndex(index)}
               >
-                {/* Visual Image container */}
-                <div className="h-56 w-full overflow-hidden bg-cream relative">
+                <div className="relative h-56 w-full overflow-hidden bg-cream">
                   <img
                     src={img.src}
                     alt={img.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute top-3 left-3 rounded-full bg-navy-deep/80 backdrop-blur-md px-3 py-1 text-[10px] font-bold text-gold border border-gold/30">
+                  <div className="absolute top-3 left-3 rounded-full border border-gold/30 bg-navy-deep/80 px-3 py-1 text-[10px] font-bold text-gold backdrop-blur-md">
                     {img.category}
                   </div>
                 </div>
 
-                {/* Details Footer */}
-                <div className="p-4 space-y-2">
-                  <h4 className="font-display text-sm font-bold text-navy truncate">
+                <div className="space-y-2 p-4">
+                  <h4 className="truncate font-display text-sm font-bold text-navy">
                     {img.title}
                   </h4>
-                  <div className="flex items-center justify-between text-[10px] text-muted font-medium">
-                    <span className="flex items-center gap-1">
-                      <MapPin className="h-3 w-3 text-emerald" /> {img.location}
+                  <div className="flex items-center justify-between text-[10px] font-medium text-muted">
+                    <span className="flex items-center gap-1 truncate">
+                      <MapPin className="h-3 w-3 shrink-0 text-emerald" /> {img.location}
                     </span>
-                    <span className="flex items-center gap-1">
+                    <span className="flex shrink-0 items-center gap-1">
                       <Calendar className="h-3 w-3 text-gold" /> {img.date}
                     </span>
                   </div>
@@ -307,37 +337,34 @@ export default function GalleryPage() {
         )}
       </section>
 
-      {/* Lightbox / Slideshow Modal */}
+      {/* Lightbox */}
       <AnimatePresence>
         {selectedImageIndex !== null && filteredImages[selectedImageIndex] && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-md"
           >
-            {/* Modal Container */}
             <motion.div
               initial={{ scale: 0.95, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
-              className="relative w-full max-w-5xl rounded-3xl border border-white/20 bg-navy-deep text-white shadow-2xl overflow-hidden grid lg:grid-cols-12"
+              className="relative grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/20 bg-navy-deep text-white shadow-2xl lg:grid-cols-12"
             >
-              {/* Media viewer column */}
-              <div className="lg:col-span-8 relative h-[50vh] lg:h-[70vh] bg-navy flex items-center justify-center p-4">
+              <div className="relative flex h-[50vh] items-center justify-center bg-navy p-4 lg:col-span-8 lg:h-[70vh]">
                 <img
                   src={filteredImages[selectedImageIndex].src}
                   alt={filteredImages[selectedImageIndex].title}
-                  className="max-w-full max-h-full object-contain rounded-2xl"
+                  className="max-h-full max-w-full rounded-2xl object-contain"
                 />
 
-                {/* Navigation arrows */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePrev();
                   }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2.5 hover:bg-white/20 text-white cursor-pointer"
+                  className="absolute top-1/2 left-4 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-2.5 text-white hover:bg-white/20"
                 >
                   <ChevronLeft className="h-6 w-6" />
                 </button>
@@ -346,18 +373,16 @@ export default function GalleryPage() {
                     e.stopPropagation();
                     handleNext();
                   }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 p-2.5 hover:bg-white/20 text-white cursor-pointer"
+                  className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer rounded-full bg-white/10 p-2.5 text-white hover:bg-white/20"
                 >
                   <ChevronRight className="h-6 w-6" />
                 </button>
               </div>
 
-              {/* Asset Information Sidebar */}
-              <div className="lg:col-span-4 p-6 lg:p-8 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-white/10 space-y-6">
-                {/* Header Info */}
+              <div className="flex flex-col justify-between space-y-6 border-t border-white/10 p-6 lg:col-span-4 lg:border-t-0 lg:border-l lg:p-8">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="rounded-full bg-gold/10 px-3 py-1 text-xs font-bold text-gold border border-gold/30">
+                    <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-bold text-gold">
                       {filteredImages[selectedImageIndex].category}
                     </span>
                     <button
@@ -371,37 +396,43 @@ export default function GalleryPage() {
                   <h3 className="font-display text-2xl font-bold text-white">
                     {filteredImages[selectedImageIndex].title}
                   </h3>
-                  <p className="text-xs text-white/70 leading-relaxed">
+                  <p className="text-xs leading-relaxed text-white/70">
                     {filteredImages[selectedImageIndex].description}
                   </p>
 
                   <div className="space-y-2 border-t border-white/10 pt-4 text-xs">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-3">
                       <span className="text-white/60">Location</span>
-                      <span className="font-bold flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-emerald" /> {filteredImages[selectedImageIndex].location}
+                      <span className="flex items-center gap-1 font-bold">
+                        <MapPin className="h-3.5 w-3.5 text-emerald" />
+                        {filteredImages[selectedImageIndex].location}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-white/60">Captured</span>
-                      <span className="font-bold flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5 text-gold" /> {filteredImages[selectedImageIndex].date}
+                      <span className="flex items-center gap-1 font-bold">
+                        <Calendar className="h-3.5 w-3.5 text-gold" />
+                        {filteredImages[selectedImageIndex].date}
                       </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Actions bottom bar */}
                 <div className="flex gap-2 border-t border-white/10 pt-6">
                   <a
                     href={filteredImages[selectedImageIndex].src}
                     download
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-gold py-3 text-xs font-bold text-navy-deep hover:bg-gold-hover shadow-md transition-colors"
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gold py-3 text-xs font-bold text-navy-deep shadow-md transition-colors hover:bg-gold-hover"
                   >
                     <Download className="h-4 w-4" /> Download
                   </a>
                   <button
-                    onClick={() => handleCopyLink(filteredImages[selectedImageIndex].src, filteredImages[selectedImageIndex].id)}
+                    onClick={() =>
+                      handleCopyLink(
+                        filteredImages[selectedImageIndex].src,
+                        filteredImages[selectedImageIndex].id
+                      )
+                    }
                     className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold text-white hover:bg-white/15"
                   >
                     {copiedId === filteredImages[selectedImageIndex].id ? (
@@ -416,6 +447,13 @@ export default function GalleryPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <CtaBand
+        title="Capture the next chapter with us"
+        description="Attend seminars, site visits, and conventions — then find the moments here."
+        primary={{ label: "View Upcoming Events", href: "/events" }}
+        secondary={{ label: "Join the Network", href: "/membership" }}
+      />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowLeft, Download, IdCard, ImageIcon } from "lucide-react";
+import { CtaBand, PageHero } from "@/components/ui";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -9,36 +11,80 @@ export const metadata: Metadata = {
 
 export default function CreativesPage() {
   return (
-    <div className="bg-cream px-6 py-14 md:px-12 md:py-20">
-      <div className="mx-auto max-w-5xl">
-        <div className="mb-2 text-xs font-bold tracking-[2px] text-gold-label">
-          SUPPORTING CREATIVES
-        </div>
-        <h1 className="mb-3 font-display text-3xl md:text-4xl">Poster & Membership Card</h1>
-        <p className="mb-10 max-w-2xl text-[15px] text-muted">
-          Print-ready templates in the same brand system as the website.{" "}
-          <Link href="/" className="font-semibold text-navy">
-            ← Back to site
-          </Link>
-        </p>
+    <>
+      <PageHero
+        crumb="Home / Creatives"
+        eyebrow="Brand Assets"
+        title="Poster & Membership Card"
+        description="Print-ready templates in the same brand system as the website — for seminars, conventions, and member recognition."
+        compact
+      >
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to site
+        </Link>
+        <Link
+          href="/gallery"
+          className="rounded-full bg-gold px-6 py-3 text-sm font-bold text-navy-deep shadow-xl transition-transform hover:scale-105 hover:bg-gold-hover"
+        >
+          Browse Media Hub
+        </Link>
+      </PageHero>
 
-        <div className="grid gap-12 lg:grid-cols-2">
+      <section className="px-4 py-16 md:py-20">
+        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2">
           {/* Seminar poster */}
           <div>
-            <div className="mb-3 text-sm font-bold text-muted">Seminar Poster</div>
-            <div className="overflow-hidden rounded-2xl bg-navy shadow-xl border border-line">
-              <img src="/images/eidf_poster.jpg" alt="EIDF Seminar Poster" className="w-full h-auto object-contain" />
+            <div className="mb-4 flex items-center gap-2.5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold/10 text-gold">
+                <ImageIcon className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-gold">
+                  Print Template
+                </div>
+                <div className="font-display text-lg font-bold text-navy">Seminar Poster</div>
+              </div>
             </div>
+            <div className="overflow-hidden rounded-3xl border border-line bg-navy shadow-2xl">
+              <img
+                src="/images/eidf_poster.jpg"
+                alt="EIDF Seminar Poster"
+                className="h-auto w-full object-contain"
+              />
+            </div>
+            <a
+              href="/images/eidf_poster.jpg"
+              download
+              className="mt-4 inline-flex items-center gap-2 rounded-full bg-navy px-5 py-3 text-xs font-bold text-white transition-colors hover:bg-navy-light"
+            >
+              <Download className="h-4 w-4 text-gold" /> Download Poster
+            </a>
           </div>
 
           {/* Membership card */}
           <div>
-            <div className="mb-3 text-sm font-bold text-muted">Membership Card</div>
+            <div className="mb-4 flex items-center gap-2.5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald/10 text-emerald">
+                <IdCard className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wider text-emerald-dark">
+                  Member Identity
+                </div>
+                <div className="font-display text-lg font-bold text-navy">Membership Card</div>
+              </div>
+            </div>
+
             <div className="flex flex-col gap-5">
-              <div className="flex min-h-[214px] h-auto flex-col justify-between rounded-2xl bg-navy p-6 text-white shadow-xl">
-                <div className="flex items-start justify-between">
+              {/* Front */}
+              <div className="relative flex min-h-[214px] flex-col justify-between overflow-hidden rounded-3xl bg-gradient-to-br from-navy-deep via-navy to-slate-dark p-6 text-white shadow-2xl">
+                <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/15 blur-2xl" />
+                <div className="relative flex items-start justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold font-display text-[13px] font-bold text-navy-deep">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gold font-display text-sm font-bold text-navy-deep shadow-md">
                       EI
                     </div>
                     <div className="font-display text-[13px] leading-tight">
@@ -47,40 +93,49 @@ export default function CreativesPage() {
                       Development Forum
                     </div>
                   </div>
-                  <div className="text-[10px] tracking-[1.5px] text-gold">MEMBER</div>
+                  <div className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-1 text-[10px] font-bold tracking-[1.5px] text-gold">
+                    MEMBER
+                  </div>
                 </div>
-                <div className="mt-4">
-                  <div className="mb-1 font-display text-lg">Aarav Mahato</div>
-                  <div className="text-[11px] text-white/80">
+                <div className="relative mt-4">
+                  <div className="mb-1 font-display text-xl font-bold">Aarav Mahato</div>
+                  <div className="text-xs text-white/75">
                     Global Patron · ID EIDF-000482
                   </div>
                 </div>
               </div>
 
-              <div className="flex min-h-[214px] h-auto gap-4 rounded-2xl bg-cream-warm p-5 shadow-xl">
+              {/* Back */}
+              <div className="flex min-h-[214px] gap-4 rounded-3xl border border-line bg-cream-warm p-6 shadow-xl">
                 <div className="flex-1">
-                  <div className="mb-2 text-[10px] font-bold tracking-[1.5px] text-gold-label">
-                    MEMBER BENEFITS
+                  <div className="mb-3 text-[10px] font-bold tracking-[1.5px] text-gold uppercase">
+                    Member Benefits
                   </div>
-                  <div className="text-[11px] leading-loose text-ink/80">
-                    Priority project briefings
-                    <br />
-                    Annual convention invite
-                    <br />
-                    Recognition on our website
-                    <br />
-                    Direct line to the secretariat
+                  <div className="space-y-1.5 text-xs leading-relaxed text-ink/80">
+                    <div>Priority project briefings</div>
+                    <div>Annual convention invite</div>
+                    <div>Recognition on our website</div>
+                    <div>Direct line to the secretariat</div>
                   </div>
-                  <div className="mt-3 text-[10px] text-muted">
-                    hello@eidf.org.in · eidf.org.in
+                  <div className="mt-4 text-[10px] text-muted">
+                    {site.email} · eidf.org.in
                   </div>
                 </div>
-                <div className="h-[70px] w-[70px] shrink-0 rounded-md bg-[repeating-linear-gradient(45deg,oklch(88%_0.01_85),oklch(88%_0.01_85)_6px,oklch(92%_0.008_85)_6px,oklch(92%_0.008_85)_12px)]" />
+                <div className="flex h-[70px] w-[70px] shrink-0 items-center justify-center rounded-xl border border-line bg-white shadow-sm">
+                  <div className="font-mono text-[9px] text-muted">QR</div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <CtaBand
+        title="Ready to carry the EIDF membership card?"
+        description="Apply to join the network and receive your digital member credentials."
+        primary={{ label: "Become a Member", href: "/membership" }}
+        secondary={{ label: "Contact Secretariat", href: "/contact" }}
+      />
+    </>
   );
 }

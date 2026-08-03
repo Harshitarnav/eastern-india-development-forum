@@ -7,6 +7,7 @@
   --navy-light: #2e5077;
   --gold: #f59e0b;
   --gold-hover: #d97706;
+  --gold-label: #d97706;
   --emerald: #10b981;
   --emerald-dark: #059669;
   --amber: #f97316;
@@ -26,6 +27,7 @@
   --color-navy-light: var(--navy-light);
   --color-gold: var(--gold);
   --color-gold-hover: var(--gold-hover);
+  --color-gold-label: var(--gold-label);
   --color-emerald: var(--emerald);
   --color-emerald-dark: var(--emerald-dark);
   --color-amber: var(--amber);

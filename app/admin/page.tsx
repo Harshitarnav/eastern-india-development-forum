@@ -1,12 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
+import {
+  Save,
+  RefreshCw,
+  CheckCircle,
+  Sparkles,
+  Layers,
+  FileText,
+  BarChart3,
+  Settings,
+} from "lucide-react";
 import { useCMS } from "@/lib/cms-store";
-import { Save, RefreshCw, Layers, ShieldCheck, FileText, CheckCircle, Sparkles } from "lucide-react";
+import { PageHero, FieldLabel, fieldClass } from "@/components/ui";
 
 export default function AdminCMSPage() {
   const { siteData, updateSiteData, resetToDefault, isCMSActive } = useCMS();
-  const [activeTab, setActiveTab] = useState<"general" | "hero" | "stats" | "tenders">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "hero" | "stats" | "tenders">(
+    "general"
+  );
 
   const [formTagline, setFormTagline] = useState<string>(siteData.tagline);
   const [formEmail, setFormEmail] = useState<string>(siteData.email);
@@ -30,149 +42,193 @@ export default function AdminCMSPage() {
     setTimeout(() => setSavedSuccess(false), 3000);
   };
 
+  const tabs = [
+    { id: "general" as const, label: "General", icon: Settings },
+    { id: "hero" as const, label: "Hero", icon: Sparkles },
+    { id: "stats" as const, label: "Stats", icon: BarChart3 },
+    { id: "tenders" as const, label: "Tenders", icon: FileText },
+  ];
+
   return (
-    <div className="min-h-screen bg-cream py-12 px-4">
-      <div className="mx-auto max-w-6xl">
-        {/* Admin Header */}
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-line bg-white p-6 shadow-xl">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold text-gold uppercase tracking-wider">
-              <Sparkles className="h-4 w-4" /> Live Content Management System
-            </div>
-            <h1 className="font-display text-3xl font-bold text-navy mt-1">EIDF Admin CMS Dashboard</h1>
-            <p className="text-xs text-muted mt-1">
-              Manage website copy, hero banners, tenders, contact info, and impact statistics in real-time.
-            </p>
-          </div>
+    <>
+      <PageHero
+        crumb="Home / Admin"
+        eyebrow="Live Content Management"
+        title="EIDF Admin CMS Dashboard"
+        description="Manage website copy, hero banners, tenders, contact info, and impact statistics in real-time."
+        compact
+      />
 
-          <div className="flex items-center gap-3">
-            {isCMSActive && (
-              <span className="rounded-full bg-emerald/10 px-3 py-1 text-xs font-bold text-emerald border border-emerald/20 flex items-center gap-1">
-                <CheckCircle className="h-3.5 w-3.5" /> CMS Active
-              </span>
-            )}
-            <button
-              onClick={resetToDefault}
-              className="flex items-center gap-1.5 rounded-full border border-navy/20 bg-cream px-4 py-2 text-xs font-bold text-navy hover:bg-white cursor-pointer"
-            >
-              <RefreshCw className="h-3.5 w-3.5" /> Reset Default Data
-            </button>
-          </div>
-        </div>
-
-        {/* CMS Tab Bar */}
-        <div className="flex border-b border-line mb-8 gap-2 overflow-x-auto pb-1 whitespace-nowrap scrollbar-none">
-          {(["general", "hero", "stats", "tenders"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-xs font-bold capitalize transition-all border-b-2 cursor-pointer ${
-                activeTab === tab
-                  ? "border-navy text-navy font-extrabold"
-                  : "border-transparent text-muted hover:text-navy"
-              }`}
-            >
-              {tab} Settings
-            </button>
-          ))}
-        </div>
-
-        {/* CMS Editor Form */}
-        <form onSubmit={handleSave} className="rounded-3xl border border-line bg-white p-8 shadow-xl space-y-6">
-          {savedSuccess && (
-            <div className="rounded-2xl bg-emerald/10 p-4 border border-emerald/30 text-xs font-bold text-emerald-dark flex items-center gap-2">
-              <CheckCircle className="h-4 w-4" /> CMS changes saved successfully! Site content updated live.
-            </div>
-          )}
-
-          {activeTab === "general" && (
-            <div className="space-y-4">
-              <h3 className="font-display text-xl font-bold text-navy">General Identity & Contact Settings</h3>
-              <div>
-                <label className="block text-xs font-bold text-navy mb-1">Site Tagline</label>
-                <input
-                  type="text"
-                  value={formTagline}
-                  onChange={(e) => setFormTagline(e.target.value)}
-                  className="w-full rounded-2xl border border-line p-3 text-xs text-navy focus:outline-none focus:border-gold"
-                />
+      <section className="px-4 py-12 md:py-16">
+        <div className="mx-auto max-w-6xl space-y-6">
+          {/* Status bar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-line bg-white p-5 shadow-xl md:p-6">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gold/10 text-gold">
+                <Layers className="h-5 w-5" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-navy mb-1">Official Support Email</label>
-                  <input
-                    type="email"
-                    value={formEmail}
-                    onChange={(e) => setFormEmail(e.target.value)}
-                    className="w-full rounded-2xl border border-line p-3 text-xs text-navy focus:outline-none focus:border-gold"
-                  />
+              <div>
+                <div className="font-display text-lg font-bold text-navy">Content Workspace</div>
+                <div className="text-xs text-muted">
+                  Changes apply live across the public site
                 </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {isCMSActive && (
+                <span className="flex items-center gap-1 rounded-full border border-emerald/20 bg-emerald/10 px-3 py-1.5 text-xs font-bold text-emerald">
+                  <CheckCircle className="h-3.5 w-3.5" /> CMS Active
+                </span>
+              )}
+              <button
+                onClick={resetToDefault}
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border border-navy/15 bg-cream px-4 py-2.5 text-xs font-bold text-navy transition-colors hover:bg-white"
+              >
+                <RefreshCw className="h-3.5 w-3.5" /> Reset Default Data
+              </button>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex gap-2 overflow-x-auto rounded-2xl border border-line bg-white p-2 shadow-md">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex cursor-pointer items-center gap-2 rounded-xl px-5 py-3 text-xs font-bold whitespace-nowrap transition-all ${
+                  activeTab === tab.id
+                    ? "bg-navy text-gold shadow-md"
+                    : "text-muted hover:bg-cream hover:text-navy"
+                }`}
+              >
+                <tab.icon className="h-3.5 w-3.5" />
+                {tab.label} Settings
+              </button>
+            ))}
+          </div>
+
+          {/* Editor Form */}
+          <form
+            onSubmit={handleSave}
+            className="space-y-6 rounded-3xl border border-line bg-white p-7 shadow-xl md:p-9"
+          >
+            {savedSuccess && (
+              <div className="flex items-center gap-2 rounded-2xl border border-emerald/30 bg-emerald/10 p-4 text-xs font-bold text-emerald-dark">
+                <CheckCircle className="h-4 w-4" /> CMS changes saved successfully! Site
+                content updated live.
+              </div>
+            )}
+
+            {activeTab === "general" && (
+              <div className="space-y-5">
+                <h3 className="font-display text-xl font-bold text-navy">
+                  General Identity & Contact Settings
+                </h3>
                 <div>
-                  <label className="block text-xs font-bold text-navy mb-1">Official Support Phone</label>
+                  <FieldLabel>Site Tagline</FieldLabel>
                   <input
                     type="text"
-                    value={formPhone}
-                    onChange={(e) => setFormPhone(e.target.value)}
-                    className="w-full rounded-2xl border border-line p-3 text-xs text-navy focus:outline-none focus:border-gold"
+                    value={formTagline}
+                    onChange={(e) => setFormTagline(e.target.value)}
+                    className={fieldClass}
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <FieldLabel>Official Support Email</FieldLabel>
+                    <input
+                      type="email"
+                      value={formEmail}
+                      onChange={(e) => setFormEmail(e.target.value)}
+                      className={fieldClass}
+                    />
+                  </div>
+                  <div>
+                    <FieldLabel>Official Support Phone</FieldLabel>
+                    <input
+                      type="text"
+                      value={formPhone}
+                      onChange={(e) => setFormPhone(e.target.value)}
+                      className={fieldClass}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "hero" && (
+              <div className="space-y-5">
+                <h3 className="font-display text-xl font-bold text-navy">
+                  Hero Section Headline
+                </h3>
+                <div>
+                  <FieldLabel>Main Headline</FieldLabel>
+                  <textarea
+                    rows={3}
+                    value={formHeadline}
+                    onChange={(e) => setFormHeadline(e.target.value)}
+                    className={fieldClass}
                   />
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === "hero" && (
-            <div className="space-y-4">
-              <h3 className="font-display text-xl font-bold text-navy">Hero Section Headline</h3>
-              <div>
-                <label className="block text-xs font-bold text-navy mb-1">Main Headline</label>
-                <textarea
-                  rows={3}
-                  value={formHeadline}
-                  onChange={(e) => setFormHeadline(e.target.value)}
-                  className="w-full rounded-2xl border border-line p-3 text-xs text-navy focus:outline-none focus:border-gold"
-                />
+            {activeTab === "stats" && (
+              <div className="space-y-5">
+                <h3 className="font-display text-xl font-bold text-navy">
+                  Impact Counters Overview
+                </h3>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                  {siteData.impactStats.map((st) => (
+                    <div
+                      key={st.key}
+                      className="rounded-2xl border border-line bg-cream p-4 text-xs transition-all hover:border-gold/30 hover:shadow-md"
+                    >
+                      <div className="text-muted">{st.label}</div>
+                      <div className="mt-1 font-display text-lg font-bold text-navy">
+                        {st.prefix}
+                        {st.value}
+                        {st.suffix}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === "stats" && (
-            <div className="space-y-4">
-              <h3 className="font-display text-xl font-bold text-navy">Impact Counters Overview</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {siteData.impactStats.map((st) => (
-                  <div key={st.key} className="p-4 rounded-2xl bg-cream border border-line text-xs">
-                    <div className="text-muted">{st.label}</div>
-                    <div className="font-bold text-navy text-lg">{st.prefix}{st.value}{st.suffix}</div>
-                  </div>
-                ))}
+            {activeTab === "tenders" && (
+              <div className="space-y-5">
+                <h3 className="font-display text-xl font-bold text-navy">
+                  Active Tenders ({siteData.tenders.length})
+                </h3>
+                <div className="space-y-3">
+                  {siteData.tenders.map((t) => (
+                    <div
+                      key={t.id}
+                      className="flex flex-col justify-between gap-2 rounded-2xl border border-line bg-cream p-4 text-xs sm:flex-row sm:items-center"
+                    >
+                      <span className="font-bold text-navy">
+                        <span className="font-mono text-gold">{t.tenderNo}</span>: {t.title}
+                      </span>
+                      <span className="shrink-0 font-bold text-emerald">{t.estimatedCost}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === "tenders" && (
-            <div className="space-y-4">
-              <h3 className="font-display text-xl font-bold text-navy">Active Tenders Count ({siteData.tenders.length})</h3>
-              <div className="space-y-2">
-                {siteData.tenders.map((t) => (
-                  <div key={t.id} className="p-3 rounded-xl bg-cream border border-line text-xs flex justify-between">
-                    <span className="font-bold text-navy">{t.tenderNo}: {t.title}</span>
-                    <span className="text-emerald font-bold">{t.estimatedCost}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="flex justify-end border-t border-line pt-5">
+              <button
+                type="submit"
+                className="flex cursor-pointer items-center gap-2 rounded-full bg-navy px-8 py-3.5 text-xs font-bold text-white shadow-lg transition-colors hover:bg-navy-light"
+              >
+                <Save className="h-4 w-4 text-gold" /> Save CMS Changes
+              </button>
             </div>
-          )}
-
-          <div className="pt-4 border-t border-line flex justify-end">
-            <button
-              type="submit"
-              className="flex items-center gap-2 rounded-full bg-navy px-8 py-3.5 text-xs font-bold text-white hover:bg-navy-light transition-colors shadow-lg cursor-pointer"
-            >
-              <Save className="h-4 w-4 text-gold" /> Save CMS Changes
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+          </form>
+        </div>
+      </section>
+    </>
   );
 }
