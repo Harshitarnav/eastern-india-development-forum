@@ -43,10 +43,9 @@ export default function AboutPage() {
               and industry.
             </p>
           </div>
-          <PlaceholderMedia
-            label="SEMINAR / FOUNDING photo"
-            className="min-h-[280px] rounded-xl"
-          />
+          <div className="relative overflow-hidden rounded-2xl border border-line bg-white shadow-md">
+            <img src="/images/eidf_05.jpg" alt="EIDF Seminar" className="w-full h-72 object-cover" />
+          </div>
         </div>
       </section>
 
@@ -58,7 +57,9 @@ export default function AboutPage() {
           <div className="mt-8 grid grid-cols-2 gap-8 md:grid-cols-4">
             {site.leaders.map((ld) => (
               <div key={ld.name} className="text-center">
-                <div className="mx-auto mb-3.5 h-[76px] w-[76px] rounded-full bg-cream-warm" />
+                <div className="mx-auto mb-3.5 h-16 w-16 rounded-full bg-navy text-gold flex items-center justify-center font-display text-lg font-bold shadow-md">
+                  {ld.name.split(" ").pop()?.substring(0, 2).toUpperCase() || "EI"}
+                </div>
                 <div className="mb-1 text-sm font-bold">{ld.name}</div>
                 <div className="text-xs text-muted">{ld.role}</div>
               </div>

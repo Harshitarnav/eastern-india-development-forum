@@ -12,9 +12,10 @@ export default function EventsPage() {
 
       <section className="px-6 py-14 md:px-12 md:py-16">
         <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl border border-line bg-white md:flex">
-          <PlaceholderMedia
-            label="SEMINAR — Chief Guest lighting the lamp"
-            className="min-h-[220px] md:w-[420px] md:shrink-0"
+          <img
+            src="/images/eidf_06.jpg"
+            alt="National Seminar on Inclusive Development & Human Rights"
+            className="min-h-[220px] md:w-[420px] md:shrink-0 object-cover"
           />
           <div className="flex flex-1 flex-col justify-center p-6 md:p-9">
             <div className="mb-2.5 text-xs text-muted">FEATURED · 29 JUNE 2026</div>
@@ -42,12 +43,17 @@ export default function EventsPage() {
             </Link>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
-            {site.galleryThumbs.slice(0, 3).map((gp) => (
-              <PlaceholderMedia
-                key={gp.label}
-                label={gp.label}
-                className="min-h-[200px] rounded-[10px]"
-              />
+            {site.galleryThumbs.slice(0, 3).map((gp, idx) => (
+              <div key={gp.label} className="relative overflow-hidden rounded-2xl border border-line bg-white shadow-md group">
+                <img
+                  src={`/images/eidf_0${idx + 1}.jpg`}
+                  alt={gp.label}
+                  className="w-full h-48 object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                  <span className="text-[10px] font-bold text-white">{gp.label}</span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -76,17 +82,17 @@ export default function EventsPage() {
         </div>
         <form
           action="/membership"
-          className="mx-auto flex max-w-md overflow-hidden rounded-full"
+          className="mx-auto flex flex-col sm:flex-row max-w-md overflow-hidden rounded-2xl sm:rounded-full gap-2 sm:gap-0"
         >
           <input
             type="email"
             name="email"
             placeholder="Your email"
-            className="min-w-0 flex-1 bg-navy px-5 py-3 text-sm text-white outline-none placeholder:text-white/40"
+            className="min-w-0 flex-1 bg-navy px-5 py-3 text-sm text-white outline-none placeholder:text-white/40 rounded-2xl sm:rounded-none w-full"
           />
           <Link
             href="/membership"
-            className="bg-gold px-5 py-3 text-sm font-bold text-navy-deep"
+            className="bg-gold px-5 py-3 text-sm font-bold text-navy-deep text-center rounded-2xl sm:rounded-none w-full sm:w-auto shrink-0"
           >
             Subscribe
           </Link>

@@ -26,36 +26,8 @@ export default function CreativesPage() {
           {/* Seminar poster */}
           <div>
             <div className="mb-3 text-sm font-bold text-muted">Seminar Poster</div>
-            <div className="overflow-hidden rounded-xl bg-navy p-8 text-white shadow-xl md:p-10">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold font-display text-sm font-bold text-navy">
-                  EI
-                </div>
-                <div>
-                  <div className="font-display text-sm font-bold">Eastern India</div>
-                  <div className="text-[10px] tracking-[2px] text-gold">DEVELOPMENT FORUM</div>
-                </div>
-              </div>
-              <div className="mb-2 text-xs font-bold tracking-[2px] text-gold">
-                NATIONAL SEMINAR
-              </div>
-              <h2 className="mb-4 font-display text-2xl leading-snug md:text-[28px]">
-                Inclusive Development & Human Rights
-              </h2>
-              <p className="mb-6 text-sm text-white/75">
-                29 June 2026 · Umanand Auditorium, Diamond City, Ranchi
-              </p>
-              <div className="mb-6 grid grid-cols-2 gap-3 border-t border-white/15 pt-5">
-                {site.posterGuests.map((g) => (
-                  <div key={g.name}>
-                    <div className="text-[11px] text-gold">{g.role}</div>
-                    <div className="text-sm font-semibold">{g.name}</div>
-                  </div>
-                ))}
-              </div>
-              <div className="text-xs text-white/60">
-                An initiative of Umanand Eastern Foundation · eidf.org.in
-              </div>
+            <div className="overflow-hidden rounded-2xl bg-navy shadow-xl border border-line">
+              <img src="/images/eidf_poster.jpg" alt="EIDF Seminar Poster" className="w-full h-auto object-contain" />
             </div>
           </div>
 
@@ -63,7 +35,7 @@ export default function CreativesPage() {
           <div>
             <div className="mb-3 text-sm font-bold text-muted">Membership Card</div>
             <div className="flex flex-col gap-5">
-              <div className="flex h-[214px] flex-col justify-between rounded-2xl bg-navy p-6 text-white shadow-xl">
+              <div className="flex min-h-[214px] h-auto flex-col justify-between rounded-2xl bg-navy p-6 text-white shadow-xl">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold font-display text-[13px] font-bold text-navy-deep">
@@ -77,7 +49,7 @@ export default function CreativesPage() {
                   </div>
                   <div className="text-[10px] tracking-[1.5px] text-gold">MEMBER</div>
                 </div>
-                <div>
+                <div className="mt-4">
                   <div className="mb-1 font-display text-lg">Aarav Mahato</div>
                   <div className="text-[11px] text-white/80">
                     Global Patron · ID EIDF-000482
@@ -85,7 +57,7 @@ export default function CreativesPage() {
                 </div>
               </div>
 
-              <div className="flex h-[214px] gap-4 rounded-2xl bg-cream-warm p-5 shadow-xl">
+              <div className="flex min-h-[214px] h-auto gap-4 rounded-2xl bg-cream-warm p-5 shadow-xl">
                 <div className="flex-1">
                   <div className="mb-2 text-[10px] font-bold tracking-[1.5px] text-gold-label">
                     MEMBER BENEFITS

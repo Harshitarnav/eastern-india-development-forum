@@ -18,14 +18,15 @@ export default function ProjectsPage() {
 
       <section className="px-6 pb-16 md:px-12">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
-          {site.allProjects.map((ap) => (
+          {site.allProjects.map((ap, idx) => (
             <article
               key={ap.title}
-              className="overflow-hidden rounded-xl border border-line bg-white md:flex"
+              className="overflow-hidden rounded-xl border border-line bg-white lg:flex"
             >
-              <PlaceholderMedia
-                label={ap.img}
-                className="min-h-[160px] md:w-[200px] md:shrink-0"
+              <img
+                src={`/images/eidf_0${idx + 1}.jpg`}
+                alt={ap.title}
+                className="w-full h-48 lg:w-[200px] lg:h-auto lg:shrink-0 object-cover"
               />
               <div className="flex-1 p-5">
                 <div className="mb-2 flex items-start justify-between gap-3">
