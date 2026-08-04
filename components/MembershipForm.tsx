@@ -42,9 +42,9 @@ export function MembershipForm() {
 
   if (status === "done") {
     return (
-      <div className="rounded-3xl border border-emerald/20 bg-white p-10 text-center shadow-xl md:p-12">
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald/15 text-emerald">
-          <CheckCircle className="h-8 w-8" />
+      <div className="border border-emerald/20 bg-white p-10 text-center md:p-12">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald/15 text-emerald">
+          <CheckCircle className="h-7 w-7" />
         </div>
         <h3 className="font-display text-2xl font-bold text-navy md:text-3xl">
           Application received
@@ -60,13 +60,13 @@ export function MembershipForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-3xl border border-line bg-white p-6 shadow-xl md:p-10"
+      className="border border-line bg-white p-6 md:p-8"
     >
-      <div className="mb-8 text-center">
-        <span className="text-xs font-bold uppercase tracking-widest text-gold">
+      <div className="mb-8">
+        <div className="text-[11px] font-bold uppercase tracking-widest text-gold-label">
           Membership Desk
-        </span>
-        <h3 className="mt-1 font-display text-2xl font-bold text-navy md:text-3xl">
+        </div>
+        <h3 className="mt-1 font-display text-2xl font-bold text-navy">
           Membership Application
         </h3>
         <p className="mt-2 text-sm text-muted">
@@ -127,7 +127,7 @@ export function MembershipForm() {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-gold py-4 text-sm font-bold text-navy-deep shadow-lg transition-transform hover:scale-[1.02] hover:bg-gold-hover disabled:opacity-60"
+        className="btn-primary w-full !rounded-lg disabled:opacity-60"
       >
         {status === "loading" ? (
           <>

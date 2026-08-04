@@ -21,13 +21,13 @@ export default function CreativesPage() {
       >
         <Link
           href="/"
-          className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20"
+          className="btn-secondary inline-flex items-center gap-2"
         >
           <ArrowLeft className="h-4 w-4" /> Back to site
         </Link>
         <Link
           href="/gallery"
-          className="rounded-full bg-gold px-6 py-3 text-sm font-bold text-navy-deep shadow-xl transition-transform hover:scale-105 hover:bg-gold-hover"
+          className="btn-primary"
         >
           Browse Media Hub
         </Link>

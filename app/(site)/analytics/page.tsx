@@ -14,7 +14,7 @@ import {
   Cell,
   CartesianGrid,
 } from "recharts";
-import { BarChart3, PieChart as PieIcon, TrendingUp, IndianRupee } from "lucide-react";
+import { BarChart3, PieChart as PieIcon } from "lucide-react";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 
 export default function AnalyticsPage() {
@@ -28,60 +28,45 @@ export default function AnalyticsPage() {
   ];
 
   const sectorData = [
-    { name: "Infrastructure & Ports", value: 35, color: "#f59e0b" },
-    { name: "Renewable Energy", value: 25, color: "#10b981" },
-    { name: "Manufacturing & SEZ", value: 20, color: "#3b82f6" },
-    { name: "Agri-Tech & Skilling", value: 20, color: "#8b5cf6" },
-  ];
-
-  const kpiCards = [
-    { label: "Total Pledged Capital", value: "₹54,200 Cr", hint: "Across 6 state clusters", icon: IndianRupee, color: "text-gold" },
-    { label: "YoY Capital Growth", value: "+24%", hint: "Regional pipeline expansion", icon: TrendingUp, color: "text-emerald" },
-    { label: "Active PPP Corridors", value: "42", hint: "Under facilitation", icon: BarChart3, color: "text-navy" },
+    { name: "Infrastructure & Ports", value: 35, color: "#e8a317" },
+    { name: "Renewable Energy", value: 25, color: "#0d9f6e" },
+    { name: "Manufacturing & SEZ", value: 20, color: "#2e75b6" },
+    { name: "Agri-Tech & Skilling", value: 20, color: "#f07a1a" },
   ];
 
   return (
     <>
       <PageHero
         crumb="Home / Analytics"
-        eyebrow="EIDF Regional Data Platform"
-        title="Development Analytics Dashboard"
-        description="Real-time visual analysis of capital deployment, state-wise project funding, sector breakdown, and UN SDG alignment metrics."
+        title="Development Analytics"
+        description="Capital deployment, state-wise funding, and sector breakdown across Eastern India."
       >
-        <Link
-          href="/investors"
-          className="rounded-full bg-gold px-7 py-3.5 text-sm font-bold text-navy-deep shadow-xl transition-transform hover:scale-105 hover:bg-gold-hover"
-        >
+        <Link href="/investors" className="btn-primary">
           Explore Investment Zones
         </Link>
-        <Link
-          href="/resources"
-          className="rounded-full border border-white/25 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20"
-        >
+        <Link href="/resources" className="btn-secondary">
           Download Reports
         </Link>
       </PageHero>
 
-      {/* KPI cards */}
-      <section className="relative z-10 -mt-8 px-4 md:-mt-10">
-        <div className="mx-auto grid max-w-7xl gap-4 sm:grid-cols-3">
-          {kpiCards.map((kpi) => (
-            <div
-              key={kpi.label}
-              className="rounded-3xl border border-line bg-white/95 p-6 shadow-xl backdrop-blur-xl"
-            >
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-muted">
-                  {kpi.label}
-                </span>
-                <kpi.icon className={`h-5 w-5 ${kpi.color}`} />
-              </div>
-              <div className={`font-display text-3xl font-extrabold ${kpi.color}`}>
-                {kpi.value}
-              </div>
-              <div className="mt-1 text-xs text-muted">{kpi.hint}</div>
-            </div>
-          ))}
+      <section className="metric-strip grid-cols-3">
+        <div>
+          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">₹54,200 Cr</div>
+          <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
+            Total Pledged Capital
+          </div>
+        </div>
+        <div>
+          <div className="font-display text-2xl md:text-3xl font-extrabold text-emerald-dark">+24%</div>
+          <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
+            YoY Capital Growth
+          </div>
+        </div>
+        <div>
+          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">42</div>
+          <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
+            Active PPP Corridors
+          </div>
         </div>
       </section>
 
@@ -89,56 +74,51 @@ export default function AnalyticsPage() {
         <div className="mx-auto max-w-7xl space-y-10">
           <SectionHeader
             eyebrow="Capital Intelligence"
-            title="Where capital is flowing across Eastern India"
+            title="Where capital is flowing"
+            align="left"
           />
 
           <div className="grid gap-8 lg:grid-cols-12">
-            {/* Bar Chart */}
-            <div className="space-y-4 rounded-3xl border border-line bg-white p-6 shadow-xl md:p-8 lg:col-span-7">
-              <div className="flex items-center justify-between border-b border-line pb-3">
-                <h3 className="flex items-center gap-2 font-display text-lg font-bold text-navy md:text-xl">
-                  <BarChart3 className="h-5 w-5 text-gold" />
-                  Pledged Capital by State (₹ Cr)
-                </h3>
-              </div>
+            <div className="border border-line bg-white p-5 md:p-7 lg:col-span-7">
+              <h3 className="flex items-center gap-2 font-display text-lg font-bold text-navy border-b border-line pb-3">
+                <BarChart3 className="h-5 w-5 text-gold" />
+                Pledged Capital by State (₹ Cr)
+              </h3>
               <div className="h-80 w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={stateCapitalData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
-                    <YAxis stroke="#64748b" fontSize={12} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#eef3f8" />
+                    <XAxis dataKey="name" stroke="#5b6b7c" fontSize={12} />
+                    <YAxis stroke="#5b6b7c" fontSize={12} />
                     <Tooltip
                       contentStyle={{
-                        backgroundColor: "#0b192c",
-                        borderColor: "#f59e0b",
-                        borderRadius: "12px",
+                        backgroundColor: "#0a1f3d",
+                        borderColor: "#e8a317",
+                        borderRadius: "4px",
                         color: "#fff",
                       }}
                     />
-                    <Bar dataKey="capital" fill="#0b192c" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="capital" fill="#0a1f3d" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Pie Chart */}
-            <div className="space-y-4 rounded-3xl border border-line bg-white p-6 shadow-xl md:p-8 lg:col-span-5">
-              <div className="flex items-center justify-between border-b border-line pb-3">
-                <h3 className="flex items-center gap-2 font-display text-lg font-bold text-navy md:text-xl">
-                  <PieIcon className="h-5 w-5 text-emerald" />
-                  Sector Capital Share
-                </h3>
-              </div>
-              <div className="h-72 w-full pt-4">
+            <div className="border border-line bg-white p-5 md:p-7 lg:col-span-5">
+              <h3 className="flex items-center gap-2 font-display text-lg font-bold text-navy border-b border-line pb-3">
+                <PieIcon className="h-5 w-5 text-emerald" />
+                Sector Capital Share
+              </h3>
+              <div className="h-64 w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
                       data={sectorData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={60}
-                      outerRadius={90}
-                      paddingAngle={5}
+                      innerRadius={55}
+                      outerRadius={85}
+                      paddingAngle={4}
                       dataKey="value"
                     >
                       {sectorData.map((entry, index) => (
@@ -149,14 +129,10 @@ export default function AnalyticsPage() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-
-              <div className="grid grid-cols-1 gap-2 pt-2 text-xs sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-2 pt-2 text-xs">
                 {sectorData.map((sec) => (
                   <div key={sec.name} className="flex items-center gap-2">
-                    <span
-                      className="h-3 w-3 shrink-0 rounded-full"
-                      style={{ backgroundColor: sec.color }}
-                    />
+                    <span className="h-2.5 w-2.5 shrink-0" style={{ backgroundColor: sec.color }} />
                     <span className="font-medium text-muted">
                       {sec.name} ({sec.value}%)
                     </span>
@@ -170,7 +146,7 @@ export default function AnalyticsPage() {
 
       <CtaBand
         title="Use this data to guide your next investment"
-        description="Pair analytics with live investment zones and scheme assistance for actionable decisions."
+        description="Pair analytics with live investment zones and scheme assistance."
         primary={{ label: "Explore Investment Zones", href: "/investors" }}
         secondary={{ label: "Talk to Analyst Desk", href: "/contact" }}
       />

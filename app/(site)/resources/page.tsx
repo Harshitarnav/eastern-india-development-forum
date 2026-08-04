@@ -1,37 +1,23 @@
-"use client";
-
-import React from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { BookOpen, Download, FileText } from "lucide-react";
+import { Download } from "lucide-react";
 import { site } from "@/content/site";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 
-const categoryIcons: Record<string, React.ReactNode> = {
-  Policy: <FileText className="h-5 w-5" />,
-  Whitepaper: <BookOpen className="h-5 w-5" />,
-  "Annual Report": <FileText className="h-5 w-5" />,
-  "Case Study": <BookOpen className="h-5 w-5" />,
-};
+export const metadata: Metadata = { title: "Resources" };
 
 export default function ResourcesPage() {
   return (
     <>
       <PageHero
         crumb="Home / Resources"
-        eyebrow="EIDF Policy Research & Whitepapers"
-        title="Knowledge Center & Resource Library"
-        description="Download authoritative research reports, macroeconomic assessments, freight basin blueprints, and state policy frameworks."
+        title="Knowledge Center"
+        description="Research reports, macroeconomic assessments, and state policy frameworks for investors and partners."
       >
-        <Link
-          href="/analytics"
-          className="rounded-full bg-gold px-7 py-3.5 text-sm font-bold text-navy-deep shadow-xl transition-transform hover:scale-105 hover:bg-gold-hover"
-        >
-          View Analytics Dashboard
+        <Link href="/analytics" className="btn-primary">
+          View Analytics
         </Link>
-        <Link
-          href="/schemes"
-          className="rounded-full border border-white/25 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20"
-        >
+        <Link href="/schemes" className="btn-secondary">
           Browse Schemes
         </Link>
       </PageHero>
@@ -41,44 +27,39 @@ export default function ResourcesPage() {
           <SectionHeader
             eyebrow="Publications"
             title="Research you can act on"
-            description="Policy briefs and whitepapers produced for investors, governments, and development partners."
+            align="left"
           />
 
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="divide-y divide-line border-y border-line">
             {site.reports.map((rep) => (
-              <div
+              <article
                 key={rep.id}
-                className="group flex flex-col justify-between space-y-6 rounded-3xl border border-line bg-white p-8 shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl"
+                className="flex flex-col gap-4 py-8 sm:flex-row sm:items-start sm:justify-between sm:gap-8"
               >
-                <div>
-                  <div className="mb-4 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gold/10 text-gold transition-colors group-hover:bg-gold group-hover:text-navy-deep">
-                        {categoryIcons[rep.category] || <FileText className="h-5 w-5" />}
-                      </div>
-                      <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gold">
-                        {rep.category}
-                      </span>
-                    </div>
-                    <span className="shrink-0 text-xs text-muted">
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold uppercase tracking-widest">
+                    <span className="text-gold-label">{rep.category}</span>
+                    <span className="text-muted normal-case tracking-normal font-medium">
                       {rep.date} · {rep.fileSize}
                     </span>
                   </div>
-
-                  <h3 className="mb-3 font-display text-2xl font-bold text-navy">
+                  <h3 className="mt-2 font-display text-xl font-bold text-navy md:text-2xl">
                     {rep.title}
                   </h3>
-                  <p className="mb-4 text-sm leading-relaxed text-muted">{rep.summary}</p>
-                  <div className="text-xs font-semibold text-navy">Author: {rep.author}</div>
+                  <p className="mt-2 text-sm leading-relaxed text-muted max-w-2xl">
+                    {rep.summary}
+                  </p>
+                  <div className="mt-2 text-xs font-semibold text-navy/70">
+                    {rep.author}
+                  </div>
                 </div>
-
                 <a
                   href={rep.downloadUrl}
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-navy py-3.5 text-xs font-bold text-white shadow-md transition-colors hover:bg-gold hover:text-navy-deep"
+                  className="inline-flex shrink-0 items-center gap-2 border border-navy bg-navy px-5 py-3 text-xs font-bold text-white hover:bg-navy-light transition-colors self-start"
                 >
-                  <Download className="h-4 w-4" /> Download PDF Report ({rep.fileSize})
+                  <Download className="h-4 w-4 text-gold" /> Download PDF
                 </a>
-              </div>
+              </article>
             ))}
           </div>
         </div>

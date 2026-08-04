@@ -40,7 +40,7 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
 
   if (status === "done") {
     return (
-      <div className="rounded-3xl border border-emerald/20 bg-white p-10 text-center shadow-xl md:p-12">
+      <div className="rounded-2xl border border-emerald/20 bg-white p-10 text-center shadow-xl md:p-12">
         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald/15 text-emerald">
           <CheckCircle className="h-8 w-8" />
         </div>
@@ -55,7 +55,7 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-3xl border border-line bg-white p-6 shadow-xl md:p-9"
+      className="rounded-2xl border border-line bg-white p-6 shadow-xl md:p-9"
     >
       <div className="mb-6">
         <span className="text-xs font-bold uppercase tracking-widest text-gold">
@@ -108,7 +108,7 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
       <button
         type="submit"
         disabled={status === "loading"}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-navy py-4 text-sm font-bold text-white shadow-lg transition-all hover:bg-navy-light disabled:opacity-60"
+        className="btn-navy w-full !rounded-full disabled:opacity-60"
       >
         {status === "loading" ? (
           <>

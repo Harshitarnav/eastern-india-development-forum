@@ -3,9 +3,28 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Bot, Menu, X, ChevronDown, ShieldCheck, Sparkles, LayoutDashboard, Phone } from "lucide-react";
+import {
+  Search,
+  Menu,
+  X,
+  ChevronDown,
+  ShieldCheck,
+  Phone,
+  FileText,
+  Briefcase,
+  BookOpen,
+  BarChart3,
+  LayoutDashboard,
+  Calendar,
+  Images,
+} from "lucide-react";
 import { site } from "@/content/site";
 import { GlobalSearch } from "./GlobalSearch";
+
+const navLink = (active: boolean) =>
+  `px-3 py-2 rounded-md text-[13px] font-semibold transition-colors ${
+    active ? "text-gold" : "text-white/75 hover:text-white"
+  }`;
 
 export const Nav: React.FC = () => {
   const pathname = usePathname();
@@ -13,296 +32,162 @@ export const Nav: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const portalsActive = [
+    "/tenders",
+    "/investors",
+    "/schemes",
+    "/resources",
+    "/analytics",
+    "/events",
+    "/gallery",
+  ].some((p) => pathname.startsWith(p));
+
   return (
     <>
-      {/* Top Banner Notice */}
-      <div className="bg-navy-deep border-b border-white/10 px-4 py-2 text-[10px] sm:text-xs font-medium text-white">
-        <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3 text-center sm:text-left">
-          {/* Left Cluster */}
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-1.5 sm:gap-3">
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="h-3.5 w-3.5 text-gold shrink-0" />
-              <span className="font-bold text-gold">Reg. No:</span>
-              <span className="font-bold text-white tracking-wider">U85500JH2025NPL024051</span>
-            </div>
-
-            <span className="text-white/30 hidden sm:inline">|</span>
-
-            <div className="flex items-center gap-1">
-              <span className="text-white/70">Powered By: </span>
-              <span className="font-bold text-white">Umanand Eastern Foundation</span>
-            </div>
-
-            <span className="text-white/30 hidden md:inline">|</span>
-
-            <div className="hidden md:block">
-              <span className="text-white/70">President: </span>
-              <span className="font-bold text-gold">Sanjeev Kumar</span>
-            </div>
+      <div className="bg-navy-deep border-b border-white/10 px-3 sm:px-4 py-1.5 text-[10px] sm:text-[11px] font-medium text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <ShieldCheck className="h-3.5 w-3.5 text-gold shrink-0" />
+            <span className="truncate">
+              <span className="text-white/50">Reg. </span>
+              <span className="font-semibold tracking-wide">U85500JH2025NPL024051</span>
+            </span>
           </div>
-
-          {/* Right Cluster */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-white/90">
-            <a href="tel:+9106512912025" className="flex items-center gap-1.5 hover:text-gold transition-colors">
-              <Phone className="h-3.5 w-3.5 text-emerald shrink-0" />
-              <span>+91 (0651) 291-2025</span>
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0 text-white/80">
+            <a href="tel:+9106512912025" className="flex items-center gap-1 hover:text-gold transition-colors" aria-label="Call">
+              <Phone className="h-3 w-3 text-emerald" />
+              <span className="hidden sm:inline">+91 (0651) 291-2025</span>
             </a>
-
-            <span className="text-white/30">|</span>
-
-            <a href="mailto:contact@eidf.org.in" className="hover:text-gold transition-colors">
+            <a href="mailto:contact@eidf.org.in" className="hidden sm:inline hover:text-gold transition-colors truncate max-w-[160px] md:max-w-none">
               contact@eidf.org.in
             </a>
           </div>
         </div>
       </div>
 
-      {/* Main Glassmorphic Sticky Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-navy/90 backdrop-blur-md text-white transition-all">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-2.5 sm:px-4 md:px-6">
-          {/* Logo Brand */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
-            <img src="/images/logo.png" alt="EIDF Logo" className="h-8 sm:h-9 md:h-10 w-auto object-contain bg-white rounded-lg p-1 group-hover:scale-105 transition-transform" />
-            <div className="flex flex-col">
-              <span className="font-display text-xs sm:text-sm md:text-base font-bold tracking-tight text-white group-hover:text-gold transition-colors leading-tight truncate max-w-[170px] sm:max-w-none">
+      <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-navy/95 backdrop-blur-xl text-white">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <span className="relative flex h-11 w-11 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-md ring-2 ring-gold/70 group-hover:ring-gold transition-all">
+              <img
+                src="/images/logo.png"
+                alt="EIDF"
+                className="h-full w-full rounded-full object-contain"
+              />
+            </span>
+            <div className="hidden sm:flex flex-col">
+              <span className="font-display text-sm md:text-[15px] font-extrabold tracking-tight leading-tight group-hover:text-gold transition-colors">
                 Eastern India Development Forum
               </span>
-              <span className="text-[9px] sm:text-[10px] text-white/60 font-medium leading-none mt-0.5">
+              <span className="text-[10px] text-white/45 font-medium mt-0.5">
                 {site.poweredBy}
               </span>
             </div>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-white/80">
-            <Link
-              href="/"
-              className={`px-3 py-2 rounded-lg transition-colors ${pathname === "/" ? "text-gold bg-white/10" : "hover:text-white hover:bg-white/5"
-                }`}
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className={`px-3 py-2 rounded-lg transition-colors ${pathname === "/about" ? "text-gold bg-white/10" : "hover:text-white hover:bg-white/5"
-                }`}
-            >
-              About
-            </Link>
-            <Link
-              href="/projects"
-              className={`px-3 py-2 rounded-lg transition-colors ${pathname === "/projects" ? "text-gold bg-white/10" : "hover:text-white hover:bg-white/5"
-                }`}
-            >
-              Projects
-            </Link>
+          <nav className="hidden lg:flex items-center gap-1">
+            <Link href="/" className={navLink(pathname === "/")}>Home</Link>
+            <Link href="/about" className={navLink(pathname === "/about")}>About</Link>
+            <Link href="/projects" className={navLink(pathname === "/projects")}>Projects</Link>
 
-            {/* Portals Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
-                className="flex items-center gap-1 px-3 py-2 rounded-lg hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+                className={`flex items-center gap-1 px-3 py-2 rounded-md text-[13px] font-semibold cursor-pointer transition-colors ${
+                  portalsActive ? "text-gold" : "text-white/75 hover:text-white"
+                }`}
               >
-                Portals <ChevronDown className="h-3.5 w-3.5 text-gold" />
+                Portals <ChevronDown className="h-3.5 w-3.5 text-gold/80" />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 rounded-2xl border border-white/15 bg-navy-deep p-2 shadow-2xl backdrop-blur-xl z-50 text-xs">
-                  <Link
-                    href="/tenders"
-                    className="flex items-center gap-2 rounded-xl p-2.5 hover:bg-white/10 text-white/90 hover:text-gold transition-colors"
-                  >
-                    <ShieldCheck className="h-4 w-4 text-gold" /> Tender Assistance Center
-                  </Link>
-                  <Link
-                    href="/investors"
-                    className="flex items-center gap-2 rounded-xl p-2.5 hover:bg-white/10 text-white/90 hover:text-emerald transition-colors"
-                  >
-                    <Sparkles className="h-4 w-4 text-emerald" /> Investor Portal
-                  </Link>
-                  <Link
-                    href="/schemes"
-                    className="flex items-center gap-2 rounded-xl p-2.5 hover:bg-white/10 text-white/90 hover:text-amber transition-colors"
-                  >
-                    <LayoutDashboard className="h-4 w-4 text-amber" /> Government Schemes
-                  </Link>
-                  <Link
-                    href="/resources"
-                    className="flex items-center gap-2 rounded-xl p-2.5 hover:bg-white/10 text-white/90 hover:text-blue-400 transition-colors"
-                  >
-                    <LayoutDashboard className="h-4 w-4 text-blue-400" /> Knowledge Center
-                  </Link>
-                  <Link
-                    href="/analytics"
-                    className="flex items-center gap-2 rounded-xl p-2.5 hover:bg-white/10 text-white/90 hover:text-purple-400 transition-colors"
-                  >
-                    <LayoutDashboard className="h-4 w-4 text-purple-400" /> Development Analytics
-                  </Link>
-                  <Link
-                    href="/admin/login"
-                    className="flex items-center gap-2 rounded-xl p-2.5 bg-gold/10 text-gold hover:bg-gold hover:text-navy-deep font-bold transition-colors mt-1"
-                  >
-                    <LayoutDashboard className="h-4 w-4" /> Admin CMS Dashboard
-                  </Link>
+                <div className="absolute top-full left-0 mt-2 w-56 border border-white/10 bg-navy-deep p-1.5 shadow-2xl z-50">
+                  {[
+                    { href: "/tenders", label: "Tenders", icon: FileText },
+                    { href: "/investors", label: "Investors & PPP", icon: Briefcase },
+                    { href: "/schemes", label: "Govt Schemes", icon: LayoutDashboard },
+                    { href: "/resources", label: "Knowledge Center", icon: BookOpen },
+                    { href: "/analytics", label: "Analytics", icon: BarChart3 },
+                    { href: "/events", label: "Events", icon: Calendar },
+                    { href: "/gallery", label: "Gallery", icon: Images },
+                  ].map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-white/80 hover:bg-white/8 hover:text-gold transition-colors"
+                    >
+                      <item.icon className="h-4 w-4 text-gold/70" />
+                      {item.label}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
 
-            <Link
-              href="/membership"
-              className={`px-3 py-2 rounded-lg transition-colors ${pathname === "/membership" ? "text-gold bg-white/10" : "hover:text-white hover:bg-white/5"
-                }`}
-            >
-              Membership
-            </Link>
-            <Link
-              href="/events"
-              className={`px-3 py-2 rounded-lg transition-colors ${pathname === "/events" ? "text-gold bg-white/10" : "hover:text-white hover:bg-white/5"
-                }`}
-            >
-              Events
-            </Link>
-            <Link
-              href="/gallery"
-              className={`px-3 py-2 rounded-lg transition-colors ${pathname === "/gallery" ? "text-gold bg-white/10" : "hover:text-white hover:bg-white/5"
-                }`}
-            >
-              Gallery
-            </Link>
-            <Link
-              href="/contact"
-              className={`px-3 py-2 rounded-lg transition-colors ${pathname === "/contact" ? "text-gold bg-white/10" : "hover:text-white hover:bg-white/5"
-                }`}
-            >
-              Contact
-            </Link>
+            <Link href="/membership" className={navLink(pathname === "/membership")}>Membership</Link>
+            <Link href="/events" className={navLink(pathname === "/events")}>Events</Link>
+            <Link href="/contact" className={navLink(pathname === "/contact")}>Contact</Link>
           </nav>
 
-          {/* Right Action Trigger Buttons */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5">
-            {/* Command Search Trigger */}
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 p-2 sm:px-3 sm:py-1.5 text-xs text-white/80 hover:bg-white/20 hover:text-white transition-colors cursor-pointer"
+              className="flex items-center justify-center rounded-md border border-white/15 bg-white/5 p-2 text-white/70 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+              aria-label="Search"
             >
-              <Search className="h-3.5 w-3.5 text-gold shrink-0" />
-              <span className="hidden sm:inline">Search</span>
-              <kbd className="hidden md:inline-block rounded bg-white/20 px-1.5 py-0.5 text-[10px] text-white/70">
-                ⌘K
-              </kbd>
+              <Search className="h-4 w-4 text-gold" />
             </button>
 
-            {/* Become Member CTA */}
-            <Link
-              href="/membership"
-              className="hidden sm:inline-flex items-center justify-center rounded-full bg-gold px-4 py-1.5 sm:px-5 sm:py-2 text-xs font-bold text-navy-deep hover:bg-gold-hover transition-transform hover:scale-105 shadow-lg"
-            >
+            <Link href="/membership" className="hidden sm:inline-flex btn-primary !px-4 !py-2 text-xs">
               Join Us
             </Link>
 
-            {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden rounded-lg p-1.5 sm:p-2 text-white/80 hover:bg-white/10 hover:text-white cursor-pointer"
+              className="lg:hidden rounded-md p-2 text-white/80 hover:bg-white/10 cursor-pointer"
+              aria-label="Menu"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-white/10 bg-navy-deep px-4 py-6 space-y-3">
-            <Link
-              href="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              About EIDF
-            </Link>
-            <Link
-              href="/projects"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              Projects
-            </Link>
-            <Link
-              href="/tenders"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-gold hover:bg-white/10"
-            >
-              Tender Assistance Center
-            </Link>
-            <Link
-              href="/investors"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-emerald hover:bg-white/10"
-            >
-              Investor Portal & PPP
-            </Link>
-            <Link
-              href="/schemes"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-amber hover:bg-white/10"
-            >
-              Government Schemes
-            </Link>
-            <Link
-              href="/resources"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-blue-400 hover:bg-white/10"
-            >
-              Knowledge Center
-            </Link>
+          <div className="lg:hidden border-t border-white/10 bg-navy-deep px-4 py-4 space-y-0.5 max-h-[min(70vh,560px)] overflow-y-auto">
+            {[
+              ["/", "Home"],
+              ["/about", "About"],
+              ["/projects", "Projects"],
+              ["/tenders", "Tenders"],
+              ["/investors", "Investors"],
+              ["/schemes", "Schemes"],
+              ["/resources", "Knowledge Center"],
+              ["/events", "Events"],
+              ["/gallery", "Gallery"],
+              ["/membership", "Membership"],
+              ["/contact", "Contact"],
+            ].map(([href, label]) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2.5 text-sm font-semibold text-white/85 hover:bg-white/8 hover:text-gold"
+              >
+                {label}
+              </Link>
+            ))}
             <Link
               href="/membership"
               onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
+              className="mt-3 flex items-center justify-center btn-primary !rounded-lg w-full"
             >
-              Membership
-            </Link>
-            <Link
-              href="/events"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              Events
-            </Link>
-            <Link
-              href="/gallery"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              Gallery
-            </Link>
-            <Link
-              href="/contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-semibold text-white hover:bg-white/10"
-            >
-              Contact
-            </Link>
-            <Link
-              href="/admin/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-xl px-3 py-2 text-sm font-bold text-gold bg-gold/10 border border-gold/30"
-            >
-              Admin CMS Dashboard
+              Join Us
             </Link>
           </div>
         )}
       </header>
 
-      {/* Command Search Modal */}
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );

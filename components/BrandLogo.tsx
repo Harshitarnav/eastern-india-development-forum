@@ -2,10 +2,10 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 const sizeMap = {
-  sm: { box: "h-8 w-8 rounded-lg", pad: "p-0.5", sizes: "32px" },
-  md: { box: "h-9 w-9 rounded-xl", pad: "p-0.5", sizes: "36px" },
-  lg: { box: "h-12 w-12 rounded-xl", pad: "p-0.5", sizes: "48px" },
-  xl: { box: "h-14 w-14 rounded-2xl", pad: "p-1", sizes: "56px" },
+  sm: { box: "h-9 w-9", sizes: "36px" },
+  md: { box: "h-11 w-11", sizes: "44px" },
+  lg: { box: "h-14 w-14", sizes: "56px" },
+  xl: { box: "h-16 w-16", sizes: "64px" },
 } as const;
 
 export function BrandLogo({
@@ -17,23 +17,23 @@ export function BrandLogo({
   className?: string;
   priority?: boolean;
 }) {
-  const { box, pad, sizes } = sizeMap[size];
+  const { box, sizes } = sizeMap[size];
 
   return (
     <div
       className={cn(
-        "relative shrink-0 overflow-hidden border border-line bg-white shadow-sm",
+        "relative shrink-0 overflow-hidden rounded-full bg-white p-0.5 shadow-md ring-2 ring-gold/60",
         box,
         className
       )}
     >
       <Image
         src="/images/logo.png"
-        alt="EIDF"
+        alt="Eastern India Development Forum"
         fill
         sizes={sizes}
         priority={priority}
-        className={cn("object-contain", pad)}
+        className="object-contain p-[1px]"
       />
     </div>
   );

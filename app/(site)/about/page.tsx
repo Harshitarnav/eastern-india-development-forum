@@ -1,152 +1,101 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Eye,
-  Target,
-  Users,
-  Heart,
-  Shield,
-  Lightbulb,
-  Handshake,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = { title: "About" };
-
-const valueIcons = [Handshake, Heart, Shield, Lightbulb];
 
 export default function AboutPage() {
   return (
     <>
       <PageHero
         crumb="Home / About"
-        eyebrow="Our Institution"
         title="About EIDF"
         description="A Section 8 development forum uniting diaspora capital, government partnership, and community dignity across Eastern India."
       />
 
-      {/* Vision & Mission */}
       <section className="px-4 py-16 md:py-20">
-        <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2">
-          <div className="group relative overflow-hidden rounded-3xl border border-line bg-white p-8 shadow-lg transition-all hover:shadow-2xl md:p-10">
-            <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gold/10 blur-2xl transition-all group-hover:bg-gold/20" />
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gold/15 text-gold">
-              <Eye className="h-7 w-7" />
-            </div>
-            <h2 className="mb-3 font-display text-2xl font-bold text-navy">Vision</h2>
-            <p className="text-sm leading-relaxed text-muted md:text-[15px]">
-              To make Eastern India a global example of diaspora-powered, dignity-first
-              development.
-            </p>
-          </div>
-
-          <div className="group relative overflow-hidden rounded-3xl border border-line bg-white p-8 shadow-lg transition-all hover:shadow-2xl md:p-10">
-            <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-navy/5 blur-2xl transition-all group-hover:bg-navy/10" />
-            <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-navy/10 text-navy">
-              <Target className="h-7 w-7" />
-            </div>
-            <h2 className="mb-3 font-display text-2xl font-bold text-navy">Mission</h2>
-            <p className="text-sm leading-relaxed text-muted md:text-[15px]">
-              Fund skilling, heritage and human-rights work by connecting members,
-              government and industry — at no cost to communities.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Story */}
-      <section className="bg-cream-warm px-4 py-16 md:py-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="mx-auto max-w-7xl grid gap-12 lg:grid-cols-2 lg:gap-16 items-center">
           <div>
             <SectionHeader
               eyebrow="Our Story"
               title="Powered by diaspora. Rooted in Eastern India."
               align="left"
             />
-            <p className="text-[15px] leading-relaxed text-ink/85">
-              Eastern India Development Forum is powered by Umanand Eastern Foundation, a
-              Section 8 company founded to unlock the potential of Bihar, Jharkhand &
-              Odisha. We bring together the diaspora who left this region and built success
-              elsewhere — asking them to fund skill centres, restore heritage sites, and
-              open tourism and livelihood opportunity, working hand-in-hand with government
-              and industry.
+            <p className="text-[15px] leading-relaxed text-muted">
+              Eastern India Development Forum is powered by Umanand Eastern Foundation.
+              We connect diaspora who built success elsewhere with skill centres, heritage
+              restoration, and livelihood programmes — working hand-in-hand with government
+              and industry across Bihar, Jharkhand, Odisha, West Bengal, Assam, and the North East.
             </p>
-            <Link
-              href="/membership"
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-navy px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:bg-navy-light"
-            >
+            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+              <div className="border-l-2 border-gold pl-4">
+                <h3 className="font-display text-lg font-bold text-navy">Vision</h3>
+                <p className="mt-1 text-sm text-muted leading-relaxed">
+                  Make Eastern India a global example of diaspora-powered, dignity-first development.
+                </p>
+              </div>
+              <div className="border-l-2 border-emerald pl-4">
+                <h3 className="font-display text-lg font-bold text-navy">Mission</h3>
+                <p className="mt-1 text-sm text-muted leading-relaxed">
+                  Fund skilling, heritage and rights work by connecting members, government and industry.
+                </p>
+              </div>
+            </div>
+            <Link href="/membership" className="btn-navy mt-8 inline-flex">
               Join the Movement <ArrowRight className="h-4 w-4 text-gold" />
             </Link>
           </div>
-          <div className="relative overflow-hidden rounded-3xl border border-line shadow-2xl">
+          <div className="relative overflow-hidden min-h-[320px]">
             <img
               src="/images/eidf_05.jpg"
               alt="EIDF Seminar"
-              className="h-72 w-full object-cover md:h-96"
+              className="h-full w-full object-cover min-h-[320px]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/70 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-navy-deep/70 to-transparent" />
             <div className="absolute bottom-0 left-0 p-6 text-white">
-              <div className="text-xs font-bold uppercase tracking-wider text-gold">
-                Diaspora Roundtable
-              </div>
-              <div className="mt-1 font-display text-lg font-bold">
-                Connecting capital with community
-              </div>
+              <div className="text-xs font-bold uppercase tracking-wider text-gold">Diaspora Roundtable</div>
+              <div className="mt-1 font-display text-lg font-bold">Connecting capital with community</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Leadership */}
-      <section className="px-4 py-16 md:py-24">
+      <section className="border-y border-line bg-cream-warm px-4 py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Leadership"
             title="Guided by experience and purpose"
-            description="Senior advisors and operators stewarding EIDF's regional development mandate."
+            align="left"
           />
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
+          <div className="divide-y divide-line border-y border-line">
             {site.leaders.map((ld) => (
-              <div
-                key={ld.name}
-                className="group rounded-3xl border border-line bg-white p-6 text-center shadow-md transition-all hover:-translate-y-1 hover:shadow-xl"
-              >
-                <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-navy to-navy-mid font-display text-xl font-bold text-gold shadow-lg transition-transform group-hover:scale-105">
+              <div key={ld.name} className="flex items-center gap-5 py-5">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-navy font-display text-sm font-bold text-gold ring-2 ring-gold/30">
                   {ld.name.split(" ").pop()?.substring(0, 2).toUpperCase() || "EI"}
                 </div>
-                <div className="mb-1.5 text-sm font-bold text-navy">{ld.name}</div>
-                <div className="text-xs leading-relaxed text-muted">{ld.role}</div>
+                <div>
+                  <div className="font-display text-base font-bold text-navy">{ld.name}</div>
+                  <div className="text-sm text-muted">{ld.role}</div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Values */}
-      <section className="border-y border-line bg-white px-4 py-16 md:py-20">
+      <section className="px-4 py-16">
         <div className="mx-auto max-w-7xl">
-          <SectionHeader
-            eyebrow="Our Values"
-            title="Principles that guide every partnership"
-          />
+          <SectionHeader eyebrow="Values" title="What guides every partnership" align="left" />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {site.values.map((v, i) => {
-              const Icon = valueIcons[i] || Users;
-              return (
-                <div
-                  key={v.title}
-                  className="rounded-3xl border border-line bg-cream p-6 transition-all hover:border-gold/40 hover:shadow-lg"
-                >
-                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-navy/10 text-navy">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div className="mb-2 font-display text-lg font-bold text-navy">{v.title}</div>
-                  <div className="text-xs leading-relaxed text-muted">{v.desc}</div>
-                </div>
-              );
-            })}
+            {site.values.map((v, i) => (
+              <div key={v.title} className="border-t-2 border-gold/40 pt-4">
+                <div className="text-[11px] font-bold text-gold-label tracking-widest">0{i + 1}</div>
+                <h3 className="mt-2 font-display text-lg font-bold text-navy">{v.title}</h3>
+                <p className="mt-1.5 text-sm text-muted leading-relaxed">{v.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

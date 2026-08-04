@@ -22,118 +22,126 @@ export default function TendersPage() {
     <>
       <PageHero
         crumb="Home / Tenders"
-        eyebrow="Public Procurement & Assistance Desk"
         title="Tender Assistance Center"
-        description="Access verified public sector RFPs, civil construction contracts, renewable energy installations, and vocational empanelments across Bihar, Jharkhand, Odisha, West Bengal, and Assam."
+        description="Verified public-sector RFPs and procurement opportunities across Bihar, Jharkhand, Odisha, West Bengal, and Assam."
       />
 
-      <section className="relative z-10 -mt-8 px-4 pb-6 md:-mt-10">
-        <div className="mx-auto max-w-7xl rounded-3xl border border-line bg-white/95 p-5 shadow-2xl backdrop-blur-xl md:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-            <div className="relative min-w-0 flex-1">
-              <Search className="absolute left-4 top-3.5 h-4 w-4 text-muted" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by tender title or reference number..."
-                className="w-full rounded-full border border-line bg-cream py-3 pr-4 pl-11 text-xs text-navy placeholder-muted outline-none focus:border-gold focus:bg-white"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {["All", "Bihar", "Jharkhand", "Odisha"].map((st) => (
-                <button
-                  key={st}
-                  onClick={() => setFilterState(st)}
-                  className={`cursor-pointer rounded-full px-4 py-2.5 text-xs font-bold transition-all ${
-                    filterState === st
-                      ? "bg-navy text-gold shadow-md"
-                      : "bg-cream text-muted hover:bg-cream-warm hover:text-navy"
-                  }`}
-                >
-                  {st}
-                </button>
-              ))}
-            </div>
+      <section className="border-b border-line bg-white px-4 py-5">
+        <div className="mx-auto max-w-7xl flex flex-col gap-4 lg:flex-row lg:items-center">
+          <div className="relative min-w-0 flex-1">
+            <Search className="absolute left-3 top-3.5 h-4 w-4 text-muted" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title or reference number..."
+              className="w-full border border-line bg-cream py-3 pr-4 pl-10 text-sm text-navy outline-none focus:border-gold focus:bg-white"
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {["All", "Bihar", "Jharkhand", "Odisha"].map((st) => (
+              <button
+                key={st}
+                onClick={() => setFilterState(st)}
+                className={`cursor-pointer px-4 py-2.5 text-xs font-bold transition-colors ${
+                  filterState === st
+                    ? "bg-navy text-gold"
+                    : "bg-cream text-muted hover:text-navy"
+                }`}
+              >
+                {st}
+              </button>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="px-4 py-10 md:py-14">
+      <section className="px-4 py-12 md:py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
             eyebrow="Open Opportunities"
-            title={`${filteredTenders.length} tender${filteredTenders.length === 1 ? "" : "s"} matching your filters`}
+            title={`${filteredTenders.length} tender${filteredTenders.length === 1 ? "" : "s"}`}
             align="left"
           />
 
-          <div className="space-y-5">
-            {filteredTenders.length === 0 ? (
-              <div className="rounded-3xl border border-dashed border-line bg-white py-16 text-center">
-                <FileText className="mx-auto mb-3 h-10 w-10 text-gold" />
-                <h3 className="font-display text-lg font-bold text-navy">No tenders found</h3>
-                <p className="mt-1 text-xs text-muted">
-                  Try adjusting your state filter or search keywords.
-                </p>
+          {filteredTenders.length === 0 ? (
+            <div className="border border-dashed border-line py-16 text-center">
+              <FileText className="mx-auto mb-3 h-10 w-10 text-gold" />
+              <h3 className="font-display text-lg font-bold text-navy">No tenders found</h3>
+              <p className="mt-1 text-sm text-muted">Try adjusting filters or search keywords.</p>
+            </div>
+          ) : (
+            <>
+              {/* Desktop table */}
+              <div className="hidden md:block overflow-x-auto border border-line">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-navy text-white text-[11px] uppercase tracking-wider">
+                    <tr>
+                      <th className="p-4 font-semibold">Ref</th>
+                      <th className="p-4 font-semibold">Title</th>
+                      <th className="p-4 font-semibold">Authority</th>
+                      <th className="p-4 font-semibold">State</th>
+                      <th className="p-4 font-semibold">Value</th>
+                      <th className="p-4 font-semibold">Closes</th>
+                      <th className="p-4 font-semibold">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-line bg-white">
+                    {filteredTenders.map((tnd) => (
+                      <tr key={tnd.id} className="hover:bg-cream/80 transition-colors">
+                        <td className="p-4 font-mono text-xs font-bold text-gold-label whitespace-nowrap">
+                          {tnd.tenderNo}
+                        </td>
+                        <td className="p-4 font-semibold text-navy max-w-xs">{tnd.title}</td>
+                        <td className="p-4 text-muted text-xs">{tnd.issuingAuthority}</td>
+                        <td className="p-4 text-xs">{tnd.state}</td>
+                        <td className="p-4 font-bold text-emerald-dark text-xs whitespace-nowrap">
+                          {tnd.estimatedCost}
+                        </td>
+                        <td className="p-4 font-bold text-amber text-xs whitespace-nowrap">
+                          {tnd.closingDate}
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <Link
+                              href="/contact?intent=tender_guidance"
+                              className="text-xs font-bold text-navy hover:text-gold"
+                            >
+                              Guidance
+                            </Link>
+                            <a href={tnd.docLink} className="text-muted hover:text-navy" aria-label="Download">
+                              <Download className="h-4 w-4" />
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            ) : (
-              filteredTenders.map((tnd) => (
-                <div
-                  key={tnd.id}
-                  className="flex flex-col items-start justify-between gap-6 rounded-3xl border border-line bg-white p-6 shadow-md transition-all hover:border-gold/30 hover:shadow-xl lg:flex-row lg:items-center"
-                >
-                  <div className="max-w-3xl space-y-2.5">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full border border-gold/30 bg-gold/10 px-3 py-1 font-mono text-[11px] font-bold text-gold">
-                        {tnd.tenderNo}
-                      </span>
-                      <span className="rounded-full border border-emerald/20 bg-emerald/10 px-3 py-1 text-[11px] font-bold text-emerald-dark">
-                        {tnd.status}
-                      </span>
-                      <span className="text-[11px] font-semibold text-muted">{tnd.state}</span>
-                    </div>
 
-                    <h3 className="font-display text-xl font-bold text-navy">{tnd.title}</h3>
-                    <div className="text-xs text-muted">
-                      Issuing Authority:{" "}
-                      <span className="font-bold text-navy">{tnd.issuingAuthority}</span>
+              {/* Mobile list */}
+              <div className="md:hidden divide-y divide-line border-y border-line">
+                {filteredTenders.map((tnd) => (
+                  <div key={tnd.id} className="py-5 space-y-2">
+                    <div className="font-mono text-[11px] font-bold text-gold-label">{tnd.tenderNo}</div>
+                    <h3 className="font-display text-base font-bold text-navy">{tnd.title}</h3>
+                    <div className="text-xs text-muted">{tnd.issuingAuthority} · {tnd.state}</div>
+                    <div className="flex justify-between text-xs pt-1">
+                      <span className="font-bold text-emerald-dark">{tnd.estimatedCost}</span>
+                      <span className="font-bold text-amber">Closes {tnd.closingDate}</span>
                     </div>
-
-                    <div className="flex flex-wrap gap-4 pt-1 text-xs">
-                      <div>
-                        Estimated Value:{" "}
-                        <span className="font-bold text-emerald-dark">{tnd.estimatedCost}</span>
-                      </div>
-                      <div>
-                        Published:{" "}
-                        <span className="font-bold text-navy">{tnd.publishedDate}</span>
-                      </div>
-                      <div>
-                        Closing Date:{" "}
-                        <span className="font-bold text-amber">{tnd.closingDate}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex w-full flex-col items-center gap-3 sm:flex-row lg:w-auto">
                     <Link
                       href="/contact?intent=tender_guidance"
-                      className="w-full rounded-2xl bg-navy px-6 py-3 text-center text-xs font-bold text-white transition-colors hover:bg-navy-light sm:w-auto"
+                      className="inline-block mt-2 text-xs font-bold text-navy hover:text-gold"
                     >
-                      Request Guidance Desk
+                      Request guidance →
                     </Link>
-                    <a
-                      href={tnd.docLink}
-                      download
-                      className="flex w-full items-center justify-center gap-1.5 rounded-2xl border border-navy/15 bg-cream px-5 py-3 text-xs font-bold text-navy transition-colors hover:bg-white sm:w-auto"
-                    >
-                      <Download className="h-4 w-4" /> Download RFP
-                    </a>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </section>
 

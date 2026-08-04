@@ -225,29 +225,22 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-cream">
       <PageHero
-        crumb="Home / Media Hub"
-        eyebrow="Digital Assets & Gallery"
-        title="EIDF Media Hub"
-        description="Seminars, site visits, community moments, and brand assets from across Eastern India's development journey."
+        crumb="Home / Gallery"
+        title="Media Hub"
+        description="Seminars, site visits, community moments, and brand assets from across Eastern India."
         compact
       >
-        <Link
-          href="/creatives"
-          className="rounded-full bg-gold px-6 py-3 text-sm font-bold text-navy-deep shadow-xl transition-transform hover:scale-105 hover:bg-gold-hover"
-        >
+        <Link href="/creatives" className="btn-primary">
           Brand Creatives
         </Link>
-        <Link
-          href="/events"
-          className="rounded-full border border-white/25 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md transition-all hover:bg-white/20"
-        >
+        <Link href="/events" className="btn-secondary">
           Events & News
         </Link>
       </PageHero>
 
       {/* Filter Panel */}
-      <section className="relative z-10 -mt-6 px-4 md:-mt-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-5 rounded-3xl border border-line bg-white/95 p-5 shadow-2xl backdrop-blur-xl md:flex-row md:items-center md:justify-between md:p-6">
+      <section className="border-b border-line bg-white px-4 py-5">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             {CATEGORIES.map((cat) => (
               <button
@@ -256,10 +249,10 @@ export default function GalleryPage() {
                   setActiveCategory(cat);
                   setSelectedImageIndex(null);
                 }}
-                className={`cursor-pointer rounded-full px-5 py-2.5 text-xs font-bold transition-all ${
+                className={`cursor-pointer px-4 py-2 text-xs font-bold transition-colors ${
                   activeCategory === cat
-                    ? "scale-105 bg-navy text-gold shadow-md"
-                    : "bg-cream text-muted hover:bg-cream-warm"
+                    ? "bg-navy text-gold"
+                    : "bg-cream text-muted hover:text-navy"
                 }`}
               >
                 {cat}
@@ -267,14 +260,14 @@ export default function GalleryPage() {
             ))}
           </div>
 
-          <div className="relative w-full md:w-80">
-            <Search className="absolute top-3.5 left-4 h-4 w-4 text-muted" />
+          <div className="relative w-full md:w-72">
+            <Search className="absolute top-3.5 left-3 h-4 w-4 text-muted" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search assets by keyword..."
-              className="w-full rounded-full border border-line bg-cream py-3 pr-4 pl-11 text-xs text-navy placeholder-muted outline-none focus:border-gold focus:bg-white"
+              placeholder="Search assets..."
+              className="w-full border border-line bg-cream py-3 pr-4 pl-10 text-sm text-navy outline-none focus:border-gold focus:bg-white"
             />
           </div>
         </div>
@@ -304,7 +297,7 @@ export default function GalleryPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="group relative cursor-pointer overflow-hidden rounded-3xl border border-line bg-white shadow-md transition-all hover:-translate-y-1 hover:shadow-2xl"
+                className="group relative cursor-pointer overflow-hidden border border-line bg-white"
                 onClick={() => setSelectedImageIndex(index)}
               >
                 <div className="relative h-56 w-full overflow-hidden bg-cream">
