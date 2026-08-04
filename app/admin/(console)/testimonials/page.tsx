@@ -1,7 +1,20 @@
-﻿import { AdminModulePage } from "@/components/dashboard/AdminModulePage";
+﻿"use client";
 
-export const metadata = { title: "Testimonials" };
+import { CmsCollectionPage } from "@/components/cms/CmsCollectionPage";
 
 export default function Page() {
-  return <AdminModulePage title="Testimonials" />;
+  return (
+    <CmsCollectionPage
+      title="Testimonials"
+      collection="testimonials"
+      titleKey="name"
+      subtitleKey="quote"
+      fields={[
+        { key: "name", label: "Name", required: true },
+        { key: "role", label: "Role" },
+        { key: "quote", label: "Quote", type: "textarea", required: true },
+        { key: "org", label: "Organisation" },
+      ]}
+    />
+  );
 }

@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, FileText, Briefcase, Award, Building, ChevronRight, Layers } from "lucide-react";
-import { site } from "@/content/site";
 import Link from "next/link";
+import { usePublicSite } from "@/lib/cms/public-provider";
 
 interface GlobalSearchProps {
   isOpen: boolean;
@@ -12,6 +12,7 @@ interface GlobalSearchProps {
 }
 
 export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) => {
+  const site = usePublicSite();
   const [query, setQuery] = useState("");
 
   useEffect(() => {

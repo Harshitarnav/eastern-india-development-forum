@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Download, IdCard, ImageIcon } from "lucide-react";
 import { CtaBand, PageHero } from "@/components/ui";
-import { site } from "@/content/site";
+import { getPublicCmsBundle } from "@/lib/cms/server";
 
 export const metadata: Metadata = {
   title: "Creatives",
   description: "Seminar poster template and membership card for EIDF.",
 };
 
-export default function CreativesPage() {
+export default async function CreativesPage() {
+  const { site } = await getPublicCmsBundle();
   return (
     <>
       <PageHero

@@ -13,182 +13,28 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { PageHero, CtaBand } from "@/components/ui";
+import { usePublicGallery } from "@/lib/cms/public-provider";
 
 interface GalleryImage {
   id: string;
   src: string;
   title: string;
-  category: "Seminars" | "Site Visits" | "Community" | "Identity & Media";
+  category: string;
   description: string;
   location: string;
   date: string;
 }
 
-const GALLERY_IMAGES: GalleryImage[] = [
-  {
-    id: "img-hero",
-    src: "/images/hero-banner.jpg",
-    title: "EIDF Core Development Vision Banner",
-    category: "Identity & Media",
-    description: "Flagship promotional banner illustrating regional infrastructure integration, capital planning, and high-speed corridors.",
-    location: "Ranchi HQ, Jharkhand",
-    date: "July 2026",
-  },
-  {
-    id: "img-poster",
-    src: "/images/eidf_poster.jpg",
-    title: "National Seminar Poster Mockup",
-    category: "Identity & Media",
-    description: "Official print-ready poster template for the EIDF National Seminar on Inclusive Development & Human Rights.",
-    location: "Ranchi, Jharkhand",
-    date: "June 2026",
-  },
-  {
-    id: "img-logo",
-    src: "/images/logo.png",
-    title: "Official EIDF Symbol & Brand Identity",
-    category: "Identity & Media",
-    description: "Official vectorized brand seal represents integration, progress, and administrative trust.",
-    location: "Ranchi HQ",
-    date: "August 2026",
-  },
-  {
-    id: "img-01",
-    src: "/images/eidf_01.jpg",
-    title: "Eastern Skill Centre Corridor Groundwork",
-    category: "Site Visits",
-    description: "Site inspections and layout alignment for the G+3 vocational training campus situated on the Cuttack-Bhubaneswar highway corridor.",
-    location: "Cuttack, Odisha",
-    date: "May 2026",
-  },
-  {
-    id: "img-02",
-    src: "/images/eidf_02.jpg",
-    title: "Ranchi Vocational Lab Setup",
-    category: "Site Visits",
-    description: "Unveiling technical laboratories, electric vehicle diagnostic tools, and NSDC level-4 robotics benches.",
-    location: "Ranchi, Jharkhand",
-    date: "June 2026",
-  },
-  {
-    id: "img-03",
-    src: "/images/eidf_03.jpg",
-    title: "Inland Waterways Sagarmala Freight Hub",
-    category: "Site Visits",
-    description: "Strategic inspection of NW-1 cargo docking stations and cold chain logistics parks.",
-    location: "Muzaffarpur, Bihar",
-    date: "April 2026",
-  },
-  {
-    id: "img-04",
-    src: "/images/eidf_04.jpg",
-    title: "Brahmaputra Organic Agriculture Corridor",
-    category: "Site Visits",
-    description: "Direct alignment and organic certificate collection desk operations for farmer producer organizations.",
-    location: "Guwahati, Assam",
-    date: "July 2026",
-  },
-  {
-    id: "img-05",
-    src: "/images/eidf_05.jpg",
-    title: "Global Diaspora Investors Roundtable",
-    category: "Seminars",
-    description: "High-level delegation alignment focusing on private capital injection into high-speed logistics and rural micro-grids.",
-    location: "Kolkata, West Bengal",
-    date: "June 2026",
-  },
-  {
-    id: "img-06",
-    src: "/images/eidf_06.jpg",
-    title: "Dignitaries Lighting the Inaugural Lamp",
-    category: "Seminars",
-    description: "Chief Guest Dr. Justice Bidyut Ranjan Sarangi and panel speakers commencing the national development convention.",
-    location: "Umanand Auditorium, Ranchi",
-    date: "June 2026",
-  },
-  {
-    id: "img-07",
-    src: "/images/eidf_07.jpg",
-    title: "Panel on Tribal Inclusion & Skill Development",
-    category: "Seminars",
-    description: "Advisors examining direct career placement statistics and vocational funding pathways.",
-    location: "Patna Trade Center, Bihar",
-    date: "May 2026",
-  },
-  {
-    id: "img-08",
-    src: "/images/eidf_08.jpg",
-    title: "EIDF State Chapter Officers Group",
-    category: "Community",
-    description: "Regional office directors from Ranchi, Patna, and Bhubaneswar aligning administrative procedures.",
-    location: "Bhubaneswar, Odisha",
-    date: "July 2026",
-  },
-  {
-    id: "img-09",
-    src: "/images/eidf_09.jpg",
-    title: "Floral Tribute & Founding Ceremony",
-    category: "Community",
-    description: "Members and founders honoring cultural heritage during the launch of the Umanand Foundation initiatives.",
-    location: "Ranchi HQ, Jharkhand",
-    date: "August 2026",
-  },
-  {
-    id: "img-10",
-    src: "/images/eidf_10.jpg",
-    title: "Youth Skilling Orientation Drive",
-    category: "Community",
-    description: "Enrolled candidates getting brief orientations on international placement models.",
-    location: "Muzaffarpur, Bihar",
-    date: "July 2026",
-  },
-  {
-    id: "img-11",
-    src: "/images/eidf_11.jpg",
-    title: "Heritage Conservation Inspection Team",
-    category: "Site Visits",
-    description: "Trustees and structural experts reviewing conservation strategies for Buddhist circuit temples.",
-    location: "Gaya, Bihar",
-    date: "March 2026",
-  },
-  {
-    id: "img-12",
-    src: "/images/eidf_12.jpg",
-    title: "Smart Water Management Briefing",
-    category: "Site Visits",
-    description: "Municipal engineers explaining solar irrigation grids and canal water automation systems.",
-    location: "Bhubaneswar, Odisha",
-    date: "June 2026",
-  },
-  {
-    id: "img-13",
-    src: "/images/eidf_13.jpg",
-    title: "Rural Electrification Assessment",
-    category: "Site Visits",
-    description: "Community officers verifying remote solar micro-grid installations.",
-    location: "Simdega, Jharkhand",
-    date: "May 2026",
-  },
-  {
-    id: "img-14",
-    src: "/images/eidf_14.jpg",
-    title: "Diaspora Cultural Integration Meet",
-    category: "Community",
-    description: "Celebrating traditional regional performances with diaspora delegates.",
-    location: "Newtown, Kolkata",
-    date: "July 2026",
-  },
-];
-
 const CATEGORIES = ["All", "Seminars", "Site Visits", "Community", "Identity & Media"] as const;
 
 export default function GalleryPage() {
+  const galleryImages = usePublicGallery() as GalleryImage[];
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   const filteredImages = useMemo(() => {
-    return GALLERY_IMAGES.filter((img) => {
+    return galleryImages.filter((img) => {
       const matchesCategory = activeCategory === "All" || img.category === activeCategory;
       const matchesSearch =
         img.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -196,17 +42,19 @@ export default function GalleryPage() {
         img.location.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [galleryImages, activeCategory, searchQuery]);
 
   const handleNext = () => {
-    if (selectedImageIndex !== null) {
+    if (selectedImageIndex !== null && filteredImages.length) {
       setSelectedImageIndex((selectedImageIndex + 1) % filteredImages.length);
     }
   };
 
   const handlePrev = () => {
-    if (selectedImageIndex !== null) {
-      setSelectedImageIndex((selectedImageIndex - 1 + filteredImages.length) % filteredImages.length);
+    if (selectedImageIndex !== null && filteredImages.length) {
+      setSelectedImageIndex(
+        (selectedImageIndex - 1 + filteredImages.length) % filteredImages.length
+      );
     }
   };
 
@@ -226,7 +74,6 @@ export default function GalleryPage() {
         </Link>
       </PageHero>
 
-      {/* Filter Panel */}
       <section className="border-b border-line bg-white px-4 py-5">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-2">
@@ -261,7 +108,6 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* Asset Grid */}
       <section className="mx-auto max-w-7xl px-4 pt-10 pb-20">
         <div className="mb-6 text-sm text-muted">
           Showing{" "}
@@ -289,6 +135,7 @@ export default function GalleryPage() {
                 onClick={() => setSelectedImageIndex(index)}
               >
                 <div className="relative h-56 w-full overflow-hidden bg-cream">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={img.src}
                     alt={img.title}
@@ -318,7 +165,6 @@ export default function GalleryPage() {
         )}
       </section>
 
-      {/* Lightbox */}
       <AnimatePresence>
         {selectedImageIndex !== null && filteredImages[selectedImageIndex] && (
           <motion.div
@@ -334,6 +180,7 @@ export default function GalleryPage() {
               className="relative grid w-full max-w-5xl overflow-hidden rounded-3xl border border-white/20 bg-navy-deep text-white shadow-2xl lg:grid-cols-12"
             >
               <div className="relative flex h-[50vh] items-center justify-center bg-navy p-4 lg:col-span-8 lg:h-[70vh]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={filteredImages[selectedImageIndex].src}
                   alt={filteredImages[selectedImageIndex].title}

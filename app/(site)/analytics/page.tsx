@@ -16,9 +16,11 @@ import {
 } from "recharts";
 import { BarChart3, PieChart as PieIcon } from "lucide-react";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
+import { usePublicSite } from "@/lib/cms/public-provider";
 
 export default function AnalyticsPage() {
-  const stateCapitalData = [
+  const site = usePublicSite();
+  const stateCapitalData = site.analytics?.stateCapital ?? [
     { name: "Odisha", capital: 14800 },
     { name: "Jharkhand", capital: 11200 },
     { name: "West Bengal", capital: 9500 },
@@ -27,12 +29,17 @@ export default function AnalyticsPage() {
     { name: "NE States", capital: 4200 },
   ];
 
-  const sectorData = [
+  const sectorData = site.analytics?.sectors ?? [
     { name: "Infrastructure & Ports", value: 35, color: "#e8a317" },
     { name: "Renewable Energy", value: 25, color: "#0d9f6e" },
     { name: "Manufacturing & SEZ", value: 20, color: "#2e75b6" },
     { name: "Agri-Tech & Skilling", value: 20, color: "#f07a1a" },
   ];
+
+  const totalCapital = stateCapitalData.reduce((sum, row) => sum + row.capital, 0);
+  const corridors = site.impactStats.find((s) =>
+    /project|corridor/i.test(s.label)
+  );
 
   return (
     <>
@@ -51,7 +58,9 @@ export default function AnalyticsPage() {
 
       <section className="metric-strip grid-cols-3">
         <div>
-          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">₹54,200 Cr</div>
+          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">
+            ₹{totalCapital.toLocaleString("en-IN")} Cr
+          </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
             Total Pledged Capital
           </div>
@@ -63,7 +72,9 @@ export default function AnalyticsPage() {
           </div>
         </div>
         <div>
-          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">42</div>
+          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">
+            {corridors?.value ?? site.projects.length}
+          </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
             Active PPP Corridors
           </div>

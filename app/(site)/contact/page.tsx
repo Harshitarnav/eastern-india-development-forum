@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
 import { PageHero, SectionHeader } from "@/components/ui";
-import { site } from "@/content/site";
+import { getPublicCmsBundle } from "@/lib/cms/server";
 
 export const metadata: Metadata = { title: "Contact" };
 
@@ -11,6 +11,7 @@ export default async function ContactPage({
 }: {
   searchParams: Promise<{ intent?: string }>;
 }) {
+  const { site } = await getPublicCmsBundle();
   const params = await searchParams;
   const defaultSubject = params.intent === "donate" ? "Funding" : "Membership";
 

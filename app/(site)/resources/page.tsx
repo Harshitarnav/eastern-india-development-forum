@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Download } from "lucide-react";
-import { site } from "@/content/site";
+import { getPublicCmsBundle } from "@/lib/cms/server";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 
 export const metadata: Metadata = { title: "Resources" };
 
-export default function ResourcesPage() {
+export default async function ResourcesPage() {
+  const { site } = await getPublicCmsBundle();
   return (
     <>
       <PageHero

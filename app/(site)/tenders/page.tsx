@@ -3,10 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Download, FileText, Search } from "lucide-react";
-import { site } from "@/content/site";
+import { usePublicSite } from "@/lib/cms/public-provider";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 
 export default function TendersPage() {
+  const site = usePublicSite();
   const [filterState, setFilterState] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 

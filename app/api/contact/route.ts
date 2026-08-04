@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseInsert } from "@/lib/supabase/server";
+import { appendContactForm } from "@/lib/cms/forms-store";
+import { isSupabaseConfigured } from "@/lib/cms/supabase-store";
 
 export async function POST(request: Request) {
   try {
@@ -13,20 +15,26 @@ export async function POST(request: Request) {
     if (!full_name || !email || !subject || !message) {
       return NextResponse.json(
         { error: "Name, email, subject and message are required." },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    const result = await supabaseInsert("contact_messages", {
+    const row = {
       full_name,
       email,
       phone,
       subject,
       message,
-    });
+    };
 
-    if (!result.ok) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+    if (isSupabaseConfigured()) {
+      const result = await supabaseInsert("contact_messages", row);
+      if (!result.ok) {
+        // Fall back to local store so public forms never hard-fail locally
+        await appendContactForm(row);
+      }
+    } else {
+      await appendContactForm(row);
     }
 
     return NextResponse.json({ ok: true });

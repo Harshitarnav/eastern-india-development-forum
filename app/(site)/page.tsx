@@ -26,11 +26,11 @@ import {
   ShieldCheck,
   IndianRupee,
 } from "lucide-react";
-import { site } from "@/content/site";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { ImpactCounter } from "@/components/ImpactCounter";
 import { AiAssistant } from "@/components/AiAssistant";
 import { SectionHeader } from "@/components/ui";
+import { usePublicSite } from "@/lib/cms/public-provider";
 
 const focusIcons: Record<string, React.ReactNode> = {
   Truck: <Truck className="h-5 w-5" />,
@@ -55,6 +55,7 @@ const quickServices = [
 ];
 
 export default function HomePage() {
+  const site = usePublicSite();
   const [openFaqId, setOpenFaqId] = useState<string>("faq-1");
 
   return (
@@ -83,7 +84,7 @@ export default function HomePage() {
               </span>
               <div className="min-w-0">
                 <div className="font-display text-xl sm:text-2xl font-extrabold tracking-tight leading-tight">
-                  Eastern India Development Forum
+                  {site.name}
                 </div>
                 <div className="mt-1 text-xs sm:text-sm text-gold/90 font-medium break-words">
                   {site.poweredBy} · Reg. {site.regNo}
@@ -91,8 +92,12 @@ export default function HomePage() {
               </div>
             </div>
 
+            <p className="reveal reveal-delay-1 mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
+              {site.hero.eyebrow}
+            </p>
+
             <h1 className="reveal reveal-delay-1 font-display text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[1.12] tracking-tight">
-              Official development platform for Eastern India
+              {site.hero.headline}
             </h1>
 
             <p className="reveal reveal-delay-2 mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-white/70">

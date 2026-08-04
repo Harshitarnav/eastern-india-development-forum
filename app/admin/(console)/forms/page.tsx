@@ -1,7 +1,7 @@
-﻿import { AdminModulePage } from "@/components/dashboard/AdminModulePage";
+﻿"use client";
 
-export const metadata = { title: "Forms" };
+import { CmsFormsInbox } from "@/components/cms/CmsFormsInbox";
 
 export default function Page() {
-  return <AdminModulePage title="Forms" />;
+  return <CmsFormsInbox />;
 }

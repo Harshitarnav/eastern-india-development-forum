@@ -1,7 +1,14 @@
-﻿import { AdminModulePage } from "@/components/dashboard/AdminModulePage";
+﻿"use client";
 
-export const metadata = { title: "Partners" };
+import { CmsCollectionPage } from "@/components/cms/CmsCollectionPage";
 
 export default function Page() {
-  return <AdminModulePage title="Partners" />;
+  return (
+    <CmsCollectionPage
+      title="Partners"
+      collection="partners"
+      titleKey="name"
+      fields={[{ key: "name", label: "Partner name", required: true }]}
+    />
+  );
 }

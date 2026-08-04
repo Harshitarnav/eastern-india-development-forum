@@ -24,6 +24,10 @@
 .DS_Store
 *.pem
 
+# local CMS / forms persistence (seed regenerates on boot if missing)
+/data/cms/store.json
+/data/cms/forms.json
+
 # debug
 npm-debug.log*
 yarn-debug.log*

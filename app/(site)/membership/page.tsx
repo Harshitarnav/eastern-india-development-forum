@@ -3,11 +3,12 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { MembershipForm } from "@/components/MembershipForm";
 import { PageHero, SectionHeader } from "@/components/ui";
-import { site } from "@/content/site";
+import { getPublicCmsBundle } from "@/lib/cms/server";
 
 export const metadata: Metadata = { title: "Membership" };
 
-export default function MembershipPage() {
+export default async function MembershipPage() {
+  const { site } = await getPublicCmsBundle();
   return (
     <>
       <PageHero

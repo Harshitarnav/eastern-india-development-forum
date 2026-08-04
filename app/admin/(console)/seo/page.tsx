@@ -1,7 +1,7 @@
-﻿import { AdminModulePage } from "@/components/dashboard/AdminModulePage";
+﻿"use client";
 
-export const metadata = { title: "SEO" };
+import { CmsSeoManager } from "@/components/cms/CmsSeoManager";
 
 export default function Page() {
-  return <AdminModulePage title="SEO" />;
+  return <CmsSeoManager />;
 }

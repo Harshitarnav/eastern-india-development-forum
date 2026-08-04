@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { PageHero, SectionHeader, CtaBand } from "@/components/ui";
-import { site } from "@/content/site";
+import { getPublicCmsBundle } from "@/lib/cms/server";
 
 export const metadata: Metadata = { title: "Events & News" };
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const { site } = await getPublicCmsBundle();
   return (
     <>
       <PageHero

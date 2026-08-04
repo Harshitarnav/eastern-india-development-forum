@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseInsert } from "@/lib/supabase/server";
+import { appendMembershipForm } from "@/lib/cms/forms-store";
+import { isSupabaseConfigured } from "@/lib/cms/supabase-store";
 
 export async function POST(request: Request) {
   try {
@@ -15,11 +17,11 @@ export async function POST(request: Request) {
     if (!full_name || !email) {
       return NextResponse.json(
         { error: "Full name and email are required." },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    const result = await supabaseInsert("membership_applications", {
+    const row = {
       full_name,
       email,
       phone,
@@ -27,10 +29,15 @@ export async function POST(request: Request) {
       country,
       contribution_type,
       message,
-    });
+    };
 
-    if (!result.ok) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
+    if (isSupabaseConfigured()) {
+      const result = await supabaseInsert("membership_applications", row);
+      if (!result.ok) {
+        await appendMembershipForm(row);
+      }
+    } else {
+      await appendMembershipForm(row);
     }
 
     return NextResponse.json({ ok: true });

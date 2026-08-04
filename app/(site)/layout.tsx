@@ -1,16 +1,26 @@
 import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
-import { CMSProvider } from "@/lib/cms-store";
 import { SiteContent } from "@/components/loading/SiteContent";
+import { CmsPublicProvider } from "@/lib/cms/public-provider";
+import { getPublicCmsBundle } from "@/lib/cms/server";
 
-export default function SiteLayout({ children }: { children: React.ReactNode }) {
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function SiteLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const cms = await getPublicCmsBundle();
+
   return (
-    <CMSProvider>
+    <CmsPublicProvider value={cms}>
       <Nav />
-      <main className="flex flex-1 flex-col">
+      <main className="flex-1 flex flex-col">
         <SiteContent>{children}</SiteContent>
       </main>
       <Footer />
-    </CMSProvider>
+    </CmsPublicProvider>
   );
 }

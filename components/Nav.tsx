@@ -24,7 +24,7 @@ import {
   Users,
   Mail,
 } from "lucide-react";
-import { site } from "@/content/site";
+import { usePublicNav, usePublicSite } from "@/lib/cms/public-provider";
 import { GlobalSearch } from "./GlobalSearch";
 
 const navLink = (active: boolean) =>
@@ -32,40 +32,35 @@ const navLink = (active: boolean) =>
     active ? "text-gold" : "text-white/75 hover:text-white"
   }`;
 
-const PRIMARY_LINKS = [
-  { href: "/", label: "Home", icon: Home },
-  { href: "/about", label: "About", icon: Info },
-  { href: "/projects", label: "Projects", icon: FolderKanban },
-  { href: "/membership", label: "Membership", icon: Users },
-  { href: "/events", label: "Events", icon: Calendar },
-  { href: "/contact", label: "Contact", icon: Mail },
-] as const;
+const PORTAL_ICONS: Record<string, typeof FileText> = {
+  "/tenders": FileText,
+  "/investors": Briefcase,
+  "/schemes": LayoutDashboard,
+  "/resources": BookOpen,
+  "/analytics": BarChart3,
+  "/events": Calendar,
+  "/gallery": Images,
+};
 
-const PORTAL_LINKS = [
-  { href: "/tenders", label: "Tenders", icon: FileText },
-  { href: "/investors", label: "Investors & PPP", icon: Briefcase },
-  { href: "/schemes", label: "Govt Schemes", icon: LayoutDashboard },
-  { href: "/resources", label: "Knowledge Center", icon: BookOpen },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/events", label: "Events", icon: Calendar },
-  { href: "/gallery", label: "Gallery", icon: Images },
-] as const;
+const PRIMARY_ICONS: Record<string, typeof Home> = {
+  "/": Home,
+  "/about": Info,
+  "/projects": FolderKanban,
+  "/membership": Users,
+  "/events": Calendar,
+  "/contact": Mail,
+};
 
 export const Nav: React.FC = () => {
   const pathname = usePathname();
+  const site = usePublicSite();
+  const headerLinks = usePublicNav("header");
+  const portalLinks = usePublicNav("portal");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const portalsActive = [
-    "/tenders",
-    "/investors",
-    "/schemes",
-    "/resources",
-    "/analytics",
-    "/events",
-    "/gallery",
-  ].some((p) => pathname.startsWith(p));
+  const portalsActive = portalLinks.some((p) => pathname.startsWith(p.href));
 
   // Close drawer on route change
   useEffect(() => {
@@ -111,23 +106,23 @@ export const Nav: React.FC = () => {
             <ShieldCheck className="h-3.5 w-3.5 text-gold shrink-0" />
             <span className="truncate">
               <span className="text-white/50">Reg. </span>
-              <span className="font-semibold tracking-wide">U85500JH2025NPL024051</span>
+              <span className="font-semibold tracking-wide">{site.regNo}</span>
             </span>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 shrink-0 text-white/80">
             <a
-              href="tel:+9106512912025"
+              href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
               className="flex items-center gap-1 hover:text-gold transition-colors"
               aria-label="Call"
             >
               <Phone className="h-3 w-3 text-emerald" />
-              <span className="hidden sm:inline">+91 (0651) 291-2025</span>
+              <span className="hidden sm:inline">{site.phone}</span>
             </a>
             <a
-              href="mailto:contact@eidf.org.in"
+              href={`mailto:${site.email}`}
               className="hidden sm:inline hover:text-gold transition-colors truncate max-w-[160px] md:max-w-none"
             >
-              contact@eidf.org.in
+              {site.email}
             </a>
           </div>
         </div>
@@ -155,15 +150,15 @@ export const Nav: React.FC = () => {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
-            <Link href="/" className={navLink(pathname === "/")}>
-              Home
-            </Link>
-            <Link href="/about" className={navLink(pathname === "/about")}>
-              About
-            </Link>
-            <Link href="/projects" className={navLink(pathname === "/projects")}>
-              Projects
-            </Link>
+            {headerLinks
+              .filter((l) => !portalLinks.some((p) => p.href === l.href) || l.href === "/events")
+              .filter((l) => !["/tenders", "/investors", "/schemes", "/resources", "/analytics", "/gallery"].includes(l.href))
+              .slice(0, 3)
+              .map((link) => (
+                <Link key={link.href} href={link.href} className={navLink(isActive(link.href))}>
+                  {link.label}
+                </Link>
+              ))}
 
             <div className="relative">
               <button
@@ -178,29 +173,32 @@ export const Nav: React.FC = () => {
 
               {dropdownOpen && (
                 <div className="absolute top-full left-0 mt-2 w-56 border border-white/10 bg-navy-deep p-1.5 shadow-2xl z-50">
-                  {PORTAL_LINKS.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-white/80 hover:bg-white/8 hover:text-gold transition-colors"
-                    >
-                      <item.icon className="h-4 w-4 text-gold/70" />
-                      {item.label}
-                    </Link>
-                  ))}
+                  {portalLinks.map((item) => {
+                    const Icon = PORTAL_ICONS[item.href] || FileText;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-white/80 hover:bg-white/8 hover:text-gold transition-colors"
+                      >
+                        <Icon className="h-4 w-4 text-gold/70" />
+                        {item.label}
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </div>
 
-            <Link href="/membership" className={navLink(pathname === "/membership")}>
-              Membership
-            </Link>
-            <Link href="/events" className={navLink(pathname === "/events")}>
-              Events
-            </Link>
-            <Link href="/contact" className={navLink(pathname === "/contact")}>
-              Contact
-            </Link>
+            {headerLinks
+              .filter((l) =>
+                ["/membership", "/events", "/contact"].includes(l.href)
+              )
+              .map((link) => (
+                <Link key={link.href} href={link.href} className={navLink(isActive(link.href))}>
+                  {link.label}
+                </Link>
+              ))}
           </nav>
 
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
@@ -287,8 +285,9 @@ export const Nav: React.FC = () => {
                   Explore
                 </p>
                 <ul className="space-y-0.5">
-                  {PRIMARY_LINKS.map((item) => {
+                  {headerLinks.map((item) => {
                     const active = isActive(item.href);
+                    const Icon = PRIMARY_ICONS[item.href] || Home;
                     return (
                       <li key={item.href}>
                         <Link
@@ -300,7 +299,7 @@ export const Nav: React.FC = () => {
                               : "text-white/85 hover:bg-white/8 hover:text-white"
                           }`}
                         >
-                          <item.icon
+                          <Icon
                             className={`h-4 w-4 shrink-0 ${active ? "text-gold" : "text-white/45"}`}
                           />
                           {item.label}
@@ -314,8 +313,9 @@ export const Nav: React.FC = () => {
                   Portals
                 </p>
                 <ul className="space-y-0.5">
-                  {PORTAL_LINKS.filter((item) => item.href !== "/events").map((item) => {
+                  {portalLinks.filter((item) => item.href !== "/events").map((item) => {
                     const active = isActive(item.href);
+                    const Icon = PORTAL_ICONS[item.href] || FileText;
                     return (
                       <li key={item.href}>
                         <Link
@@ -327,7 +327,7 @@ export const Nav: React.FC = () => {
                               : "text-white/85 hover:bg-white/8 hover:text-white"
                           }`}
                         >
-                          <item.icon
+                          <Icon
                             className={`h-4 w-4 shrink-0 ${active ? "text-gold" : "text-gold/55"}`}
                           />
                           {item.label}
