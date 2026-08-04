@@ -18,6 +18,44 @@
   --muted: #64748b;
   --line: #e2e8f0;
   --line-strong: #cbd5e1;
+
+  /* Admin panel semantic tokens (light) */
+  --admin-bg: #f3f6fb;
+  --admin-surface: #ffffff;
+  --admin-surface-2: #eef3f9;
+  --admin-border: #e2e8f0;
+  --admin-text: #0b192c;
+  --admin-muted: #64748b;
+  --admin-sidebar: #ffffff;
+  --admin-sidebar-border: #e6edf5;
+  --admin-sidebar-text: #334155;
+  --admin-sidebar-muted: #94a3b8;
+  --admin-sidebar-hover: #f1f5f9;
+  --admin-sidebar-active: #fff7ed;
+  --admin-sidebar-active-text: #c2410c;
+  --admin-accent: #0b192c;
+  --admin-ring: rgba(16, 185, 129, 0.25);
+  --admin-shadow: 0 10px 30px -12px rgba(11, 25, 44, 0.12);
+}
+
+.dark {
+  /* Admin panel semantic tokens (dark) — scoped via --admin-* usage */
+  --admin-bg: #070e1a;
+  --admin-surface: #111b2e;
+  --admin-surface-2: #182338;
+  --admin-border: #243247;
+  --admin-text: #e8eef7;
+  --admin-muted: #94a3b8;
+  --admin-sidebar: #0b1424;
+  --admin-sidebar-border: #1c2a40;
+  --admin-sidebar-text: #cbd5e1;
+  --admin-sidebar-muted: #64748b;
+  --admin-sidebar-hover: #152238;
+  --admin-sidebar-active: rgba(245, 158, 11, 0.12);
+  --admin-sidebar-active-text: #fbbf24;
+  --admin-accent: #f59e0b;
+  --admin-ring: rgba(245, 158, 11, 0.25);
+  --admin-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.55);
 }
 
 @theme inline {
@@ -53,6 +91,30 @@ body {
   overflow-x: hidden;
 }
 
+.dark {
+  color-scheme: dark;
+}
+
+/* When admin shell is mounted, paint the page with admin tokens */
+body:has(.admin-shell) {
+  background: var(--admin-bg);
+  color: var(--admin-text);
+}
+
+/* Admin surface helpers */
+.admin-surface {
+  background: var(--admin-surface);
+  border-color: var(--admin-border);
+  color: var(--admin-text);
+  box-shadow: var(--admin-shadow);
+}
+
+.admin-surface-2 {
+  background: var(--admin-surface-2);
+  border-color: var(--admin-border);
+  color: var(--admin-text);
+}
+
 h1,
 h2,
 h3,
@@ -67,16 +129,20 @@ h3,
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b192c;
+  background: var(--admin-surface-2);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2e5077;
+  background: var(--navy-light);
   border-radius: 4px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #2e5077;
+}
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: var(--gold);
 }
 
 /* Glassmorphism utility classes */
@@ -146,4 +212,46 @@ h3,
 
 .animate-pulse-slow {
   animation: pulse-slow 8s ease-in-out infinite;
+}
+
+/* Skeleton shimmer system */
+:root {
+  --skeleton-base: #e8eef5;
+  --skeleton-shine: rgba(255, 255, 255, 0.72);
+}
+
+.dark {
+  --skeleton-base: #1a2740;
+  --skeleton-shine: rgba(255, 255, 255, 0.06);
+}
+
+.eidf-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--skeleton-shine),
+    transparent
+  );
+  animation: eidf-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes eidf-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eidf-skeleton::after {
+    animation: none;
+  }
+
+  .motion-safe\:animate-pulse,
+  .motion-safe\:animate-\[spin_1\.8s_linear_infinite\] {
+    animation: none !important;
+  }
 }

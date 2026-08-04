@@ -69,20 +69,20 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
       <div className="mb-4 grid gap-4 md:grid-cols-2">
         <div>
           <FieldLabel>Name</FieldLabel>
-          <input name="full_name" required className={fieldClass} placeholder="Your name" />
+          <input name="full_name" required className={fieldClass} placeholder="Your name" disabled={status === "loading"} />
         </div>
         <div>
           <FieldLabel>Email</FieldLabel>
-          <input name="email" type="email" required className={fieldClass} placeholder="you@example.com" />
+          <input name="email" type="email" required className={fieldClass} placeholder="you@example.com" disabled={status === "loading"} />
         </div>
       </div>
       <div className="mb-4">
         <FieldLabel>Phone (optional)</FieldLabel>
-        <input name="phone" className={fieldClass} placeholder="+91 ..." />
+        <input name="phone" className={fieldClass} placeholder="+91 ..." disabled={status === "loading"} />
       </div>
       <div className="mb-4">
         <FieldLabel>Subject</FieldLabel>
-        <select name="subject" className={fieldClass} defaultValue={defaultSubject}>
+        <select name="subject" className={fieldClass} defaultValue={defaultSubject} disabled={status === "loading"}>
           <option>Membership</option>
           <option>Funding</option>
           <option>Media</option>
@@ -97,6 +97,7 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
           rows={6}
           className={fieldClass}
           placeholder="Tell us about your inquiry..."
+          disabled={status === "loading"}
         />
       </div>
       {error && (

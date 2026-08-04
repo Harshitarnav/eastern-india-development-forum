@@ -77,31 +77,31 @@ export function MembershipForm() {
       <div className="mb-4 grid gap-4 md:grid-cols-2">
         <div>
           <FieldLabel>Full Name</FieldLabel>
-          <input name="full_name" required className={fieldClass} placeholder="Your full name" />
+          <input name="full_name" required className={fieldClass} placeholder="Your full name" disabled={status === "loading"} />
         </div>
         <div>
           <FieldLabel>Email</FieldLabel>
-          <input name="email" type="email" required className={fieldClass} placeholder="you@example.com" />
+          <input name="email" type="email" required className={fieldClass} placeholder="you@example.com" disabled={status === "loading"} />
         </div>
       </div>
       <div className="mb-4 grid gap-4 md:grid-cols-2">
         <div>
           <FieldLabel>Current Location (City)</FieldLabel>
-          <input name="city" className={fieldClass} placeholder="City" />
+          <input name="city" className={fieldClass} placeholder="City" disabled={status === "loading"} />
         </div>
         <div>
           <FieldLabel>Country</FieldLabel>
-          <input name="country" className={fieldClass} placeholder="Country" />
+          <input name="country" className={fieldClass} placeholder="Country" disabled={status === "loading"} />
         </div>
       </div>
       <div className="mb-4 grid gap-4 md:grid-cols-2">
         <div>
           <FieldLabel>Phone (optional)</FieldLabel>
-          <input name="phone" className={fieldClass} placeholder="+91 ..." />
+          <input name="phone" className={fieldClass} placeholder="+91 ..." disabled={status === "loading"} />
         </div>
         <div>
           <FieldLabel>I&apos;d like to contribute</FieldLabel>
-          <select name="contribution_type" className={fieldClass} defaultValue="network">
+          <select name="contribution_type" className={fieldClass} defaultValue="network" disabled={status === "loading"}>
             <option value="time">Time</option>
             <option value="skill">Skill</option>
             <option value="funds">Funding</option>
@@ -116,6 +116,7 @@ export function MembershipForm() {
           rows={4}
           className={fieldClass}
           placeholder="Share any specific interests or project preferences..."
+          disabled={status === "loading"}
         />
       </div>
       {error && (

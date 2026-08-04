@@ -176,3 +176,14 @@ export function FieldLabel({ children }: { children: React.ReactNode }) {
 
 export const fieldClass =
   "w-full rounded-2xl border border-line bg-cream px-4 py-3.5 text-sm text-navy outline-none transition focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/20";
+
+export function AdminFieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="mb-1.5 block text-xs font-bold text-[var(--admin-text)]">
+      {children}
+    </label>
+  );
+}
+
+export const adminFieldClass =
+  "w-full rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface-2)] px-4 py-3.5 text-sm text-[var(--admin-text)] outline-none transition placeholder:text-[var(--admin-muted)] focus:border-gold focus:ring-2 focus:ring-[var(--admin-ring)]";

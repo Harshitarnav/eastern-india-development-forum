@@ -140,7 +140,7 @@ export const Nav: React.FC = () => {
                     <LayoutDashboard className="h-4 w-4 text-purple-400" /> Development Analytics
                   </Link>
                   <Link
-                    href="/admin"
+                    href="/admin/login"
                     className="flex items-center gap-2 rounded-xl p-2.5 bg-gold/10 text-gold hover:bg-gold hover:text-navy-deep font-bold transition-colors mt-1"
                   >
                     <LayoutDashboard className="h-4 w-4" /> Admin CMS Dashboard
@@ -292,7 +292,7 @@ export const Nav: React.FC = () => {
               Contact
             </Link>
             <Link
-              href="/admin"
+              href="/admin/login"
               onClick={() => setMobileMenuOpen(false)}
               className="block rounded-xl px-3 py-2 text-sm font-bold text-gold bg-gold/10 border border-gold/30"
             >
