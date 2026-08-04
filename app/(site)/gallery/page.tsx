@@ -5,12 +5,9 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
-  Download,
   X,
   ChevronLeft,
   ChevronRight,
-  Copy,
-  Check,
   MapPin,
   Calendar,
   Image as ImageIcon,
@@ -189,7 +186,6 @@ export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const filteredImages = useMemo(() => {
     return GALLERY_IMAGES.filter((img) => {
@@ -201,14 +197,6 @@ export default function GalleryPage() {
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, searchQuery]);
-
-  const handleCopyLink = (src: string, id: string) => {
-    const fullUrl = `${window.location.origin}${src}`;
-    navigator.clipboard.writeText(fullUrl).then(() => {
-      setCopiedId(id);
-      setTimeout(() => setCopiedId(null), 2000);
-    });
-  };
 
   const handleNext = () => {
     if (selectedImageIndex !== null) {
@@ -409,31 +397,6 @@ export default function GalleryPage() {
                       </span>
                     </div>
                   </div>
-                </div>
-
-                <div className="flex gap-2 border-t border-white/10 pt-6">
-                  <a
-                    href={filteredImages[selectedImageIndex].src}
-                    download
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gold py-3 text-xs font-bold text-navy-deep shadow-md transition-colors hover:bg-gold-hover"
-                  >
-                    <Download className="h-4 w-4" /> Download
-                  </a>
-                  <button
-                    onClick={() =>
-                      handleCopyLink(
-                        filteredImages[selectedImageIndex].src,
-                        filteredImages[selectedImageIndex].id
-                      )
-                    }
-                    className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-xs font-bold text-white hover:bg-white/15"
-                  >
-                    {copiedId === filteredImages[selectedImageIndex].id ? (
-                      <Check className="h-4 w-4 text-emerald" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </button>
                 </div>
               </div>
             </motion.div>
