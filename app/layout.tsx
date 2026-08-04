@@ -33,6 +33,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
       className={`${lora.variable} ${publicSans.variable} h-full`}
     >
       <body className="flex min-h-full flex-col bg-cream font-sans antialiased">
