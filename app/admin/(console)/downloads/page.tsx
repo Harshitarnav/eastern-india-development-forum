@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { CmsCollectionPage } from "@/components/cms/CmsCollectionPage";
+import { REPORT_FIELDS } from "@/components/cms/homepage-field-defs";
 
 export default function Page() {
   return (
@@ -8,14 +9,8 @@ export default function Page() {
       title="Downloads / Reports"
       collection="reports"
       titleKey="title"
-      subtitleKey="type"
-      fields={[
-        { key: "title", label: "Title", required: true },
-        { key: "type", label: "Type" },
-        { key: "year", label: "Year" },
-        { key: "url", label: "Download URL" },
-        { key: "summary", label: "Summary", type: "textarea" },
-      ]}
+      subtitleKey="category"
+      fields={REPORT_FIELDS}
     />
   );
 }

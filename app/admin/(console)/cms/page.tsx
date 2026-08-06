@@ -7,11 +7,13 @@ import {
   CheckCircle,
   Sparkles,
   Layers,
-  FileText,
   BarChart3,
   Settings,
   Menu,
   Database,
+  Home,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminFieldLabel, adminFieldClass } from "@/components/ui";
@@ -19,14 +21,16 @@ import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { CmsNavigationEditor } from "@/components/cms/CmsNavigationEditor";
 import { CmsCollectionPage } from "@/components/cms/CmsCollectionPage";
+import { CmsHomepageEditor } from "@/components/cms/CmsHomepageEditor";
+import { CmsImageField } from "@/components/cms/CmsImageField";
 import type { CmsSettings } from "@/lib/cms/types";
 
 const tabs = [
   { id: "general" as const, label: "General", icon: Settings },
   { id: "hero" as const, label: "Hero", icon: Sparkles },
+  { id: "homepage" as const, label: "Homepage", icon: Home },
   { id: "nav" as const, label: "Navigation", icon: Menu },
   { id: "stats" as const, label: "Stats", icon: BarChart3 },
-  { id: "tenders" as const, label: "Tenders", icon: FileText },
   { id: "seed" as const, label: "Seed / Reset", icon: Database },
 ];
 
@@ -35,8 +39,8 @@ type TabId = (typeof tabs)[number]["id"];
 function tabFromParam(value: string | null): TabId {
   if (
     value === "hero" ||
+    value === "homepage" ||
     value === "stats" ||
-    value === "tenders" ||
     value === "nav" ||
     value === "seed"
   )
@@ -127,7 +131,25 @@ function WebsiteCMSContent() {
       loaderTagline: form.loaderTagline,
       siteUrl: form.siteUrl,
       hero: form.hero,
+      logo: form.logo,
     });
+  };
+
+  const updateCta = (
+    which: "primary" | "secondary" | "tertiary",
+    field: "label" | "href",
+    value: string
+  ) => {
+    setForm((prev) => ({
+      ...prev,
+      hero: {
+        ...prev.hero!,
+        ctas: {
+          ...prev.hero!.ctas,
+          [which]: { ...prev.hero!.ctas[which], [field]: value },
+        },
+      },
+    }));
   };
 
   return (
@@ -137,8 +159,8 @@ function WebsiteCMSContent() {
           Website CMS
         </h1>
         <p className="mt-1 text-sm text-[var(--admin-muted)]">
-          Site identity, hero, navigation, and collection shortcuts. Changes
-          revalidate the public site.
+          Site identity, hero, homepage sections, navigation, and collection
+          shortcuts. Changes revalidate the public site.
         </p>
       </div>
 
@@ -187,6 +209,14 @@ function WebsiteCMSContent() {
           onSubmit={handleSaveGeneral}
           className="space-y-4 rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5"
         >
+          <CmsImageField
+            label="Site logo"
+            value={String(form.logo || "/images/logo.png")}
+            folder="brand"
+            preview="logo"
+            placeholder="/images/logo.png"
+            onChange={(next) => setForm((prev) => ({ ...prev, logo: next }))}
+          />
           {(
             [
               ["name", "Organisation name"],
@@ -270,6 +300,131 @@ function WebsiteCMSContent() {
               }
             />
           </div>
+          <CmsImageField
+            label="Hero banner image"
+            value={String(form.hero.image || "/images/hero-banner.jpg")}
+            folder="hero"
+            placeholder="/images/hero-banner.jpg"
+            onChange={(next) =>
+              setForm((prev) => ({
+                ...prev,
+                hero: { ...prev.hero!, image: next },
+              }))
+            }
+          />
+
+          <div className="border-t border-[var(--admin-border)] pt-4 space-y-4">
+            <h3 className="font-display text-base font-bold text-[var(--admin-text)]">
+              Call-to-action buttons
+            </h3>
+            {(
+              [
+                ["primary", "Primary"],
+                ["secondary", "Secondary"],
+                ["tertiary", "Tertiary"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key} className="grid gap-3 md:grid-cols-2">
+                <div>
+                  <AdminFieldLabel>{label} label</AdminFieldLabel>
+                  <input
+                    className={adminFieldClass}
+                    value={form.hero?.ctas?.[key]?.label || ""}
+                    onChange={(e) => updateCta(key, "label", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <AdminFieldLabel>{label} href</AdminFieldLabel>
+                  <input
+                    className={adminFieldClass}
+                    value={form.hero?.ctas?.[key]?.href || ""}
+                    onChange={(e) => updateCta(key, "href", e.target.value)}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-[var(--admin-border)] pt-4 space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-display text-base font-bold text-[var(--admin-text)]">
+                Floating metrics
+              </h3>
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    hero: {
+                      ...prev.hero!,
+                      floatingMetrics: [
+                        ...(prev.hero?.floatingMetrics || []),
+                        { label: "New metric", value: "0" },
+                      ],
+                    },
+                  }))
+                }
+                className="inline-flex items-center gap-1 rounded-lg border border-[var(--admin-border)] px-3 py-1.5 text-xs font-bold"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add
+              </button>
+            </div>
+            {(form.hero.floatingMetrics || []).map((metric, index) => (
+              <div
+                key={index}
+                className="grid gap-3 rounded-xl border border-[var(--admin-border)] p-3 md:grid-cols-[1fr_1fr_auto]"
+              >
+                <input
+                  className={adminFieldClass}
+                  placeholder="Label"
+                  value={metric.label}
+                  onChange={(e) =>
+                    setForm((prev) => {
+                      const rows = [...(prev.hero?.floatingMetrics || [])];
+                      rows[index] = { ...rows[index], label: e.target.value };
+                      return {
+                        ...prev,
+                        hero: { ...prev.hero!, floatingMetrics: rows },
+                      };
+                    })
+                  }
+                />
+                <input
+                  className={adminFieldClass}
+                  placeholder="Value"
+                  value={metric.value}
+                  onChange={(e) =>
+                    setForm((prev) => {
+                      const rows = [...(prev.hero?.floatingMetrics || [])];
+                      rows[index] = { ...rows[index], value: e.target.value };
+                      return {
+                        ...prev,
+                        hero: { ...prev.hero!, floatingMetrics: rows },
+                      };
+                    })
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      hero: {
+                        ...prev.hero!,
+                        floatingMetrics: (prev.hero?.floatingMetrics || []).filter(
+                          (_, i) => i !== index
+                        ),
+                      },
+                    }))
+                  }
+                  className="rounded-lg border border-red-500/30 p-2 text-red-500"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+
           <button
             type="submit"
             disabled={save.isPending}
@@ -288,6 +443,8 @@ function WebsiteCMSContent() {
         </div>
       )}
 
+      {activeTab === "homepage" && <CmsHomepageEditor />}
+
       {activeTab === "nav" && <CmsNavigationEditor />}
 
       {activeTab === "stats" && (
@@ -302,22 +459,6 @@ function WebsiteCMSContent() {
             { key: "value", label: "Value", type: "number" },
             { key: "prefix", label: "Prefix" },
             { key: "suffix", label: "Suffix" },
-          ]}
-        />
-      )}
-
-      {activeTab === "tenders" && (
-        <CmsCollectionPage
-          title="Homepage tenders"
-          collection="tenders"
-          titleKey="title"
-          subtitleKey="authority"
-          fields={[
-            { key: "title", label: "Title", required: true },
-            { key: "authority", label: "Authority" },
-            { key: "deadline", label: "Deadline" },
-            { key: "status", label: "Status" },
-            { key: "summary", label: "Summary", type: "textarea" },
           ]}
         />
       )}

@@ -3,8 +3,11 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/cms/seo";
 
-export const metadata: Metadata = { title: "Schemes" };
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/schemes", { title: "Government Schemes" });
+}
 
 export default async function SchemesPage() {
   const { site } = await getPublicCmsBundle();
@@ -47,17 +50,24 @@ export default async function SchemesPage() {
                     <div className="text-[11px] font-bold uppercase tracking-widest text-gold-label">Benefits</div>
                     <p className="mt-1 text-sm font-medium text-navy leading-relaxed">{sch.benefits}</p>
                   </div>
-                  <div className="text-[11px] font-bold uppercase tracking-widest text-muted mb-2">
-                    Eligibility
-                  </div>
-                  <ul className="space-y-1.5">
-                    {sch.eligibility.map((el) => (
-                      <li key={el} className="flex items-start gap-2 text-sm text-muted">
-                        <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald" />
-                        {el}
-                      </li>
-                    ))}
-                  </ul>
+                  {(sch.eligibility?.length ?? 0) > 0 && (
+                    <>
+                      <div className="text-[11px] font-bold uppercase tracking-widest text-muted mb-2">
+                        Eligibility
+                      </div>
+                      <ul className="space-y-1.5">
+                        {sch.eligibility.map((el) => (
+                          <li
+                            key={el}
+                            className="flex items-start gap-2 text-sm text-muted"
+                          >
+                            <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald" />
+                            {el}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
                 </div>
 
                 <div className="lg:col-span-3 flex lg:justify-end lg:items-start">

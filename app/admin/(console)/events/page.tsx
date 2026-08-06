@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { CmsCollectionPage } from "@/components/cms/CmsCollectionPage";
+import { EVENT_FIELDS } from "@/components/cms/homepage-field-defs";
 
 export default function Page() {
   return (
@@ -9,13 +10,7 @@ export default function Page() {
       collection="events"
       titleKey="title"
       subtitleKey="date"
-      fields={[
-        { key: "title", label: "Title", required: true },
-        { key: "date", label: "Date" },
-        { key: "location", label: "Location" },
-        { key: "type", label: "Type" },
-        { key: "desc", label: "Description", type: "textarea" },
-      ]}
+      fields={EVENT_FIELDS}
     />
   );
 }

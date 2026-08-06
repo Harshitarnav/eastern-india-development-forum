@@ -6,6 +6,7 @@ import {
   mapSnapshotToPublicSite,
 } from "@/lib/cms/map-to-site";
 import type { CmsPublicValue } from "@/lib/cms/public-provider";
+import { DEFAULT_HEADER_LAYOUT } from "@/lib/cms/types";
 
 export async function getPublicCmsBundle(): Promise<CmsPublicValue> {
   // Prevent Next.js from caching CMS-backed RSC payloads
@@ -19,5 +20,9 @@ export async function getPublicCmsBundle(): Promise<CmsPublicValue> {
       footer: getNavLinks(snap, "footer"),
     },
     gallery: getGalleryItems(snap),
+    headerLayout: {
+      ...DEFAULT_HEADER_LAYOUT,
+      ...(snap.settings.headerLayout || {}),
+    },
   };
 }

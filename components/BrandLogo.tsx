@@ -1,23 +1,29 @@
-import Image from "next/image";
+"use client";
+
 import { cn } from "@/lib/utils";
+import { usePublicSite } from "@/lib/cms/public-provider";
 
 const sizeMap = {
-  sm: { box: "h-9 w-9", sizes: "36px" },
-  md: { box: "h-11 w-11", sizes: "44px" },
-  lg: { box: "h-14 w-14", sizes: "56px" },
-  xl: { box: "h-16 w-16", sizes: "64px" },
+  sm: { box: "h-9 w-9" },
+  md: { box: "h-11 w-11" },
+  lg: { box: "h-14 w-14" },
+  xl: { box: "h-16 w-16" },
 } as const;
 
 export function BrandLogo({
   size = "md",
   className,
-  priority = false,
+  priority: _priority = false,
+  src,
 }: {
   size?: keyof typeof sizeMap;
   className?: string;
   priority?: boolean;
+  src?: string;
 }) {
-  const { box, sizes } = sizeMap[size];
+  const site = usePublicSite();
+  const { box } = sizeMap[size];
+  const logoSrc = src || site.logo || "/images/logo.png";
 
   return (
     <div
@@ -27,13 +33,11 @@ export function BrandLogo({
         className
       )}
     >
-      <Image
-        src="/images/logo.png"
-        alt="Eastern India Development Forum"
-        fill
-        sizes={sizes}
-        priority={priority}
-        className="object-contain p-[1px]"
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={logoSrc}
+        alt={site.name || "Eastern India Development Forum"}
+        className="absolute inset-0 h-full w-full object-contain p-[1px]"
       />
     </div>
   );

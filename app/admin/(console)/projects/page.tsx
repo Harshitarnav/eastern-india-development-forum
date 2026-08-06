@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <CmsCollectionPage
       title="Projects"
-      description="Featured and portal projects shown on the public site."
+      description="One projects list for the homepage (first 3) and /projects (all)."
       collection="projects"
       titleKey="title"
       subtitleKey="desc"
@@ -20,7 +20,13 @@ export default function Page() {
         { key: "timeline", label: "Timeline" },
         { key: "budget", label: "Budget" },
         { key: "fundingSource", label: "Funding source" },
-        { key: "image", label: "Image key / URL" },
+        {
+          key: "image",
+          label: "Project image",
+          type: "image",
+          placeholder: "/images/eidf_01.jpg",
+          folder: "projects",
+        },
       ]}
     />
   );

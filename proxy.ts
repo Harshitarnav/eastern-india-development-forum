@@ -22,7 +22,7 @@ async function hasValidSession(request: NextRequest) {
       const { payload } = await jwtVerify(access, getSecret());
       if (payload.typ === "access") return true;
     } catch {
-      // try refresh presence for optimistic allow; route handlers revalidate
+      // try refresh
     }
   }
 
@@ -38,6 +38,36 @@ async function hasValidSession(request: NextRequest) {
   return false;
 }
 
+async function applyCmsRedirect(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/_next") ||
+    pathname.includes(".")
+  ) {
+    return null;
+  }
+
+  try {
+    const res = await fetch(new URL("/api/cms/public/redirects", request.url), {
+      headers: { Accept: "application/json" },
+      // Avoid recursive proxy loops; Node fetch to own origin in proxy
+      cache: "no-store",
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as {
+      redirects?: { from_path: string; to_path: string; status_code?: number }[];
+    };
+    const match = (data.redirects || []).find((r) => r.from_path === pathname);
+    if (!match) return null;
+    const url = new URL(match.to_path, request.url);
+    return NextResponse.redirect(url, match.status_code === 302 ? 302 : 301);
+  } catch {
+    return null;
+  }
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -50,6 +80,8 @@ export async function proxy(request: NextRequest) {
   }
 
   if (!isAdminArea) {
+    const redirected = await applyCmsRedirect(request);
+    if (redirected) return redirected;
     return NextResponse.next();
   }
 
@@ -76,5 +108,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/auth/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/api/auth/:path*",
+    "/((?!_next/static|_next/image|favicon.ico|images|docs|api/cms/public).*)",
+  ],
 };

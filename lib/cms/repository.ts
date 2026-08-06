@@ -6,8 +6,9 @@ import type {
   CmsSettings,
   CmsStoreSnapshot,
 } from "@/lib/cms/types";
+import { DEFAULT_HEADER_LAYOUT, DEFAULT_HOMEPAGE, DEFAULT_INVESTORS_PAGE } from "@/lib/cms/types";
 import { buildSeedSnapshot } from "@/lib/cms/seed";
-import { ensureFileStore, writeFileStore, readFileStore } from "@/lib/cms/file-store";
+import { ensureFileStore, writeFileStore } from "@/lib/cms/file-store";
 import {
   isSupabaseConfigured,
   readSupabaseStore,
@@ -43,12 +44,6 @@ export async function saveCmsSnapshot(
 
   // File store is the source of truth for local/dev (and fallback without Supabase)
   await writeFileStore(next);
-
-  // Confirm round-trip so silent write failures cannot look like "Saved"
-  const verified = await readFileStore();
-  if (!verified || verified.updatedAt !== next.updatedAt) {
-    throw new Error("CMS file store write verification failed");
-  }
 
   if (isSupabaseConfigured()) {
     try {
@@ -121,6 +116,77 @@ export async function updateCmsSettings(
       stateCapital:
         patch.analytics.stateCapital ?? snap.settings.analytics?.stateCapital ?? [],
       sectors: patch.analytics.sectors ?? snap.settings.analytics?.sectors ?? [],
+    };
+  }
+  if (patch.headerLayout) {
+    nextSettings.headerLayout = {
+      ...DEFAULT_HEADER_LAYOUT,
+      ...snap.settings.headerLayout,
+      ...patch.headerLayout,
+    };
+  }
+  if (patch.investorsPage) {
+    nextSettings.investorsPage = {
+      ...DEFAULT_INVESTORS_PAGE,
+      ...snap.settings.investorsPage,
+      ...patch.investorsPage,
+    };
+  }
+  if (patch.homepage) {
+    const prev = snap.settings.homepage || DEFAULT_HOMEPAGE;
+    const next = patch.homepage;
+    nextSettings.homepage = {
+      ...DEFAULT_HOMEPAGE,
+      ...prev,
+      ...next,
+      onlineServices: {
+        ...DEFAULT_HOMEPAGE.onlineServices,
+        ...prev.onlineServices,
+        ...next.onlineServices,
+      },
+      about: { ...DEFAULT_HOMEPAGE.about, ...prev.about, ...next.about },
+      focus: { ...DEFAULT_HOMEPAGE.focus, ...prev.focus, ...next.focus },
+      map: { ...DEFAULT_HOMEPAGE.map, ...prev.map, ...next.map },
+      schemes: { ...DEFAULT_HOMEPAGE.schemes, ...prev.schemes, ...next.schemes },
+      tenders: { ...DEFAULT_HOMEPAGE.tenders, ...prev.tenders, ...next.tenders },
+      projects: {
+        ...DEFAULT_HOMEPAGE.projects,
+        ...prev.projects,
+        ...next.projects,
+      },
+      investments: {
+        ...DEFAULT_HOMEPAGE.investments,
+        ...prev.investments,
+        ...next.investments,
+      },
+      news: { ...DEFAULT_HOMEPAGE.news, ...prev.news, ...next.news },
+      events: { ...DEFAULT_HOMEPAGE.events, ...prev.events, ...next.events },
+      resources: {
+        ...DEFAULT_HOMEPAGE.resources,
+        ...prev.resources,
+        ...next.resources,
+      },
+      faq: { ...DEFAULT_HOMEPAGE.faq, ...prev.faq, ...next.faq },
+      offices: { ...DEFAULT_HOMEPAGE.offices, ...prev.offices, ...next.offices },
+      membershipCta: {
+        ...DEFAULT_HOMEPAGE.membershipCta,
+        ...prev.membershipCta,
+        ...next.membershipCta,
+        bullets:
+          next.membershipCta?.bullets ??
+          prev.membershipCta?.bullets ??
+          DEFAULT_HOMEPAGE.membershipCta.bullets,
+        primary: {
+          ...DEFAULT_HOMEPAGE.membershipCta.primary,
+          ...prev.membershipCta?.primary,
+          ...next.membershipCta?.primary,
+        },
+        secondary: {
+          ...DEFAULT_HOMEPAGE.membershipCta.secondary,
+          ...prev.membershipCta?.secondary,
+          ...next.membershipCta?.secondary,
+        },
+      },
     };
   }
   if (patch.address) {

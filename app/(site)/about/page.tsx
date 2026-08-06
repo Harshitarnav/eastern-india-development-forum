@@ -2,9 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
+import { LeaderAvatar } from "@/components/LeaderAvatar";
 import { getPublicCmsBundle } from "@/lib/cms/server";
+import { buildPageMetadata } from "@/lib/cms/seo";
 
-export const metadata: Metadata = { title: "About" };
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/about", { title: "About EIDF" });
+}
 
 export default async function AboutPage() {
   const { site } = await getPublicCmsBundle();
@@ -73,11 +77,15 @@ export default async function AboutPage() {
           <div className="divide-y divide-line border-y border-line">
             {site.leaders.map((ld) => (
               <div key={ld.name} className="flex items-center gap-5 py-5">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-navy font-display text-sm font-bold text-gold ring-2 ring-gold/30">
-                  {ld.name.split(" ").pop()?.substring(0, 2).toUpperCase() || "EI"}
-                </div>
+                <LeaderAvatar
+                  name={ld.name}
+                  image={"image" in ld ? (ld.image as string | undefined) : undefined}
+                  size="lg"
+                />
                 <div>
-                  <div className="font-display text-base font-bold text-navy">{ld.name}</div>
+                  <div className="font-display text-base font-bold text-navy">
+                    {ld.name}
+                  </div>
                   <div className="text-sm text-muted">{ld.role}</div>
                 </div>
               </div>

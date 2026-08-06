@@ -25,13 +25,27 @@ interface GalleryImage {
   date: string;
 }
 
-const CATEGORIES = ["All", "Seminars", "Site Visits", "Community", "Identity & Media"] as const;
+const FALLBACK_CATEGORIES = [
+  "Seminars",
+  "Site Visits",
+  "Community",
+  "Identity & Media",
+];
 
 export default function GalleryPage() {
   const galleryImages = usePublicGallery() as GalleryImage[];
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  const categories = useMemo(() => {
+    const set = new Set<string>(FALLBACK_CATEGORIES);
+    for (const img of galleryImages) {
+      const c = String(img.category || "").trim();
+      if (c) set.add(c);
+    }
+    return ["All", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
+  }, [galleryImages]);
 
   const filteredImages = useMemo(() => {
     return galleryImages.filter((img) => {
@@ -77,7 +91,7 @@ export default function GalleryPage() {
       <section className="border-b border-line bg-white px-4 py-5">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-2">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => {

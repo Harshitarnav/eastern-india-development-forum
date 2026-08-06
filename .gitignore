@@ -28,6 +28,10 @@
 /data/cms/store.json
 /data/cms/forms.json
 
+# CMS uploaded media (kept locally / synced via Supabase in prod)
+/public/uploads/cms/**
+!/public/uploads/cms/.gitkeep
+
 # debug
 npm-debug.log*
 yarn-debug.log*

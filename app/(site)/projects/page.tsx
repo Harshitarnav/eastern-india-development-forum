@@ -3,8 +3,12 @@ import Link from "next/link";
 import { ArrowRight, MapPin } from "lucide-react";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
+import { buildPageMetadata } from "@/lib/cms/seo";
+import { cmsMediaUrl } from "@/lib/cms/home-preview";
 
-export const metadata: Metadata = { title: "Projects" };
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/projects", { title: "Projects" });
+}
 
 export default async function ProjectsPage() {
   const { site } = await getPublicCmsBundle();
@@ -32,14 +36,17 @@ export default async function ProjectsPage() {
           />
 
           <div className="divide-y divide-line border-y border-line">
-            {site.allProjects.map((ap, idx) => (
+            {site.projects.map((ap, idx) => (
               <article
-                key={ap.title}
+                key={ap.id}
                 className="grid gap-6 py-8 md:grid-cols-12 md:items-center md:gap-10"
               >
                 <div className="relative md:col-span-4 overflow-hidden min-h-[180px]">
                   <img
-                    src={`/images/eidf_0${idx + 1}.jpg`}
+                    src={cmsMediaUrl(
+                      ap.image,
+                      `/images/eidf_0${(idx % 6) + 1}.jpg`
+                    )}
                     alt={ap.title}
                     className="h-full w-full object-cover min-h-[180px]"
                   />
@@ -50,10 +57,15 @@ export default async function ProjectsPage() {
                     <span className="inline-flex items-center gap-1 text-muted normal-case tracking-normal font-semibold">
                       <MapPin className="h-3 w-3 text-emerald" />
                       {ap.status}
+                      {ap.state ? ` · ${ap.state}` : ""}
                     </span>
                   </div>
-                  <h2 className="mt-2 font-display text-2xl font-bold text-navy">{ap.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-muted max-w-2xl">{ap.desc}</p>
+                  <h2 className="mt-2 font-display text-2xl font-bold text-navy">
+                    {ap.title}
+                  </h2>
+                  <p className="mt-2 text-sm leading-relaxed text-muted max-w-2xl">
+                    {ap.desc}
+                  </p>
                   <Link
                     href="/contact?intent=donate"
                     className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold text-navy hover:text-gold transition-colors"
@@ -69,7 +81,9 @@ export default async function ProjectsPage() {
 
       <section className="border-y border-line bg-white px-4 py-12">
         <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-x-8 gap-y-3">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-muted">Working with</span>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-muted">
+            Working with
+          </span>
           {site.partners.map((pn) => (
             <span key={pn} className="text-sm font-semibold text-navy">
               {pn}

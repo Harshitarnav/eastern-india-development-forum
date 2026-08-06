@@ -4,8 +4,11 @@ import { ArrowRight } from "lucide-react";
 import { MembershipForm } from "@/components/MembershipForm";
 import { PageHero, SectionHeader } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
+import { buildPageMetadata } from "@/lib/cms/seo";
 
-export const metadata: Metadata = { title: "Membership" };
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/membership", { title: "Membership" });
+}
 
 export default async function MembershipPage() {
   const { site } = await getPublicCmsBundle();

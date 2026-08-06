@@ -3,8 +3,11 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/components/ContactForm";
 import { PageHero, SectionHeader } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
+import { buildPageMetadata } from "@/lib/cms/seo";
 
-export const metadata: Metadata = { title: "Contact" };
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/contact", { title: "Contact" });
+}
 
 export default async function ContactPage({
   searchParams,

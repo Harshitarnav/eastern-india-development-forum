@@ -3,8 +3,11 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/cms/seo";
 
-export const metadata: Metadata = { title: "Resources" };
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/resources", { title: "Knowledge Center" });
+}
 
 export default async function ResourcesPage() {
   const { site } = await getPublicCmsBundle();

@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/cms/seo";
 
-export const metadata: Metadata = { title: "Gallery" };
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/gallery", { title: "Media Hub & Gallery" });
+}
 
-export default function GalleryLayout({ children }: { children: React.ReactNode }) {
+export default function GalleryLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return children;
 }

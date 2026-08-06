@@ -3,11 +3,14 @@ import Link from "next/link";
 import { ArrowLeft, Download, IdCard, ImageIcon } from "lucide-react";
 import { CtaBand, PageHero } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
+import { buildPageMetadata } from "@/lib/cms/seo";
 
-export const metadata: Metadata = {
-  title: "Creatives",
-  description: "Seminar poster template and membership card for EIDF.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/creatives", {
+    title: "Brand Creatives",
+    description: "Seminar poster template and membership card for EIDF.",
+  });
+}
 
 export default async function CreativesPage() {
   const { site } = await getPublicCmsBundle();

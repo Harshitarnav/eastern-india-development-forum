@@ -3,22 +3,40 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { StateDetail } from "@/content/site";
-import { MapPin, Building, ArrowRight, ShieldCheck, TrendingUp, Layers } from "lucide-react";
+import type { CmsHomepageMapSettings } from "@/lib/cms/types";
+import { DEFAULT_HOMEPAGE } from "@/lib/cms/types";
+import {
+  MapPin,
+  Building,
+  ArrowRight,
+  ShieldCheck,
+  TrendingUp,
+  Layers,
+} from "lucide-react";
 import Link from "next/link";
 
 interface InteractiveMapProps {
   states: StateDetail[];
+  chrome?: Partial<CmsHomepageMapSettings> | null;
 }
 
-export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
-  const [selectedStateId, setSelectedStateId] = useState<string>("bihar");
+export const InteractiveMap: React.FC<InteractiveMapProps> = ({
+  states,
+  chrome,
+}) => {
+  const ui = { ...DEFAULT_HOMEPAGE.map, ...(chrome || {}) };
+  const [selectedStateId, setSelectedStateId] = useState<string>(
+    states[0]?.id || "bihar"
+  );
 
-  const selectedState = states.find((s) => s.id === selectedStateId) || states[0];
+  const selectedState =
+    states.find((s) => s.id === selectedStateId) || states[0];
+
+  if (!selectedState) return null;
 
   return (
     <div className="mx-auto max-w-7xl py-4 sm:py-8">
       <div className="grid gap-6 lg:grid-cols-12 lg:items-start lg:gap-8">
-        {/* Interactive Map Visualizer */}
         <div className="lg:col-span-7 min-w-0">
           <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-white/10 bg-gradient-to-br from-navy-deep via-navy to-slate-dark p-4 sm:p-6 shadow-2xl">
             <div className="absolute top-0 right-0 h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-emerald/10 blur-3xl pointer-events-none" />
@@ -27,15 +45,15 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
             <div className="relative mb-5 flex flex-col gap-3 border-b border-white/10 pb-4 sm:mb-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4">
               <div className="min-w-0">
                 <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-gold">
-                  Interactive GIS Portal
+                  {ui.portalEyebrow}
                 </span>
                 <h3 className="font-display text-xl sm:text-2xl font-bold text-white leading-tight">
-                  Eastern India Regional Map
+                  {ui.portalTitle}
                 </h3>
               </div>
               <div className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] sm:text-xs text-white/80">
                 <MapPin className="h-3.5 w-3.5 shrink-0 text-emerald" />
-                <span>Tap a state for intelligence</span>
+                <span>{ui.hint}</span>
               </div>
             </div>
 
@@ -70,7 +88,9 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
                       <h4 className="font-display text-lg sm:text-xl font-bold text-white mb-0.5 truncate">
                         {st.name}
                       </h4>
-                      <p className="text-xs text-white/60 mb-3 truncate">{st.capital}</p>
+                      <p className="text-xs text-white/60 mb-3 truncate">
+                        {st.capital}
+                      </p>
 
                       <div className="flex flex-col gap-1.5 text-xs pt-2 border-t border-white/10 min-[360px]:flex-row min-[360px]:items-center min-[360px]:justify-between min-[360px]:gap-2">
                         <span className="text-emerald font-semibold whitespace-nowrap">
@@ -87,15 +107,12 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
             </div>
 
             <div className="relative mt-5 sm:mt-6 flex flex-col gap-1.5 text-[11px] sm:text-xs text-white/50 border-t border-white/10 pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-2">
-              <span className="leading-relaxed">
-                Coverage: Bihar, Jharkhand, Odisha, West Bengal, Assam & NE States
-              </span>
-              <span className="shrink-0">Data Updated: Live Stream</span>
+              <span className="leading-relaxed">{ui.coverageNote}</span>
+              <span className="shrink-0">{ui.dataUpdatedLabel}</span>
             </div>
           </div>
         </div>
 
-        {/* Selected State Details Panel */}
         <div className="lg:col-span-5 min-w-0">
           <AnimatePresence mode="wait">
             <motion.div
@@ -111,7 +128,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
                   {selectedState.badge}
                 </span>
                 <span className="text-[10px] sm:text-xs font-bold text-muted shrink-0">
-                  State Intelligence Card
+                  {ui.intelligenceCardLabel}
                 </span>
               </div>
 
@@ -125,7 +142,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
               <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-3 sm:gap-4 mb-5 sm:mb-6">
                 <div className="rounded-2xl bg-cream-warm p-3.5 sm:p-4 border border-line min-w-0">
                   <div className="flex items-center gap-2 text-xs text-muted mb-1">
-                    <TrendingUp className="h-4 w-4 shrink-0 text-emerald" /> Capital Pledged
+                    <TrendingUp className="h-4 w-4 shrink-0 text-emerald" />{" "}
+                    {ui.capitalLabel}
                   </div>
                   <div className="font-display text-xl sm:text-2xl font-bold text-navy break-words">
                     {selectedState.investmentAmount}
@@ -133,7 +151,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
                 </div>
                 <div className="rounded-2xl bg-cream-warm p-3.5 sm:p-4 border border-line min-w-0">
                   <div className="flex items-center gap-2 text-xs text-muted mb-1">
-                    <Building className="h-4 w-4 shrink-0 text-gold" /> Facilitated Projects
+                    <Building className="h-4 w-4 shrink-0 text-gold" />{" "}
+                    {ui.projectsLabel}
                   </div>
                   <div className="font-display text-xl sm:text-2xl font-bold text-navy">
                     {selectedState.projectsCount} Corridors
@@ -143,10 +162,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
 
               <div className="mb-5">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-navy mb-2.5 flex items-center gap-1.5">
-                  <Layers className="h-3.5 w-3.5 text-gold" /> Priority Sectors
+                  <Layers className="h-3.5 w-3.5 text-gold" /> {ui.sectorsLabel}
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  {selectedState.keySectors.map((sector) => (
+                  {(selectedState.keySectors || []).map((sector) => (
                     <span
                       key={sector}
                       className="rounded-lg bg-navy/5 px-2.5 py-1 text-xs font-medium text-navy border border-navy/10"
@@ -159,7 +178,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
 
               <div className="mb-5 sm:mb-6 rounded-2xl bg-navy-deep p-4 text-white">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gold mb-2">
-                  <ShieldCheck className="h-4 w-4 text-gold" /> Impact Spotlight
+                  <ShieldCheck className="h-4 w-4 text-gold" /> {ui.spotlightLabel}
                 </div>
                 <p className="text-xs leading-relaxed text-white/90 font-medium">
                   &ldquo;{selectedState.successStory}&rdquo;
@@ -171,13 +190,14 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({ states }) => {
                   href={`/investors?state=${selectedState.id}`}
                   className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-navy px-5 py-3 text-xs font-bold text-white transition-colors hover:bg-navy-light shadow-md"
                 >
-                  Explore Opportunities <ArrowRight className="h-3.5 w-3.5 text-gold" />
+                  {ui.exploreCtaLabel}{" "}
+                  <ArrowRight className="h-3.5 w-3.5 text-gold" />
                 </Link>
                 <Link
                   href={`/schemes?state=${selectedState.id}`}
                   className="inline-flex items-center justify-center rounded-full border border-navy/20 bg-cream px-4 py-3 text-xs font-bold text-navy hover:bg-white"
                 >
-                  View Schemes
+                  {ui.schemesCtaLabel}
                 </Link>
               </div>
             </motion.div>

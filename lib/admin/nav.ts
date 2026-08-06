@@ -13,6 +13,7 @@ import {
   Newspaper,
   Images,
   Download,
+  Building2,
   FormInput,
   Quote,
   Crown,
@@ -46,9 +47,9 @@ export const adminNavItems: AdminNavItem[] = [
     children: [
       { label: "General Settings", href: "/admin/cms?tab=general" },
       { label: "Hero Section", href: "/admin/cms?tab=hero" },
+      { label: "Homepage", href: "/admin/cms?tab=homepage" },
       { label: "Navigation", href: "/admin/cms?tab=nav" },
       { label: "Impact Stats", href: "/admin/cms?tab=stats" },
-      { label: "Tenders", href: "/admin/cms?tab=tenders" },
       { label: "Seed / Reset", href: "/admin/cms?tab=seed" },
     ],
   },
@@ -56,6 +57,7 @@ export const adminNavItems: AdminNavItem[] = [
   { label: "States", href: "/admin/states", icon: Map },
   { label: "Government Schemes", href: "/admin/schemes", icon: Landmark },
   { label: "Tender Management", href: "/admin/tenders", icon: FileText },
+  { label: "Offices", href: "/admin/offices", icon: Building2 },
   {
     label: "Investment Opportunities",
     href: "/admin/investments",

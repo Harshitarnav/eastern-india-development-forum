@@ -13,6 +13,13 @@ export default function Page() {
         fields={[
           { key: "name", label: "Name", required: true },
           { key: "role", label: "Role" },
+          {
+            key: "image",
+            label: "Photo",
+            type: "image",
+            placeholder: "/images/leaders/name.jpg",
+            folder: "leaders",
+          },
           { key: "bio", label: "Bio", type: "textarea" },
         ]}
       />

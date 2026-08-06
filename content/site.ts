@@ -632,6 +632,26 @@ export const site = {
       desc: "Connecting FPOs with venture capitalists, solar cold-chain innovators, and export regulatory authorities.",
       registerUrl: "/events/register?id=ev-2",
     },
+    {
+      id: "ev-3",
+      title: "Founders' Convention",
+      type: "Convention",
+      date: "Coming Soon",
+      location: "Ranchi",
+      mode: "In-Person",
+      desc: "Annual gathering of EIDF founders, chapter leads, and founding members.",
+      registerUrl: "/membership",
+    },
+    {
+      id: "ev-4",
+      title: "Diaspora Meet — London",
+      type: "Meetup",
+      date: "TBA",
+      location: "London, UK",
+      mode: "In-Person",
+      desc: "Connect with Eastern India diaspora investors and partners in the UK.",
+      registerUrl: "/membership",
+    },
   ] as EventItem[],
 
   news: [
@@ -656,10 +676,10 @@ export const site = {
   ] as NewsItem[],
 
   leaders: [
-    { name: "Shri Sanjeev Kumar", role: "Chairman, EIDF · CMD, Diamond City Group", image: "/images/leaders/sanjeev-kumar.jpg" },
-    { name: "Mr. Arnab Sinha", role: "Joint Director & Chief Operating Officer", image: "/images/leaders/arnab-sinha.jpg" },
-    { name: "Dr. Sita Kumari", role: "Senior Advisor — Human Rights & Inclusive Social Policy", image: "/images/leaders/sita-kumari.jpg" },
-    { name: "Smt. Nesha Oraon, IRS", role: "Distinguished Policy Advisor", image: "/images/leaders/nesha-oraon.jpg" },
+    { name: "Shri Sanjeev Kumar", role: "Chairman, EIDF · CMD, Diamond City Group", image: "/images/leaders/placeholder-male.png" },
+    { name: "Mr. Arnab Sinha", role: "Joint Director & Chief Operating Officer", image: "/images/leaders/placeholder-male.png" },
+    { name: "Dr. Sita Kumari", role: "Senior Advisor — Human Rights & Inclusive Social Policy", image: "/images/leaders/placeholder-female.png" },
+    { name: "Smt. Nesha Oraon, IRS", role: "Distinguished Policy Advisor", image: "/images/leaders/placeholder-female.png" },
   ],
 
   values: [

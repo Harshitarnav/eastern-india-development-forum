@@ -28,7 +28,7 @@ export const Footer: React.FC = () => {
               <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-md ring-2 ring-gold/60">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/images/logo.png"
+                  src={site.logo || "/images/logo.png"}
                   alt="EIDF"
                   className="h-full w-full rounded-full object-contain"
                 />

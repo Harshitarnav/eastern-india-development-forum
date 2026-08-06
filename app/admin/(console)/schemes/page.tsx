@@ -15,6 +15,11 @@ export default function Page() {
         { key: "category", label: "Category" },
         { key: "state", label: "State" },
         { key: "benefits", label: "Benefits", type: "textarea" },
+        {
+          key: "eligibility",
+          label: "Eligibility (one criterion per line)",
+          type: "list",
+        },
         { key: "applicationProcess", label: "Application process", type: "textarea" },
         { key: "deadline", label: "Deadline" },
       ]}

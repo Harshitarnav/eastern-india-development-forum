@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { usePublicSite } from "@/lib/cms/public-provider";
 
 const BRAND = ["E", "I", "D", "F"] as const;
 
@@ -17,6 +18,9 @@ export function GlobalLoader({
   tagline?: string;
   variant?: "fullscreen" | "overlay";
 }) {
+  const site = usePublicSite();
+  const logoSrc = site.logo || "/images/logo.png";
+  const isLocal = logoSrc.startsWith("/");
   return (
     <AnimatePresence>
       {visible && (
@@ -112,14 +116,23 @@ export function GlobalLoader({
                 transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
               >
                 <div className="absolute inset-0 rounded-[1.35rem] bg-gradient-to-br from-white via-white to-slate-100" />
-                <Image
-                  src="/images/logo.png"
-                  alt="EIDF"
-                  width={64}
-                  height={64}
-                  className="relative z-10 object-contain p-1.5"
-                  priority
-                />
+                {isLocal ? (
+                  <Image
+                    src={logoSrc}
+                    alt="EIDF"
+                    width={64}
+                    height={64}
+                    className="relative z-10 object-contain p-1.5"
+                    priority
+                  />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={logoSrc}
+                    alt="EIDF"
+                    className="relative z-10 h-16 w-16 object-contain p-1.5"
+                  />
+                )}
               </motion.div>
             </div>
 

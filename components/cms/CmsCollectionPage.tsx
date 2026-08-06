@@ -5,15 +5,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Plus, Pencil, Trash2, Search, Eye, EyeOff, Save, X } from "lucide-react";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { AdminFieldLabel, adminFieldClass } from "@/components/ui";
+import { CmsImageField, isCmsImageFieldKey } from "@/components/cms/CmsImageField";
 import { cn } from "@/lib/utils";
 
 export type FieldDef = {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "number" | "select" | "checkbox";
+  type?: "text" | "textarea" | "number" | "select" | "checkbox" | "image" | "list";
   options?: { label: string; value: string }[];
   required?: boolean;
   placeholder?: string;
+  folder?: string;
 };
 
 type ItemRecord = {
@@ -122,7 +124,13 @@ export function CmsCollectionPage({
   };
 
   const openEdit = (item: ItemRecord) => {
-    setForm({ ...item.data });
+    const next: Record<string, unknown> = { ...item.data };
+    for (const field of fields) {
+      if (field.type === "list" && Array.isArray(next[field.key])) {
+        next[field.key] = (next[field.key] as string[]).join("\n");
+      }
+    }
+    setForm(next);
     setPublished(item.is_published !== false);
     setEditing(item);
     setCreating(false);
@@ -141,8 +149,17 @@ export function CmsCollectionPage({
       editing?.id ||
       (typeof form.id === "string" && form.id) ||
       `${collection}-${slugify(titleVal)}-${Date.now().toString(36)}`;
-    const { id: _omit, ...data } = form;
+    const { id: _omit, ...raw } = form;
     void _omit;
+    const data: Record<string, unknown> = { ...raw };
+    for (const field of fields) {
+      if (field.type === "list") {
+        data[field.key] = String(form[field.key] ?? "")
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+      }
+    }
     saveMutation.mutate({
       id,
       collection,
@@ -211,19 +228,32 @@ export function CmsCollectionPage({
                   className="border-b border-[var(--admin-border)]/70 last:border-0"
                 >
                   <td className="px-4 py-3">
-                    <div className="font-semibold text-[var(--admin-text)]">
-                      {String(
-                        item.data[titleKey] ||
-                          item.data.name ||
-                          item.data.label ||
-                          item.id
-                      )}
-                    </div>
-                    {subtitleKey && item.data[subtitleKey] != null && (
-                      <div className="mt-0.5 text-xs text-[var(--admin-muted)] line-clamp-1">
-                        {String(item.data[subtitleKey])}
+                    <div className="flex items-center gap-3">
+                      {typeof item.data.image === "string" &&
+                        item.data.image.trim() && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={String(item.data.image)}
+                            alt=""
+                            className="h-9 w-9 shrink-0 rounded-full object-cover ring-1 ring-[var(--admin-border)]"
+                          />
+                        )}
+                      <div className="min-w-0">
+                        <div className="font-semibold text-[var(--admin-text)]">
+                          {String(
+                            item.data[titleKey] ||
+                              item.data.name ||
+                              item.data.label ||
+                              item.id
+                          )}
+                        </div>
+                        {subtitleKey && item.data[subtitleKey] != null && (
+                          <div className="mt-0.5 text-xs text-[var(--admin-muted)] line-clamp-1">
+                            {String(item.data[subtitleKey])}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -286,14 +316,37 @@ export function CmsCollectionPage({
               </button>
             </div>
             <div className="flex-1 space-y-4 overflow-y-auto px-5 py-4">
-              {fields.map((field) => (
+              {fields.map((field) => {
+                const useImage =
+                  field.type === "image" || isCmsImageFieldKey(field.key);
+
+                if (useImage) {
+                  return (
+                    <CmsImageField
+                      key={field.key}
+                      label={field.label}
+                      value={String(form[field.key] ?? "")}
+                      required={field.required}
+                      placeholder={field.placeholder || "/images/example.jpg"}
+                      folder={field.folder || collection}
+                      onChange={(next) =>
+                        setForm((prev) => ({ ...prev, [field.key]: next }))
+                      }
+                    />
+                  );
+                }
+
+                return (
                 <div key={field.key}>
                   <AdminFieldLabel>{field.label}</AdminFieldLabel>
-                  {field.type === "textarea" ? (
+                  {field.type === "textarea" || field.type === "list" ? (
                     <textarea
                       className={cn(adminFieldClass, "min-h-28")}
                       value={String(form[field.key] ?? "")}
-                      placeholder={field.placeholder}
+                      placeholder={
+                        field.placeholder ||
+                        (field.type === "list" ? "One item per line" : undefined)
+                      }
                       onChange={(e) =>
                         setForm((prev) => ({ ...prev, [field.key]: e.target.value }))
                       }
@@ -345,7 +398,8 @@ export function CmsCollectionPage({
                     />
                   )}
                 </div>
-              ))}
+                );
+              })}
               <label className="flex items-center gap-2 text-sm font-semibold text-[var(--admin-text)]">
                 <input
                   type="checkbox"

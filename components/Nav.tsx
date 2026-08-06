@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -24,11 +24,16 @@ import {
   Users,
   Mail,
 } from "lucide-react";
-import { usePublicNav, usePublicSite } from "@/lib/cms/public-provider";
+import {
+  usePublicHeaderLayout,
+  usePublicNav,
+  usePublicSite,
+} from "@/lib/cms/public-provider";
 import { GlobalSearch } from "./GlobalSearch";
+import { cn } from "@/lib/utils";
 
 const navLink = (active: boolean) =>
-  `px-3 py-2 rounded-md text-[13px] font-semibold transition-colors ${
+  `px-3 py-2 rounded-md text-[13px] font-semibold transition-colors whitespace-nowrap ${
     active ? "text-gold" : "text-white/75 hover:text-white"
   }`;
 
@@ -54,6 +59,7 @@ const PRIMARY_ICONS: Record<string, typeof Home> = {
 export const Nav: React.FC = () => {
   const pathname = usePathname();
   const site = usePublicSite();
+  const layout = usePublicHeaderLayout();
   const headerLinks = usePublicNav("header");
   const portalLinks = usePublicNav("portal");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,30 +68,24 @@ export const Nav: React.FC = () => {
 
   const portalsActive = portalLinks.some((p) => pathname.startsWith(p.href));
 
-  // Close drawer on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
 
-  // Lock body scroll + Escape to close
   useEffect(() => {
     if (!mobileMenuOpen) return;
-
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMobileMenuOpen(false);
     };
     window.addEventListener("keydown", onKey);
-
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
   }, [mobileMenuOpen]);
 
-  // Close drawer when viewport hits desktop
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
     const onChange = () => {
@@ -98,124 +98,193 @@ export const Nav: React.FC = () => {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  const { beforePortals, afterPortals } = useMemo(() => {
+    if (!layout.showPortalsDropdown || layout.portalsPosition === "end") {
+      return { beforePortals: headerLinks, afterPortals: [] as typeof headerLinks };
+    }
+    if (layout.portalsPosition === "before-cta") {
+      return { beforePortals: headerLinks, afterPortals: [] as typeof headerLinks };
+    }
+    // after-primary: split roughly in half
+    const splitAt = Math.max(1, Math.ceil(headerLinks.length / 2));
+    return {
+      beforePortals: headerLinks.slice(0, splitAt),
+      afterPortals: headerLinks.slice(splitAt),
+    };
+  }, [headerLinks, layout.portalsPosition, layout.showPortalsDropdown]);
+
+  const brandName =
+    layout.brandTextMode === "short"
+      ? site.shortName || "EIDF"
+      : site.name || "Eastern India Development Forum";
+
+  const shellAlign =
+    layout.menuAlign === "left"
+      ? "justify-start"
+      : layout.menuAlign === "right"
+        ? "justify-end"
+        : layout.menuAlign === "center"
+          ? "justify-center"
+          : "justify-between";
+
+  const navAlign =
+    layout.menuAlign === "left"
+      ? "mr-auto"
+      : layout.menuAlign === "right"
+        ? "ml-auto"
+        : layout.menuAlign === "center"
+          ? "mx-auto"
+          : "";
+
+  const PortalsDropdown = (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+        onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
+        className={`flex items-center gap-1 px-3 py-2 rounded-md text-[13px] font-semibold cursor-pointer transition-colors ${
+          portalsActive ? "text-gold" : "text-white/75 hover:text-white"
+        }`}
+      >
+        {layout.portalsLabel || "Portals"}{" "}
+        <ChevronDown className="h-3.5 w-3.5 text-gold/80" />
+      </button>
+      {dropdownOpen && (
+        <div className="absolute top-full left-0 mt-2 w-56 border border-white/10 bg-navy-deep p-1.5 shadow-2xl z-50">
+          {portalLinks.map((item) => {
+            const Icon = PORTAL_ICONS[item.href] || FileText;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-white/80 hover:bg-white/8 hover:text-gold transition-colors"
+              >
+                <Icon className="h-4 w-4 text-gold/70" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <>
-      <div className="bg-navy-deep border-b border-white/10 px-3 sm:px-4 py-1.5 text-[10px] sm:text-[11px] font-medium text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <ShieldCheck className="h-3.5 w-3.5 text-gold shrink-0" />
-            <span className="truncate">
-              <span className="text-white/50">Reg. </span>
-              <span className="font-semibold tracking-wide">{site.regNo}</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0 text-white/80">
-            <a
-              href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-              className="flex items-center gap-1 hover:text-gold transition-colors"
-              aria-label="Call"
-            >
-              <Phone className="h-3 w-3 text-emerald" />
-              <span className="hidden sm:inline">{site.phone}</span>
-            </a>
-            <a
-              href={`mailto:${site.email}`}
-              className="hidden sm:inline hover:text-gold transition-colors truncate max-w-[160px] md:max-w-none"
-            >
-              {site.email}
-            </a>
+      {layout.showTopBar && (
+        <div className="bg-navy-deep border-b border-white/10 px-3 sm:px-4 py-1.5 text-[10px] sm:text-[11px] font-medium text-white">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <ShieldCheck className="h-3.5 w-3.5 text-gold shrink-0" />
+              <span className="truncate">
+                <span className="text-white/50">Reg. </span>
+                <span className="font-semibold tracking-wide">{site.regNo}</span>
+              </span>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0 text-white/80">
+              <a
+                href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
+                className="flex items-center gap-1 hover:text-gold transition-colors"
+                aria-label="Call"
+              >
+                <Phone className="h-3 w-3 text-emerald" />
+                <span className="hidden sm:inline">{site.phone}</span>
+              </a>
+              <a
+                href={`mailto:${site.email}`}
+                className="hidden sm:inline hover:text-gold transition-colors truncate max-w-[160px] md:max-w-none"
+              >
+                {site.email}
+              </a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-navy/95 backdrop-blur-xl text-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 md:px-6">
+      <header
+        className={cn(
+          "z-40 w-full border-b border-white/10 bg-navy/95 backdrop-blur-xl text-white",
+          layout.sticky ? "sticky top-0" : "relative"
+        )}
+      >
+        <div
+          className={cn(
+            "mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:px-6",
+            shellAlign
+          )}
+        >
           <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group min-w-0 shrink">
             <span className="relative flex h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-md ring-2 ring-gold/70 group-hover:ring-gold transition-all">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/logo.png"
+                src={site.logo || "/images/logo.png"}
                 alt="EIDF"
                 className="h-full w-full rounded-full object-contain"
               />
             </span>
-            <div className="flex min-w-0 flex-col">
-              <span className="font-display text-[13px] sm:text-sm md:text-[15px] font-extrabold tracking-tight leading-tight group-hover:text-gold transition-colors truncate">
-                <span className="sm:hidden">EIDF</span>
-                <span className="hidden sm:inline">Eastern India Development Forum</span>
-              </span>
-              <span className="hidden sm:block text-[10px] text-white/45 font-medium mt-0.5 truncate">
-                {site.poweredBy}
-              </span>
-            </div>
+            {layout.showBrandText && (
+              <div className="flex min-w-0 flex-col">
+                <span className="font-display text-[13px] sm:text-sm md:text-[15px] font-extrabold tracking-tight leading-tight group-hover:text-gold transition-colors truncate">
+                  <span className="sm:hidden">{site.shortName || "EIDF"}</span>
+                  <span className="hidden sm:inline">{brandName}</span>
+                </span>
+                {layout.brandTextMode === "full" && (
+                  <span className="hidden sm:block text-[10px] text-white/45 font-medium mt-0.5 truncate">
+                    {site.poweredBy}
+                  </span>
+                )}
+              </div>
+            )}
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1">
-            {headerLinks
-              .filter((l) => !portalLinks.some((p) => p.href === l.href) || l.href === "/events")
-              .filter((l) => !["/tenders", "/investors", "/schemes", "/resources", "/analytics", "/gallery"].includes(l.href))
-              .slice(0, 3)
-              .map((link) => (
-                <Link key={link.href} href={link.href} className={navLink(isActive(link.href))}>
-                  {link.label}
-                </Link>
-              ))}
+          <nav className={cn("hidden lg:flex items-center gap-1", navAlign)}>
+            {beforePortals.map((link) => (
+              <Link key={link.href} href={link.href} className={navLink(isActive(link.href))}>
+                {link.label}
+              </Link>
+            ))}
 
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
-                className={`flex items-center gap-1 px-3 py-2 rounded-md text-[13px] font-semibold cursor-pointer transition-colors ${
-                  portalsActive ? "text-gold" : "text-white/75 hover:text-white"
-                }`}
-              >
-                Portals <ChevronDown className="h-3.5 w-3.5 text-gold/80" />
-              </button>
+            {layout.showPortalsDropdown &&
+              layout.portalsPosition === "after-primary" &&
+              PortalsDropdown}
 
-              {dropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-56 border border-white/10 bg-navy-deep p-1.5 shadow-2xl z-50">
-                  {portalLinks.map((item) => {
-                    const Icon = PORTAL_ICONS[item.href] || FileText;
-                    return (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-white/80 hover:bg-white/8 hover:text-gold transition-colors"
-                      >
-                        <Icon className="h-4 w-4 text-gold/70" />
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            {afterPortals.map((link) => (
+              <Link key={link.href} href={link.href} className={navLink(isActive(link.href))}>
+                {link.label}
+              </Link>
+            ))}
 
-            {headerLinks
-              .filter((l) =>
-                ["/membership", "/events", "/contact"].includes(l.href)
-              )
-              .map((link) => (
-                <Link key={link.href} href={link.href} className={navLink(isActive(link.href))}>
-                  {link.label}
-                </Link>
-              ))}
+            {layout.showPortalsDropdown &&
+              (layout.portalsPosition === "before-cta" ||
+                layout.portalsPosition === "end") &&
+              PortalsDropdown}
           </nav>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="flex h-10 w-10 items-center justify-center rounded-md border border-white/15 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4 text-gold" />
-            </button>
+          <div
+            className={cn(
+              "flex items-center gap-1.5 sm:gap-2 shrink-0",
+              layout.menuAlign === "left" && "ml-auto",
+              layout.menuAlign === "center" && "absolute right-4 md:right-6"
+            )}
+          >
+            {layout.showSearch && (
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="flex h-10 w-10 items-center justify-center rounded-md border border-white/15 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
+                aria-label="Search"
+              >
+                <Search className="h-4 w-4 text-gold" />
+              </button>
+            )}
 
-            <Link
-              href="/membership"
-              className="hidden sm:inline-flex btn-primary !px-4 !py-2 !w-auto text-xs"
-            >
-              Join Us
-            </Link>
+            {layout.showCta && (
+              <Link
+                href={layout.ctaHref || "/membership"}
+                className="hidden sm:inline-flex btn-primary !px-4 !py-2 !w-auto text-xs"
+              >
+                {layout.ctaLabel || "Join Us"}
+              </Link>
+            )}
 
             <button
               type="button"
@@ -259,14 +328,17 @@ export const Nav: React.FC = () => {
               <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3.5">
                 <div className="flex min-w-0 items-center gap-2.5">
                   <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white p-0.5 ring-2 ring-gold/60">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/images/logo.png"
+                      src={site.logo || "/images/logo.png"}
                       alt=""
                       className="h-full w-full rounded-full object-contain"
                     />
                   </span>
                   <div className="min-w-0">
-                    <div className="font-display text-sm font-extrabold truncate">EIDF</div>
+                    <div className="font-display text-sm font-extrabold truncate">
+                      {site.shortName || "EIDF"}
+                    </div>
                     <div className="text-[10px] text-white/45 truncate">{site.poweredBy}</div>
                   </div>
                 </div>
@@ -309,50 +381,56 @@ export const Nav: React.FC = () => {
                   })}
                 </ul>
 
-                <p className="px-3 mt-5 mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-gold/80">
-                  Portals
-                </p>
-                <ul className="space-y-0.5">
-                  {portalLinks.filter((item) => item.href !== "/events").map((item) => {
-                    const active = isActive(item.href);
-                    const Icon = PORTAL_ICONS[item.href] || FileText;
-                    return (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={`flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
-                            active
-                              ? "bg-gold/15 text-gold"
-                              : "text-white/85 hover:bg-white/8 hover:text-white"
-                          }`}
-                        >
-                          <Icon
-                            className={`h-4 w-4 shrink-0 ${active ? "text-gold" : "text-gold/55"}`}
-                          />
-                          {item.label}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
+                {layout.showPortalsDropdown && portalLinks.length > 0 && (
+                  <>
+                    <p className="px-3 mt-5 mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-gold/80">
+                      {layout.portalsLabel || "Portals"}
+                    </p>
+                    <ul className="space-y-0.5">
+                      {portalLinks.map((item) => {
+                        const active = isActive(item.href);
+                        const Icon = PORTAL_ICONS[item.href] || FileText;
+                        return (
+                          <li key={item.href}>
+                            <Link
+                              href={item.href}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className={`flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors ${
+                                active
+                                  ? "bg-gold/15 text-gold"
+                                  : "text-white/85 hover:bg-white/8 hover:text-white"
+                              }`}
+                            >
+                              <Icon
+                                className={`h-4 w-4 shrink-0 ${active ? "text-gold" : "text-gold/55"}`}
+                              />
+                              {item.label}
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
+                )}
               </nav>
 
               <div className="border-t border-white/10 p-4 space-y-3">
                 <a
-                  href="tel:+9106512912025"
+                  href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
                   className="flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-xs font-semibold text-white/85 hover:bg-white/10"
                 >
                   <Phone className="h-3.5 w-3.5 text-emerald" />
-                  +91 (0651) 291-2025
+                  {site.phone}
                 </a>
-                <Link
-                  href="/membership"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="btn-primary !w-full !rounded-xl"
-                >
-                  Join Us
-                </Link>
+                {layout.showCta && (
+                  <Link
+                    href={layout.ctaHref || "/membership"}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="btn-primary !w-full !rounded-xl"
+                  >
+                    {layout.ctaLabel || "Join Us"}
+                  </Link>
+                )}
               </div>
             </motion.aside>
           </div>

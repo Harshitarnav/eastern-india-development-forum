@@ -65,7 +65,7 @@ export function CmsMediaLibrary() {
         </h2>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <AdminFieldLabel>Public URL (or upload file)</AdminFieldLabel>
+            <AdminFieldLabel>Path / public URL</AdminFieldLabel>
             <input
               className={adminFieldClass}
               value={url}
@@ -74,7 +74,7 @@ export function CmsMediaLibrary() {
             />
           </div>
           <div>
-            <AdminFieldLabel>Upload file (Supabase Storage)</AdminFieldLabel>
+            <AdminFieldLabel>Upload file (local or Supabase)</AdminFieldLabel>
             <input
               type="file"
               accept="image/*,application/pdf"

@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { CmsCollectionPage } from "@/components/cms/CmsCollectionPage";
+import { NEWS_FIELDS } from "@/components/cms/homepage-field-defs";
 
 export default function Page() {
   return (
@@ -9,12 +10,7 @@ export default function Page() {
       collection="news"
       titleKey="title"
       subtitleKey="date"
-      fields={[
-        { key: "title", label: "Title", required: true },
-        { key: "date", label: "Date" },
-        { key: "summary", label: "Summary", type: "textarea" },
-        { key: "tag", label: "Tag" },
-      ]}
+      fields={NEWS_FIELDS}
     />
   );
 }

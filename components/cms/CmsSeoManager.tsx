@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Save, Search } from "lucide-react";
 import { AdminFieldLabel, adminFieldClass } from "@/components/ui";
+import { CmsImageField } from "@/components/cms/CmsImageField";
 import { cn } from "@/lib/utils";
 import type { CmsSeoRecord } from "@/lib/cms/types";
 
@@ -123,38 +124,51 @@ export function CmsSeoManager() {
                 ["canonical", "Canonical URL"],
                 ["og_title", "OG Title"],
                 ["og_description", "OG Description"],
-                ["og_image", "OG Image URL"],
+                ["og_image", "OG Image"],
                 ["twitter_title", "Twitter Title"],
                 ["twitter_description", "Twitter Description"],
-                ["twitter_image", "Twitter Image URL"],
+                ["twitter_image", "Twitter Image"],
                 ["robots", "Robots"],
               ] as const
-            ).map(([key, label]) => (
-              <div key={key}>
-                <AdminFieldLabel>{label}</AdminFieldLabel>
-                {key.includes("description") ? (
-                  <textarea
-                    className={cn(adminFieldClass, "min-h-24")}
-                    value={String(form[key] ?? "")}
-                    onChange={(e) =>
-                      setForm((prev) =>
-                        prev ? { ...prev, [key]: e.target.value } : prev
-                      )
-                    }
-                  />
-                ) : (
-                  <input
-                    className={adminFieldClass}
-                    value={String(form[key] ?? "")}
-                    onChange={(e) =>
-                      setForm((prev) =>
-                        prev ? { ...prev, [key]: e.target.value } : prev
-                      )
-                    }
-                  />
-                )}
-              </div>
-            ))}
+            ).map(([key, label]) =>
+              key === "og_image" || key === "twitter_image" ? (
+                <CmsImageField
+                  key={key}
+                  label={label}
+                  value={String(form[key] ?? "")}
+                  folder="seo"
+                  placeholder="/images/hero-banner.jpg"
+                  onChange={(next) =>
+                    setForm((prev) => (prev ? { ...prev, [key]: next } : prev))
+                  }
+                />
+              ) : (
+                <div key={key}>
+                  <AdminFieldLabel>{label}</AdminFieldLabel>
+                  {key.includes("description") ? (
+                    <textarea
+                      className={cn(adminFieldClass, "min-h-24")}
+                      value={String(form[key] ?? "")}
+                      onChange={(e) =>
+                        setForm((prev) =>
+                          prev ? { ...prev, [key]: e.target.value } : prev
+                        )
+                      }
+                    />
+                  ) : (
+                    <input
+                      className={adminFieldClass}
+                      value={String(form[key] ?? "")}
+                      onChange={(e) =>
+                        setForm((prev) =>
+                          prev ? { ...prev, [key]: e.target.value } : prev
+                        )
+                      }
+                    />
+                  )}
+                </div>
+              )
+            )}
 
             <label className="flex items-center gap-2 text-sm font-semibold text-[var(--admin-text)]">
               <input

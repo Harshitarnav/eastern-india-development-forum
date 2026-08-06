@@ -6,6 +6,7 @@ import type {
   CmsSettings,
   CmsStoreSnapshot,
 } from "@/lib/cms/types";
+import { DEFAULT_HEADER_LAYOUT, DEFAULT_HOMEPAGE, DEFAULT_INVESTORS_PAGE } from "@/lib/cms/types";
 
 const GALLERY_SEED = [
   { id: "img-hero", src: "/images/hero-banner.jpg", title: "EIDF Core Development Vision Banner", category: "Identity & Media", description: "Flagship promotional banner illustrating regional infrastructure integration.", location: "Ranchi HQ, Jharkhand", date: "July 2026" },
@@ -25,6 +26,7 @@ const GALLERY_SEED = [
   { id: "img-12", src: "/images/eidf_12.jpg", title: "Smart Water Management Briefing", category: "Site Visits", description: "Solar irrigation briefing.", location: "Bhubaneswar, Odisha", date: "June 2026" },
   { id: "img-13", src: "/images/eidf_13.jpg", title: "Rural Electrification Assessment", category: "Site Visits", description: "Solar micro-grid verification.", location: "Simdega, Jharkhand", date: "May 2026" },
   { id: "img-14", src: "/images/eidf_14.jpg", title: "Diaspora Cultural Integration Meet", category: "Community", description: "Cultural integration meet.", location: "Newtown, Kolkata", date: "July 2026" },
+  { id: "img-15", src: "/images/eidf_15.jpeg", title: "EIDF Regional Outreach Moment", category: "Community", description: "Community and stakeholder engagement captured during EIDF regional outreach.", location: "Eastern India", date: "August 2026" },
 ];
 
 function toItems(collection: string, rows: unknown[]): CmsItemRecord[] {
@@ -73,7 +75,11 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
     ],
     loaderMessage: "Preparing Your Experience…",
     loaderTagline: "Building the Future of Eastern India",
-    hero: site.hero,
+    logo: "/images/logo.png",
+    hero: {
+      ...site.hero,
+      image: "/images/hero-banner.jpg",
+    },
     analytics: {
       stateCapital: [
         { name: "Odisha", capital: 14800 },
@@ -91,6 +97,9 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
       ],
     },
     siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://eidf.org.in",
+    headerLayout: { ...DEFAULT_HEADER_LAYOUT },
+    homepage: { ...DEFAULT_HOMEPAGE },
+    investorsPage: { ...DEFAULT_INVESTORS_PAGE },
   };
 
   const navigation: CmsNavItem[] = [
@@ -143,7 +152,6 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
 
   const items: CmsItemRecord[] = [
     ...toItems("projects", site.projects),
-    ...toItems("allProjects", site.allProjects),
     ...toItems("schemes", site.schemes),
     ...toItems("tenders", site.tenders),
     ...toItems("investmentZones", site.investmentZones),
@@ -170,21 +178,97 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
     ),
     ...toItems("gallery", GALLERY_SEED),
     ...toItems("impactStats", site.impactStats),
-    ...toItems(
-      "upcomingEvents",
-      site.upcomingEvents.map((e, i) => ({ id: `upcoming-${i}`, ...e }))
-    ),
+    ...toItems("onlineServices", [
+      {
+        id: "svc-tenders",
+        label: "Tenders",
+        desc: "RFP & procurement",
+        href: "/tenders",
+        iconName: "FileText",
+      },
+      {
+        id: "svc-schemes",
+        label: "Schemes",
+        desc: "Subsidies & incentives",
+        href: "/schemes",
+        iconName: "LayoutDashboard",
+      },
+      {
+        id: "svc-investors",
+        label: "Investors",
+        desc: "PPP & industrial parks",
+        href: "/investors",
+        iconName: "Briefcase",
+      },
+      {
+        id: "svc-projects",
+        label: "Projects",
+        desc: "Active corridors",
+        href: "/projects",
+        iconName: "Building2",
+      },
+      {
+        id: "svc-resources",
+        label: "Resources",
+        desc: "Reports & policies",
+        href: "/resources",
+        iconName: "BookOpen",
+      },
+      {
+        id: "svc-membership",
+        label: "Membership",
+        desc: "Join the network",
+        href: "/membership",
+        iconName: "Users",
+      },
+      {
+        id: "svc-analytics",
+        label: "Analytics",
+        desc: "Regional dashboards",
+        href: "/analytics",
+        iconName: "BarChart3",
+      },
+      {
+        id: "svc-contact",
+        label: "Help Desk",
+        desc: "Get assistance",
+        href: "/contact",
+        iconName: "ShieldCheck",
+      },
+    ]),
     ...toItems("sections", [
       { id: "hero", key: "hero", title: "Hero", is_visible: true },
+      {
+        id: "onlineServices",
+        key: "onlineServices",
+        title: "Online Services",
+        is_visible: true,
+      },
       { id: "impact", key: "impact", title: "Impact Stats", is_visible: true },
-      { id: "map", key: "map", title: "State Map", is_visible: true },
+      { id: "about", key: "about", title: "About", is_visible: true },
       { id: "focus", key: "focus", title: "Focus Areas", is_visible: true },
-      { id: "projects", key: "projects", title: "Projects", is_visible: true },
+      { id: "map", key: "map", title: "State Map", is_visible: true },
       { id: "schemes", key: "schemes", title: "Schemes", is_visible: true },
       { id: "tenders", key: "tenders", title: "Tenders", is_visible: true },
-      { id: "investors", key: "investors", title: "Investors", is_visible: true },
-      { id: "resources", key: "resources", title: "Resources", is_visible: true },
-      { id: "events", key: "events", title: "Events & News", is_visible: true },
+      { id: "projects", key: "projects", title: "Projects", is_visible: true },
+      {
+        id: "investors",
+        key: "investors",
+        title: "Investors",
+        is_visible: true,
+      },
+      {
+        id: "resources",
+        key: "resources",
+        title: "Resources",
+        is_visible: true,
+      },
+      {
+        id: "events",
+        key: "events",
+        title: "Events & News",
+        is_visible: true,
+      },
       { id: "faq", key: "faq", title: "FAQs", is_visible: true },
       { id: "offices", key: "offices", title: "Offices", is_visible: true },
       { id: "cta", key: "cta", title: "Bottom CTA", is_visible: true },

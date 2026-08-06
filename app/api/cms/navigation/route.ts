@@ -30,8 +30,19 @@ export async function PUT(request: NextRequest) {
   if (!Array.isArray(body.navigation)) {
     return NextResponse.json({ error: "navigation array required" }, { status: 400 });
   }
-  invalidateCmsCache();
-  const snap = await setCmsNavigation(body.navigation, auth.user.email);
-  revalidateCms("nav");
-  return NextResponse.json({ navigation: snap.navigation });
+  try {
+    invalidateCmsCache();
+    const snap = await setCmsNavigation(body.navigation, auth.user.email);
+    revalidateCms("nav");
+    return NextResponse.json({ navigation: snap.navigation });
+  } catch (err) {
+    console.error("cms navigation save failed", err);
+    return NextResponse.json(
+      {
+        error:
+          err instanceof Error ? err.message : "Failed to save navigation",
+      },
+      { status: 500 }
+    );
+  }
 }
