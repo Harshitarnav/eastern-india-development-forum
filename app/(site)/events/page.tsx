@@ -130,7 +130,7 @@ export default async function EventsPage() {
                     {nw.title}
                   </h3>
                   <p className="mt-2 text-sm text-muted max-w-3xl">{nw.summary}</p>
-                  {nw.url && (
+                  {nw.url && !nw.url.startsWith("#") && (
                     <a
                       href={nw.url}
                       className="mt-3 inline-flex items-center gap-1 text-sm font-bold text-navy hover:text-gold"

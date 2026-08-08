@@ -2,22 +2,47 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { MapPin, Mail, Phone } from "lucide-react";
+import { MapPin, Mail, Phone, Loader2 } from "lucide-react";
 import { usePublicNav, usePublicSite } from "@/lib/cms/public-provider";
+import { sanitizeTel } from "@/lib/utils";
 
 export const Footer: React.FC = () => {
   const site = usePublicSite();
   const footerLinks = usePublicNav("footer");
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [error, setError] = useState("");
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
-    if (email) {
-      setSubscribed(true);
+    if (!email) return;
+    setStatus("loading");
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: email.split("@")[0] || "Subscriber",
+          email,
+          subject: "Newsletter",
+          message: "Please add this email to monthly EIDF briefings on RFPs, investment policy, and project milestones.",
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(json.error || "Could not subscribe. Try again.");
+        setStatus("error");
+        return;
+      }
       setEmail("");
+      setStatus("done");
+    } catch {
+      setError("Network error. Please try again.");
+      setStatus("error");
     }
-  };
+  }
 
   return (
     <footer className="border-t border-white/10 bg-navy-deep text-white">
@@ -53,7 +78,7 @@ export const Footer: React.FC = () => {
                 {site.email}
               </a>
               <a
-                href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
+                href={`tel:${sanitizeTel(site.phone)}`}
                 className="flex items-center gap-2 hover:text-gold transition-colors"
               >
                 <Phone className="h-4 w-4 text-amber shrink-0" />
@@ -80,19 +105,37 @@ export const Footer: React.FC = () => {
             <p className="text-sm text-white/55 leading-relaxed mb-4">
               Monthly updates on RFPs, investment policy, and project milestones.
             </p>
-            <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Professional email"
-                className="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/35 focus:border-gold focus:outline-none"
-              />
-              <button type="submit" className="btn-primary !rounded-lg w-full !py-3">
-                {subscribed ? "Subscribed" : "Subscribe"}
-              </button>
-            </form>
+            {status === "done" ? (
+              <p className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald">
+                You&apos;re subscribed. We&apos;ll be in touch.
+              </p>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Professional email"
+                  disabled={status === "loading"}
+                  className="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/35 focus:border-gold focus:outline-none disabled:opacity-60"
+                />
+                {error && <p className="text-xs text-red-300">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="btn-primary !rounded-lg w-full !py-3 disabled:opacity-60"
+                >
+                  {status === "loading" ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" /> Subscribing…
+                    </span>
+                  ) : (
+                    "Subscribe"
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
 

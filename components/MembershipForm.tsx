@@ -15,29 +15,34 @@ export function MembershipForm() {
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    const res = await fetch("/api/membership", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        full_name: data.get("full_name"),
-        email: data.get("email"),
-        city: data.get("city"),
-        country: data.get("country"),
-        contribution_type: data.get("contribution_type"),
-        message: data.get("message"),
-        phone: data.get("phone"),
-      }),
-    });
+    try {
+      const res = await fetch("/api/membership", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: data.get("full_name"),
+          email: data.get("email"),
+          city: data.get("city"),
+          country: data.get("country"),
+          contribution_type: data.get("contribution_type"),
+          message: data.get("message"),
+          phone: data.get("phone"),
+        }),
+      });
 
-    if (!res.ok) {
-      const json = await res.json().catch(() => ({}));
-      setError(json.error || "Something went wrong.");
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        setError(json.error || "Something went wrong.");
+        setStatus("error");
+        return;
+      }
+
+      form.reset();
+      setStatus("done");
+    } catch {
+      setError("Network error. Please try again.");
       setStatus("error");
-      return;
     }
-
-    form.reset();
-    setStatus("done");
   }
 
   if (status === "done") {

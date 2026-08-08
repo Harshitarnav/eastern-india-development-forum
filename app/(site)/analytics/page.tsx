@@ -66,9 +66,11 @@ export default function AnalyticsPage() {
           </div>
         </div>
         <div>
-          <div className="font-display text-2xl md:text-3xl font-extrabold text-emerald-dark">+24%</div>
+          <div className="font-display text-2xl md:text-3xl font-extrabold text-emerald-dark">
+            {stateCapitalData.length}
+          </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            YoY Capital Growth
+            States &amp; Regions Tracked
           </div>
         </div>
         <div>

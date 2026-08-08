@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Mail, Users, RefreshCw } from "lucide-react";
+import { FileText, Mail, Users, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Tab = "membership" | "contact";
+type Tab = "membership" | "contact" | "proposal";
 
 export function CmsFormsInbox() {
   const [tab, setTab] = useState<Tab>("membership");
@@ -46,7 +46,7 @@ export function CmsFormsInbox() {
             Forms inbox
           </h1>
           <p className="mt-1 text-sm text-[var(--admin-muted)]">
-            Membership applications and contact messages from the public site.
+            Membership, contact, and proposal submissions from the public site.
           </p>
         </div>
         <button
@@ -58,11 +58,12 @@ export function CmsFormsInbox() {
         </button>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {(
           [
             { id: "membership" as const, label: "Membership", icon: Users },
             { id: "contact" as const, label: "Contact", icon: Mail },
+            { id: "proposal" as const, label: "Proposals", icon: FileText },
           ] as const
         ).map((t) => (
           <button
@@ -110,18 +111,25 @@ export function CmsFormsInbox() {
                 <tr key={String(row.id)} className="border-b border-[var(--admin-border)]/60">
                   <td className="px-4 py-3">
                     <div className="font-semibold text-[var(--admin-text)]">
-                      {String(row.full_name || "")}
+                      {String(row.full_name || row.contact_name || "")}
                     </div>
                     <div className="text-xs text-[var(--admin-muted)]">
-                      {String(row.email || "")}
+                      {String(row.email || row.contact_email || "")}
                     </div>
+                    {row.ref_id ? (
+                      <div className="mt-1 font-mono text-[11px] text-gold">
+                        {String(row.ref_id)}
+                      </div>
+                    ) : null}
                   </td>
                   <td className="px-4 py-3 text-[var(--admin-muted)]">
                     <div className="line-clamp-2">
                       {String(
-                        row.subject ||
+                        row.title ||
+                          row.subject ||
                           row.contribution_type ||
                           row.message ||
+                          row.summary ||
                           "—"
                       )}
                     </div>

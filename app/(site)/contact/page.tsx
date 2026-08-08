@@ -4,19 +4,41 @@ import { ContactForm } from "@/components/ContactForm";
 import { PageHero, SectionHeader } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { buildPageMetadata } from "@/lib/cms/seo";
+import { sanitizeTel, subjectFromIntent } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/contact", { title: "Contact" });
 }
 
+function messageFromParams(params: {
+  intent?: string;
+  zone?: string;
+  ref?: string;
+}) {
+  const bits: string[] = [];
+  if (params.zone) bits.push(`Investment zone of interest: ${params.zone}.`);
+  if (params.ref) bits.push(`Reference: ${params.ref}.`);
+  if (params.intent === "event_register") {
+    bits.push("I would like to register / request an invite for an upcoming EIDF event.");
+  }
+  if (params.intent === "report_request") {
+    bits.push("Please share the requested research report / briefing.");
+  }
+  if (params.intent === "tender" || params.intent === "tender_guidance") {
+    bits.push("I need tender documentation guidance and eligibility support.");
+  }
+  return bits.join(" ");
+}
+
 export default async function ContactPage({
   searchParams,
 }: {
-  searchParams: Promise<{ intent?: string }>;
+  searchParams: Promise<{ intent?: string; zone?: string; ref?: string }>;
 }) {
   const { site } = await getPublicCmsBundle();
   const params = await searchParams;
-  const defaultSubject = params.intent === "donate" ? "Funding" : "Membership";
+  const defaultSubject = subjectFromIntent(params.intent);
+  const defaultMessage = messageFromParams(params);
 
   return (
     <>
@@ -30,7 +52,7 @@ export default async function ContactPage({
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-12">
           <div className="lg:col-span-7">
-            <ContactForm defaultSubject={defaultSubject} />
+            <ContactForm defaultSubject={defaultSubject} defaultMessage={defaultMessage} />
           </div>
 
           <div className="lg:col-span-5 space-y-8">
@@ -45,7 +67,7 @@ export default async function ContactPage({
                 <a href={`mailto:${site.email}`} className="flex items-center gap-2.5 text-white/80 hover:text-gold transition-colors">
                   <Mail className="h-4 w-4 text-gold" /> {site.email}
                 </a>
-                <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="flex items-center gap-2.5 text-white/80 hover:text-gold transition-colors">
+                <a href={`tel:${sanitizeTel(site.phone)}`} className="flex items-center gap-2.5 text-white/80 hover:text-gold transition-colors">
                   <Phone className="h-4 w-4 text-emerald" /> {site.phone}
                 </a>
               </div>

@@ -11,21 +11,58 @@ import {
   FileText,
   MapPin,
   Building2,
+  Loader2,
 } from "lucide-react";
 import { PageHero, FieldLabel, fieldClass } from "@/components/ui";
 
 export default function SubmitProposalPage() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [error, setError] = useState("");
+  const [refId, setRefId] = useState("");
   const [title, setTitle] = useState("");
   const [state, setState] = useState("Bihar");
   const [sector, setSector] = useState("Infrastructure");
   const [budget, setBudget] = useState("");
   const [desc, setDesc] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [dprNote, setDprNote] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
-  };
+    setStatus("loading");
+    setError("");
+
+    try {
+      const res = await fetch("/api/proposals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          state,
+          sector,
+          budget,
+          summary: desc,
+          contact_name: contactName,
+          contact_email: contactEmail,
+          contact_phone: contactPhone,
+          dpr_note: dprNote || null,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(json.error || "Something went wrong.");
+        setStatus("error");
+        return;
+      }
+      setRefId(String(json.ref_id || ""));
+      setStatus("done");
+    } catch {
+      setError("Network error. Please try again.");
+      setStatus("error");
+    }
+  }
 
   return (
     <>
@@ -39,7 +76,7 @@ export default function SubmitProposalPage() {
 
       <section className="px-4 py-14 md:py-16">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.4fr_1fr]">
-          {submitted ? (
+          {status === "done" ? (
             <div className="rounded-3xl border border-emerald/20 bg-white p-10 text-center shadow-xl md:p-12">
               <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald/15 text-emerald">
                 <CheckCircle className="h-8 w-8" />
@@ -49,7 +86,7 @@ export default function SubmitProposalPage() {
               </h2>
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
                 Your proposal has been logged with EIDF Facilitation Desk. Ref ID:{" "}
-                <span className="font-mono font-bold text-gold">PROP-2026-9941</span>. An
+                <span className="font-mono font-bold text-gold">{refId}</span>. An
                 officer will get in touch within 2 business days.
               </p>
               <Link
@@ -82,6 +119,7 @@ export default function SubmitProposalPage() {
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Multimodal Cold Storage Terminal at Muzaffarpur"
                   className={fieldClass}
+                  disabled={status === "loading"}
                 />
               </div>
 
@@ -92,6 +130,7 @@ export default function SubmitProposalPage() {
                     value={state}
                     onChange={(e) => setState(e.target.value)}
                     className={fieldClass}
+                    disabled={status === "loading"}
                   >
                     <option value="Bihar">Bihar</option>
                     <option value="Jharkhand">Jharkhand</option>
@@ -108,6 +147,7 @@ export default function SubmitProposalPage() {
                     value={sector}
                     onChange={(e) => setSector(e.target.value)}
                     className={fieldClass}
+                    disabled={status === "loading"}
                   >
                     <option value="Infrastructure">Infrastructure & Logistics</option>
                     <option value="Renewable Energy">Renewable Energy</option>
@@ -127,6 +167,7 @@ export default function SubmitProposalPage() {
                   onChange={(e) => setBudget(e.target.value)}
                   placeholder="e.g. ₹45 Crores"
                   className={fieldClass}
+                  disabled={status === "loading"}
                 />
               </div>
 
@@ -139,29 +180,96 @@ export default function SubmitProposalPage() {
                   onChange={(e) => setDesc(e.target.value)}
                   placeholder="Detail key objectives, land requirement, job creation potential, and required state clearances..."
                   className={fieldClass}
+                  disabled={status === "loading"}
                 />
               </div>
 
-              <div className="rounded-2xl border border-dashed border-line bg-cream p-8 text-center transition-colors hover:border-gold/40">
-                <Upload className="mx-auto mb-2 h-7 w-7 text-gold" />
-                <div className="text-sm font-semibold text-navy">
-                  Upload Detailed Project Report
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <FieldLabel>Contact Name *</FieldLabel>
+                  <input
+                    type="text"
+                    required
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    placeholder="Primary contact"
+                    className={fieldClass}
+                    disabled={status === "loading"}
+                  />
                 </div>
-                <div className="mt-1 text-xs text-muted">
-                  DPR / Pitch Deck (PDF, Max 20MB)
+                <div>
+                  <FieldLabel>Contact Email *</FieldLabel>
+                  <input
+                    type="email"
+                    required
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className={fieldClass}
+                    disabled={status === "loading"}
+                  />
                 </div>
               </div>
 
+              <div>
+                <FieldLabel>Contact Phone (optional)</FieldLabel>
+                <input
+                  type="tel"
+                  value={contactPhone}
+                  onChange={(e) => setContactPhone(e.target.value)}
+                  placeholder="+91 ..."
+                  className={fieldClass}
+                  disabled={status === "loading"}
+                />
+              </div>
+
+              <div className="rounded-2xl border border-dashed border-line bg-cream p-6">
+                <div className="flex items-start gap-3">
+                  <Upload className="mt-0.5 h-6 w-6 shrink-0 text-gold" />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-semibold text-navy">
+                      Detailed Project Report
+                    </div>
+                    <p className="mt-1 text-xs leading-relaxed text-muted">
+                      After submission, email your DPR / pitch deck (PDF, max 20MB) to the
+                      facilitation desk with your Ref ID in the subject line.
+                    </p>
+                    <input
+                      type="text"
+                      value={dprNote}
+                      onChange={(e) => setDprNote(e.target.value)}
+                      placeholder="Optional note (e.g. DPR ready / will send by email)"
+                      className={`${fieldClass} mt-3`}
+                      disabled={status === "loading"}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {error && (
+                <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </p>
+              )}
+
               <button
                 type="submit"
-                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-navy py-4 text-sm font-bold text-white shadow-lg transition-all hover:bg-navy-light"
+                disabled={status === "loading"}
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-navy py-4 text-sm font-bold text-white shadow-lg transition-all hover:bg-navy-light disabled:opacity-60"
               >
-                Submit Project Proposal to Board <Send className="h-4 w-4 text-gold" />
+                {status === "loading" ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin text-gold" /> Submitting…
+                  </>
+                ) : (
+                  <>
+                    Submit Project Proposal to Board <Send className="h-4 w-4 text-gold" />
+                  </>
+                )}
               </button>
             </form>
           )}
 
-          {/* Side panel */}
           <div className="flex flex-col gap-5">
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy-deep via-navy to-slate-dark p-7 text-white shadow-xl">
               <div className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-gold/15 blur-2xl" />

@@ -76,13 +76,9 @@ export async function POST(request: NextRequest) {
   }
 
   const sessionId = createSessionId();
-  await setAuthCookies(admin, sessionId);
-
-  // Extend refresh cookie if remember me
-  if (rememberMe) {
-    // Cookies already set with 7-day refresh; rememberMe keeps same policy
-    void REFRESH_TOKEN_TTL;
-  }
+  await setAuthCookies(admin, sessionId, {
+    refreshMaxAge: rememberMe ? REFRESH_TOKEN_TTL * 4 : REFRESH_TOKEN_TTL,
+  });
 
   resetRateLimit(rateKey);
   logLoginActivity({

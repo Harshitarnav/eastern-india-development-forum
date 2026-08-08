@@ -11,6 +11,11 @@ export default function TendersPage() {
   const [filterState, setFilterState] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
+  const stateFilters = [
+    "All",
+    ...Array.from(new Set(site.tenders.map((t) => t.state).filter(Boolean))).sort(),
+  ];
+
   const filteredTenders = site.tenders.filter((tnd) => {
     const matchState = filterState === "All" || tnd.state === filterState;
     const matchQuery =
@@ -18,6 +23,14 @@ export default function TendersPage() {
       tnd.tenderNo.toLowerCase().includes(searchQuery.toLowerCase());
     return matchState && matchQuery;
   });
+
+  function docHref(tnd: (typeof site.tenders)[number]) {
+    const link = tnd.docLink || "";
+    if (!link || link.startsWith("#") || link.includes("/docs/tenders/")) {
+      return `/contact?intent=tender_guidance&ref=${encodeURIComponent(tnd.tenderNo)}`;
+    }
+    return link;
+  }
 
   return (
     <>
@@ -40,7 +53,7 @@ export default function TendersPage() {
             />
           </div>
           <div className="flex flex-wrap gap-2">
-            {["All", "Bihar", "Jharkhand", "Odisha"].map((st) => (
+            {stateFilters.map((st) => (
               <button
                 key={st}
                 onClick={() => setFilterState(st)}
@@ -110,7 +123,12 @@ export default function TendersPage() {
                             >
                               Guidance
                             </Link>
-                            <a href={tnd.docLink} className="text-muted hover:text-navy" aria-label="Download">
+                            <a
+                              href={docHref(tnd)}
+                              className="text-muted hover:text-navy"
+                              aria-label="Request tender documents"
+                              title="Request documents"
+                            >
                               <Download className="h-4 w-4" />
                             </a>
                           </div>
@@ -132,12 +150,20 @@ export default function TendersPage() {
                       <span className="font-bold text-emerald-dark">{tnd.estimatedCost}</span>
                       <span className="font-bold text-amber">Closes {tnd.closingDate}</span>
                     </div>
-                    <Link
-                      href="/contact?intent=tender_guidance"
-                      className="inline-block mt-2 text-xs font-bold text-navy hover:text-gold"
-                    >
-                      Request guidance →
-                    </Link>
+                    <div className="flex flex-wrap gap-3 pt-1">
+                      <Link
+                        href="/contact?intent=tender_guidance"
+                        className="inline-block text-xs font-bold text-navy hover:text-gold"
+                      >
+                        Request guidance →
+                      </Link>
+                      <a
+                        href={docHref(tnd)}
+                        className="inline-block text-xs font-bold text-muted hover:text-navy"
+                      >
+                        Request documents →
+                      </a>
+                    </div>
                   </div>
                 ))}
               </div>

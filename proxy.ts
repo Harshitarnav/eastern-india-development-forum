@@ -6,6 +6,11 @@ import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/auth/constants"
 function getSecret() {
   const secret = process.env.JWT_SECRET || process.env.ADMIN_JWT_SECRET;
   if (!secret || secret.length < 32) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "JWT_SECRET (min 32 chars) is required in production."
+      );
+    }
     return new TextEncoder().encode(
       "eidf-dev-jwt-secret-change-me-in-production-32+"
     );

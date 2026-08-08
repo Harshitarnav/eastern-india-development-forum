@@ -1,9 +1,26 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { supabaseInsert } from "@/lib/supabase/server";
 import { appendContactForm } from "@/lib/cms/forms-store";
 import { isSupabaseConfigured } from "@/lib/cms/supabase-store";
+import { checkRateLimit } from "@/lib/auth/rate-limit";
 
-export async function POST(request: Request) {
+function clientKey(request: NextRequest) {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown"
+  );
+}
+
+export async function POST(request: NextRequest) {
+  const rate = checkRateLimit(`contact:${clientKey(request)}`);
+  if (!rate.allowed) {
+    return NextResponse.json(
+      { error: "Too many submissions. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(rate.retryAfter) } }
+    );
+  }
+
   try {
     const body = await request.json();
     const full_name = String(body.full_name || "").trim();
@@ -17,6 +34,10 @@ export async function POST(request: Request) {
         { error: "Name, email, subject and message are required." },
         { status: 400 }
       );
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
     }
 
     const row = {

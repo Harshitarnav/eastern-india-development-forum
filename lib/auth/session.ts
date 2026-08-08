@@ -35,8 +35,13 @@ function cookieBase(maxAge: number) {
   };
 }
 
-export async function setAuthCookies(user: AdminUser, sessionId: string) {
+export async function setAuthCookies(
+  user: AdminUser,
+  sessionId: string,
+  options?: { refreshMaxAge?: number }
+) {
   const cookieStore = await cookies();
+  const refreshMaxAge = options?.refreshMaxAge ?? REFRESH_TOKEN_TTL;
   const accessToken = await signAccessToken({
     sub: user.id,
     email: user.email,
@@ -44,17 +49,20 @@ export async function setAuthCookies(user: AdminUser, sessionId: string) {
     role: user.role,
     sid: sessionId,
   });
-  const refreshToken = await signRefreshToken({
-    sub: user.id,
-    sid: sessionId,
-  });
+  const refreshToken = await signRefreshToken(
+    {
+      sub: user.id,
+      sid: sessionId,
+    },
+    refreshMaxAge
+  );
   const csrf = createCsrfToken();
 
   cookieStore.set(ACCESS_TOKEN_COOKIE, accessToken, cookieBase(ACCESS_TOKEN_TTL));
-  cookieStore.set(REFRESH_TOKEN_COOKIE, refreshToken, cookieBase(REFRESH_TOKEN_TTL));
-  cookieStore.set(SESSION_COOKIE, sessionId, cookieBase(REFRESH_TOKEN_TTL));
+  cookieStore.set(REFRESH_TOKEN_COOKIE, refreshToken, cookieBase(refreshMaxAge));
+  cookieStore.set(SESSION_COOKIE, sessionId, cookieBase(refreshMaxAge));
   cookieStore.set(CSRF_COOKIE, csrf, {
-    ...cookieBase(REFRESH_TOKEN_TTL),
+    ...cookieBase(refreshMaxAge),
     httpOnly: false,
   });
 
@@ -141,19 +149,30 @@ export function getAdminById(id: string) {
 }
 
 export async function validateAdminPassword(password: string) {
-  const configured = process.env.ADMIN_PASSWORD || "EIDF@Admin2026!";
   const hash = process.env.ADMIN_PASSWORD_HASH;
+  const configured = process.env.ADMIN_PASSWORD;
+
+  if (!hash && !configured) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("ADMIN_PASSWORD or ADMIN_PASSWORD_HASH must be set in production.");
+      return false;
+    }
+  }
+
+  const plain = configured || (process.env.NODE_ENV === "production" ? "" : "EIDF@Admin2026!");
 
   if (hash) {
     const { verifyPassword } = await import("@/lib/auth/password");
     return verifyPassword(password, hash);
   }
 
+  if (!plain) return false;
+
   // Constant-time-ish compare for plain env password (dev / bootstrap)
-  if (password.length !== configured.length) return false;
+  if (password.length !== plain.length) return false;
   let mismatch = 0;
-  for (let i = 0; i < configured.length; i++) {
-    mismatch |= configured.charCodeAt(i) ^ password.charCodeAt(i);
+  for (let i = 0; i < plain.length; i++) {
+    mismatch |= plain.charCodeAt(i) ^ password.charCodeAt(i);
   }
   return mismatch === 0;
 }

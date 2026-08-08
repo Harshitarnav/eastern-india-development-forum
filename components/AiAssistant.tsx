@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, X, Send, Sparkles, FileText, Briefcase, HelpCircle, Building2 } from "lucide-react";
+import { Bot, X, Send, Sparkles, FileText, Briefcase, Building2 } from "lucide-react";
 import Link from "next/link";
 
 interface Message {
@@ -52,7 +52,7 @@ export const AiAssistant: React.FC = () => {
           "EIDF facilitates active tenders across Bihar, Jharkhand, Odisha, West Bengal, and Assam. You can explore open RFPs, download documentation, or access tender guidance.";
         links = [
           { label: "View Tender Portal", href: "/tenders" },
-          { label: "Request Tender Assistance", href: "/contact?intent=tender" },
+          { label: "Request Tender Assistance", href: "/contact?intent=tender_guidance" },
         ];
       } else if (qLower.includes("invest") || qLower.includes("fdi") || qLower.includes("ppp") || qLower.includes("park")) {
         botReply =

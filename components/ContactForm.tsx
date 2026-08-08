@@ -4,9 +4,30 @@ import { FormEvent, useState } from "react";
 import { CheckCircle, Loader2, Send } from "lucide-react";
 import { FieldLabel, fieldClass } from "@/components/ui";
 
-export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?: string }) {
+const SUBJECTS = [
+  "Membership",
+  "Funding",
+  "Tender Guidance",
+  "Scheme Assistance",
+  "Investment Inquiry",
+  "Event Registration",
+  "Report Request",
+  "Media",
+  "Other",
+] as const;
+
+export function ContactForm({
+  defaultSubject = "Membership",
+  defaultMessage = "",
+}: {
+  defaultSubject?: string;
+  defaultMessage?: string;
+}) {
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState("");
+  const subjectOptions = SUBJECTS.includes(defaultSubject as (typeof SUBJECTS)[number])
+    ? SUBJECTS
+    : ([defaultSubject, ...SUBJECTS] as string[]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -15,27 +36,32 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        full_name: data.get("full_name"),
-        email: data.get("email"),
-        phone: data.get("phone"),
-        subject: data.get("subject"),
-        message: data.get("message"),
-      }),
-    });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: data.get("full_name"),
+          email: data.get("email"),
+          phone: data.get("phone"),
+          subject: data.get("subject"),
+          message: data.get("message"),
+        }),
+      });
 
-    if (!res.ok) {
-      const json = await res.json().catch(() => ({}));
-      setError(json.error || "Something went wrong.");
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        setError(json.error || "Something went wrong.");
+        setStatus("error");
+        return;
+      }
+
+      form.reset();
+      setStatus("done");
+    } catch {
+      setError("Network error. Please try again.");
       setStatus("error");
-      return;
     }
-
-    form.reset();
-    setStatus("done");
   }
 
   if (status === "done") {
@@ -83,10 +109,11 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
       <div className="mb-4">
         <FieldLabel>Subject</FieldLabel>
         <select name="subject" className={fieldClass} defaultValue={defaultSubject} disabled={status === "loading"}>
-          <option>Membership</option>
-          <option>Funding</option>
-          <option>Media</option>
-          <option>Other</option>
+          {subjectOptions.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
       </div>
       <div className="mb-5">
@@ -97,6 +124,7 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
           rows={6}
           className={fieldClass}
           placeholder="Tell us about your inquiry..."
+          defaultValue={defaultMessage}
           disabled={status === "loading"}
         />
       </div>

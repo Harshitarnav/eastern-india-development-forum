@@ -61,7 +61,10 @@ export default async function ResourcesPage() {
                   href={rep.downloadUrl}
                   className="inline-flex shrink-0 items-center gap-2 border border-navy bg-navy px-5 py-3 text-xs font-bold text-white hover:bg-navy-light transition-colors self-start"
                 >
-                  <Download className="h-4 w-4 text-gold" /> Download PDF
+                  <Download className="h-4 w-4 text-gold" />
+                  {rep.downloadUrl?.includes("/contact")
+                    ? "Request PDF"
+                    : "Download PDF"}
                 </a>
               </article>
             ))}

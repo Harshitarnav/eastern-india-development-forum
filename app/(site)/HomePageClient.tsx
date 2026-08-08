@@ -28,6 +28,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { InteractiveMap } from "@/components/InteractiveMap";
+import type { StateDetail } from "@/content/site";
 import { ImpactCounter } from "@/components/ImpactCounter";
 import { AiAssistant } from "@/components/AiAssistant";
 import { SectionHeader } from "@/components/ui";
@@ -335,7 +336,10 @@ export default function HomePageClient() {
               description={hp.map.description}
               align="left"
             />
-            <InteractiveMap states={site.statesData as any} chrome={hp.map} />
+            <InteractiveMap
+              states={site.statesData as StateDetail[]}
+              chrome={hp.map}
+            />
           </div>
         </section>
       )}
@@ -740,7 +744,8 @@ export default function HomePageClient() {
                     href={rep.downloadUrl}
                     className="inline-flex shrink-0 items-center gap-2 border border-navy bg-navy px-4 py-2.5 text-xs font-bold text-white hover:bg-navy-light"
                   >
-                    <Download className="h-3.5 w-3.5 text-gold" /> PDF
+                    <Download className="h-3.5 w-3.5 text-gold" />
+                    {rep.downloadUrl?.includes("/contact") ? "Request" : "PDF"}
                   </a>
                 </div>
               ))}
