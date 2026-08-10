@@ -1,52 +1,44 @@
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export function PageHero({
   crumb,
   title,
   description,
-  eyebrow,
   compact = false,
   children,
 }: {
   crumb: string;
   title: string;
   description?: string;
+  /** @deprecated Pills removed — kept for call-site compatibility */
   eyebrow?: string;
   compact?: boolean;
   children?: React.ReactNode;
 }) {
   return (
     <section
-      className={`relative overflow-hidden bg-gradient-to-br from-navy-deep via-navy to-slate-dark text-white ${
-        compact ? "px-4 py-16 md:py-20" : "px-4 py-20 md:py-28"
+      className={`relative overflow-hidden text-white ${
+        compact ? "px-4 py-12 md:py-14" : "px-4 py-14 md:py-20"
       }`}
     >
-      <div className="pointer-events-none absolute top-1/4 left-1/2 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-navy-mid/30 blur-[100px]" />
-      <div className="pointer-events-none absolute top-8 right-8 h-56 w-56 rounded-full bg-gold/10 blur-[80px]" />
-      <div className="pointer-events-none absolute bottom-8 left-8 h-64 w-64 rounded-full bg-emerald/10 blur-[90px]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-navy-deep via-navy to-navy-mid" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-emerald/10 to-transparent" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
-      <div className="relative mx-auto max-w-4xl text-center">
-        <div className="mb-4 text-xs text-white/50 md:text-sm">{crumb}</div>
-
-        {(eyebrow || crumb) && (
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-gold shadow-lg backdrop-blur-md">
-            <Sparkles className="h-3.5 w-3.5" />
-            {eyebrow || crumb.split("/").pop()?.trim()}
-          </div>
-        )}
-
-        <h1 className="font-display text-3xl font-extrabold leading-tight sm:text-4xl md:text-5xl">
+      <div className="relative mx-auto max-w-7xl">
+        <div className="mb-4 text-[11px] tracking-wide text-white/40">{crumb}</div>
+        <h1 className="max-w-3xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-[2.75rem]">
           {title}
         </h1>
-
         {description && (
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-relaxed text-white/75 md:text-base">
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/65 md:text-[15px]">
             {description}
           </p>
         )}
-
-        {children && <div className="mt-8 flex flex-wrap items-center justify-center gap-3">{children}</div>}
+        {children && (
+          <div className="mt-7 flex flex-wrap items-center gap-3">{children}</div>
+        )}
       </div>
     </section>
   );
@@ -59,20 +51,14 @@ export function Eyebrow({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <div
-      className={`mb-2.5 text-xs font-bold uppercase tracking-[2px] text-gold ${className}`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`section-eyebrow mb-2.5 ${className}`}>{children}</div>;
 }
 
 export function SectionHeader({
   eyebrow,
   title,
   description,
-  align = "center",
+  align = "left",
   light = false,
 }: {
   eyebrow: string;
@@ -83,15 +69,25 @@ export function SectionHeader({
 }) {
   return (
     <div className={`mb-10 ${align === "center" ? "text-center" : "text-left"}`}>
-      <span
-        className={`text-xs font-bold uppercase tracking-widest ${
-          light ? "text-gold" : "text-gold"
+      <div
+        className={`inline-flex items-center gap-3 ${
+          align === "center" ? "justify-center" : ""
         }`}
       >
-        {eyebrow}
-      </span>
+        <span
+          className={`hidden h-px w-8 sm:block ${light ? "bg-gold/60" : "bg-gold"}`}
+          aria-hidden
+        />
+        <span
+          className={`text-[11px] font-bold uppercase tracking-[0.16em] ${
+            light ? "text-gold" : "text-gold-label"
+          }`}
+        >
+          {eyebrow}
+        </span>
+      </div>
       <h2
-        className={`mt-1 font-display text-3xl font-bold md:text-4xl ${
+        className={`mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl ${
           light ? "text-white" : "text-navy"
         }`}
       >
@@ -99,9 +95,9 @@ export function SectionHeader({
       </h2>
       {description && (
         <p
-          className={`mx-auto mt-3 max-w-2xl text-sm leading-relaxed ${
-            light ? "text-white/70" : "text-muted"
-          } ${align === "left" ? "mx-0" : ""}`}
+          className={`mt-3 max-w-2xl text-sm leading-relaxed md:text-[15px] ${
+            light ? "text-white/65" : "text-muted"
+          } ${align === "center" ? "mx-auto" : ""}`}
         >
           {description}
         </p>
@@ -119,7 +115,7 @@ export function PlaceholderMedia({
 }) {
   return (
     <div
-      className={`flex items-center justify-center bg-[repeating-linear-gradient(45deg,oklch(93%_0.01_85),oklch(93%_0.01_85)_10px,oklch(96%_0.008_85)_10px,oklch(96%_0.008_85)_20px)] p-3 text-center font-mono text-[11px] text-muted ${className}`}
+      className={`flex items-center justify-center bg-[repeating-linear-gradient(45deg,#eef3f8,#eef3f8_10px,#f7f9fc_10px,#f7f9fc_20px)] p-3 text-center font-mono text-[11px] text-muted ${className}`}
     >
       {label}
     </div>
@@ -138,27 +134,28 @@ export function CtaBand({
   secondary?: { label: string; href: string };
 }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-navy-deep via-navy to-slate-dark px-4 py-20 text-center text-white">
-      <div className="pointer-events-none absolute top-0 right-1/4 h-48 w-48 rounded-full bg-gold/10 blur-[80px]" />
-      <div className="pointer-events-none absolute bottom-0 left-1/4 h-48 w-48 rounded-full bg-emerald/10 blur-[80px]" />
+    <section className="relative overflow-hidden px-4 py-16 text-white md:py-20">
+      <div className="absolute inset-0 bg-navy-deep" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald/10 via-transparent to-gold/10" />
 
-      <div className="relative mx-auto max-w-4xl space-y-6">
-        <h2 className="font-display text-3xl font-bold md:text-4xl lg:text-5xl">{title}</h2>
-        {description && (
-          <p className="mx-auto max-w-2xl text-sm leading-relaxed text-white/75">{description}</p>
-        )}
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
-          <Link
-            href={primary.href}
-            className="rounded-full bg-gold px-8 py-4 text-sm font-bold text-navy-deep shadow-2xl transition-transform hover:scale-105 hover:bg-gold-hover"
-          >
+      <div className="relative mx-auto max-w-7xl flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl space-y-3">
+          <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
+            {title}
+          </h2>
+          {description && (
+            <p className="text-sm leading-relaxed text-white/65 md:text-[15px]">
+              {description}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
+          <Link href={primary.href} className="btn-primary">
             {primary.label}
+            <ArrowRight className="h-4 w-4" />
           </Link>
           {secondary && (
-            <Link
-              href={secondary.href}
-              className="rounded-full border border-white/30 bg-white/10 px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-white/20"
-            >
+            <Link href={secondary.href} className="btn-secondary">
               {secondary.label}
             </Link>
           )}
@@ -175,4 +172,15 @@ export function FieldLabel({ children }: { children: React.ReactNode }) {
 }
 
 export const fieldClass =
-  "w-full rounded-2xl border border-line bg-cream px-4 py-3.5 text-sm text-navy outline-none transition focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/20";
+  "w-full rounded-lg border border-line bg-white px-4 py-3.5 text-sm text-navy outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20";
+
+export function AdminFieldLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <label className="mb-1.5 block text-xs font-bold text-[var(--admin-text)]">
+      {children}
+    </label>
+  );
+}
+
+export const adminFieldClass =
+  "w-full rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface-2)] px-4 py-3.5 text-sm text-[var(--admin-text)] outline-none transition placeholder:text-[var(--admin-muted)] focus:border-gold focus:ring-2 focus:ring-[var(--admin-ring)]";

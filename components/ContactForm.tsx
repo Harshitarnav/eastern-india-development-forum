@@ -4,9 +4,30 @@ import { FormEvent, useState } from "react";
 import { CheckCircle, Loader2, Send } from "lucide-react";
 import { FieldLabel, fieldClass } from "@/components/ui";
 
-export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?: string }) {
+const SUBJECTS = [
+  "Membership",
+  "Funding",
+  "Tender Guidance",
+  "Scheme Assistance",
+  "Investment Inquiry",
+  "Event Registration",
+  "Report Request",
+  "Media",
+  "Other",
+] as const;
+
+export function ContactForm({
+  defaultSubject = "Membership",
+  defaultMessage = "",
+}: {
+  defaultSubject?: string;
+  defaultMessage?: string;
+}) {
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState("");
+  const subjectOptions = SUBJECTS.includes(defaultSubject as (typeof SUBJECTS)[number])
+    ? SUBJECTS
+    : ([defaultSubject, ...SUBJECTS] as string[]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -15,32 +36,37 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
     const form = e.currentTarget;
     const data = new FormData(form);
 
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        full_name: data.get("full_name"),
-        email: data.get("email"),
-        phone: data.get("phone"),
-        subject: data.get("subject"),
-        message: data.get("message"),
-      }),
-    });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: data.get("full_name"),
+          email: data.get("email"),
+          phone: data.get("phone"),
+          subject: data.get("subject"),
+          message: data.get("message"),
+        }),
+      });
 
-    if (!res.ok) {
-      const json = await res.json().catch(() => ({}));
-      setError(json.error || "Something went wrong.");
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        setError(json.error || "Something went wrong.");
+        setStatus("error");
+        return;
+      }
+
+      form.reset();
+      setStatus("done");
+    } catch {
+      setError("Network error. Please try again.");
       setStatus("error");
-      return;
     }
-
-    form.reset();
-    setStatus("done");
   }
 
   if (status === "done") {
     return (
-      <div className="rounded-3xl border border-emerald/20 bg-white p-10 text-center shadow-xl md:p-12">
+      <div className="rounded-2xl border border-emerald/20 bg-white p-10 text-center shadow-xl md:p-12">
         <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald/15 text-emerald">
           <CheckCircle className="h-8 w-8" />
         </div>
@@ -55,7 +81,7 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-3xl border border-line bg-white p-6 shadow-xl md:p-9"
+      className="rounded-2xl border border-line bg-white p-6 shadow-xl md:p-9"
     >
       <div className="mb-6">
         <span className="text-xs font-bold uppercase tracking-widest text-gold">
@@ -69,24 +95,25 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
       <div className="mb-4 grid gap-4 md:grid-cols-2">
         <div>
           <FieldLabel>Name</FieldLabel>
-          <input name="full_name" required className={fieldClass} placeholder="Your name" />
+          <input name="full_name" required className={fieldClass} placeholder="Your name" disabled={status === "loading"} />
         </div>
         <div>
           <FieldLabel>Email</FieldLabel>
-          <input name="email" type="email" required className={fieldClass} placeholder="you@example.com" />
+          <input name="email" type="email" required className={fieldClass} placeholder="you@example.com" disabled={status === "loading"} />
         </div>
       </div>
       <div className="mb-4">
         <FieldLabel>Phone (optional)</FieldLabel>
-        <input name="phone" className={fieldClass} placeholder="+91 ..." />
+        <input name="phone" className={fieldClass} placeholder="+91 ..." disabled={status === "loading"} />
       </div>
       <div className="mb-4">
         <FieldLabel>Subject</FieldLabel>
-        <select name="subject" className={fieldClass} defaultValue={defaultSubject}>
-          <option>Membership</option>
-          <option>Funding</option>
-          <option>Media</option>
-          <option>Other</option>
+        <select name="subject" className={fieldClass} defaultValue={defaultSubject} disabled={status === "loading"}>
+          {subjectOptions.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
       </div>
       <div className="mb-5">
@@ -97,6 +124,8 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
           rows={6}
           className={fieldClass}
           placeholder="Tell us about your inquiry..."
+          defaultValue={defaultMessage}
+          disabled={status === "loading"}
         />
       </div>
       {error && (
@@ -107,7 +136,7 @@ export function ContactForm({ defaultSubject = "Membership" }: { defaultSubject?
       <button
         type="submit"
         disabled={status === "loading"}
-        className="flex w-full items-center justify-center gap-2 rounded-full bg-navy py-4 text-sm font-bold text-white shadow-lg transition-all hover:bg-navy-light disabled:opacity-60"
+        className="btn-navy w-full !rounded-full disabled:opacity-60"
       >
         {status === "loading" ? (
           <>
