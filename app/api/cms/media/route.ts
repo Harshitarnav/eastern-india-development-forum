@@ -10,6 +10,7 @@ import {
 } from "@/lib/cms/repository";
 import { revalidateCms } from "@/lib/cms/revalidate";
 import { isSupabaseConfigured } from "@/lib/cms/supabase-store";
+import { supabaseAuthHeaders } from "@/lib/supabase/headers";
 
 function safeSegment(value: string) {
   return value
@@ -110,8 +111,7 @@ export async function POST(request: NextRequest) {
         {
           method: "POST",
           headers: {
-            apikey: key,
-            Authorization: `Bearer ${key}`,
+            ...supabaseAuthHeaders(key),
             "Content-Type": file.type || "application/octet-stream",
             "x-upsert": "true",
           },

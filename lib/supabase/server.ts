@@ -1,3 +1,5 @@
+import { supabaseAuthHeaders } from "@/lib/supabase/headers";
+
 type InsertResult = { ok: true } | { ok: false; error: string };
 
 export async function supabaseInsert(
@@ -16,8 +18,7 @@ export async function supabaseInsert(
   const res = await fetch(`${url}/rest/v1/${table}`, {
     method: "POST",
     headers: {
-      apikey: key,
-      Authorization: `Bearer ${key}`,
+      ...supabaseAuthHeaders(key),
       "Content-Type": "application/json",
       Prefer: "return=minimal",
     },

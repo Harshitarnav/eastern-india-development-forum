@@ -1,4 +1,19 @@
 import type { CmsStoreSnapshot } from "@/lib/cms/types";
+import { createHash } from "crypto";
+import { supabaseAuthHeaders } from "@/lib/supabase/headers";
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/** Stable UUID for seed string ids (e.g. img-hero) so upserts stay idempotent. */
+function toUuid(id: string): string {
+  if (UUID_RE.test(id)) return id;
+  const bytes = Buffer.from(createHash("sha1").update(`eidf:${id}`).digest().subarray(0, 16));
+  bytes[6] = (bytes[6]! & 0x0f) | 0x50;
+  bytes[8] = (bytes[8]! & 0x3f) | 0x80;
+  const hex = bytes.toString("hex");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20, 32)}`;
+}
 
 function credentials() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -29,8 +44,7 @@ async function sbFetch(pathname: string, init?: RequestInit) {
   const res = await fetch(`${creds.url}/rest/v1/${pathname}`, {
     ...init,
     headers: {
-      apikey: creds.key,
-      Authorization: `Bearer ${creds.key}`,
+      ...supabaseAuthHeaders(creds.key),
       "Content-Type": "application/json",
       Prefer: init?.method === "POST" ? "resolution=merge-duplicates,return=representation" : "return=representation",
       ...(init?.headers || {}),
@@ -42,7 +56,9 @@ async function sbFetch(pathname: string, init?: RequestInit) {
     throw new Error(`Supabase ${pathname}: ${res.status} ${text}`);
   }
   if (res.status === 204) return null;
-  return res.json();
+  const text = await res.text();
+  if (!text) return null;
+  return JSON.parse(text);
 }
 
 /** Load full snapshot from Supabase tables (if seeded). */
@@ -151,6 +167,42 @@ export async function writeSupabaseStore(snapshot: CmsStoreSnapshot): Promise<vo
       body: JSON.stringify(
         snapshot.seo.map((s) => ({
           ...s,
+          updated_at: new Date().toISOString(),
+        }))
+      ),
+    });
+  }
+
+  if (snapshot.media.length) {
+    await sbFetch("cms_media", {
+      method: "POST",
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify(
+        snapshot.media.map((m) => ({
+          id: toUuid(m.id),
+          url: m.url,
+          alt: m.alt,
+          title: m.title ?? null,
+          mime_type: m.mime_type ?? null,
+          folder: m.folder ?? "general",
+          size_bytes: m.size_bytes ?? null,
+          created_at: m.created_at || new Date().toISOString(),
+        }))
+      ),
+    });
+  }
+
+  if (snapshot.redirects.length) {
+    await sbFetch("cms_redirects", {
+      method: "POST",
+      headers: { Prefer: "resolution=merge-duplicates,return=minimal" },
+      body: JSON.stringify(
+        snapshot.redirects.map((r) => ({
+          id: toUuid(r.id),
+          from_path: r.from_path,
+          to_path: r.to_path,
+          status_code: r.status_code,
+          is_active: r.is_active,
           updated_at: new Date().toISOString(),
         }))
       ),

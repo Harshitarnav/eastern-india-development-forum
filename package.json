@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:cms": "npx --yes tsx scripts/seed-cms.ts"
+    "seed:cms": "npx --yes tsx scripts/seed-cms.ts",
+    "sync:cms": "npx --yes tsx scripts/seed-cms.ts --from-file",
+    "setup:supabase": "npx --yes tsx scripts/setup-supabase.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.7.1",
@@ -35,6 +37,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "tailwindcss": "^4",

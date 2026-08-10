@@ -24,12 +24,26 @@ function cloneSnap(snapshot: CmsStoreSnapshot): CmsStoreSnapshot {
  * Always reload from disk/Supabase.
  * Next.js can isolate module state between Route Handlers and RSC,
  * so an in-memory cache makes admin saves invisible on the public site.
+ *
+ * When Supabase is configured but empty, bootstrap once from the local
+ * file/seed so local + hosted environments share the same content.
  */
 export async function getCmsSnapshot(): Promise<CmsStoreSnapshot> {
   const fromSb = await readSupabaseStore();
   if (fromSb) return cloneSnap(fromSb);
 
   const fromFile = await ensureFileStore();
+
+  if (isSupabaseConfigured()) {
+    try {
+      await writeSupabaseStore(fromFile);
+      const bootstrapped = await readSupabaseStore();
+      if (bootstrapped) return cloneSnap(bootstrapped);
+    } catch (err) {
+      console.error("cms bootstrap to supabase failed", err);
+    }
+  }
+
   return cloneSnap(fromFile);
 }
 
