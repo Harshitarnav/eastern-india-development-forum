@@ -141,7 +141,8 @@ export const Nav: React.FC = () => {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 16);
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      setScrolled(y > 2);
       setDropdownOpen(false);
     };
     onScroll();
@@ -291,7 +292,10 @@ export const Nav: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-x-0 top-full z-[80] px-3 pt-3 sm:px-4"
+          className={cn(
+            "absolute inset-x-0 top-full z-[80] pt-3",
+            scrolled ? "px-1 sm:px-2" : "px-3 sm:px-4"
+          )}
           onMouseEnter={openDropdown}
           onMouseLeave={scheduleCloseDropdown}
         >
@@ -467,13 +471,22 @@ export const Nav: React.FC = () => {
     <>
       <div
         className={cn(
-          "relative z-[70] w-full text-white",
-          layout.sticky ? "sticky top-0" : "relative"
+          "z-[70] w-full text-white transition-[padding] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+          layout.sticky || scrolled ? "sticky top-0" : "relative",
+          scrolled ? "px-2.5 pt-2.5 sm:px-4 sm:pt-3" : "px-0 pt-0"
         )}
       >
         {/* Meta strip */}
         {layout.showTopBar && (
-          <div className="border-b border-white/10 bg-[#050b14] px-3 py-1.5 sm:px-5">
+          <div
+            className={cn(
+              "overflow-hidden border-white/10 bg-[#050b14] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+              scrolled
+                ? "max-h-0 border-b-0 py-0 opacity-0"
+                : "max-h-12 border-b px-3 py-1.5 opacity-100 sm:px-5"
+            )}
+            aria-hidden={scrolled}
+          >
             <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 text-[10px] sm:text-[11px] font-medium">
               <div className="flex min-w-0 items-center gap-1.5 text-white/50">
                 <ShieldCheck className="h-3 w-3 shrink-0 text-gold-soft/80" />
@@ -508,10 +521,10 @@ export const Nav: React.FC = () => {
         {/* Split-islands stage */}
         <div
           className={cn(
-            "relative overflow-visible border-b border-white/10 px-3 transition-colors duration-300 sm:px-5",
+            "relative overflow-visible transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
             scrolled
-              ? "bg-navy-deep/95 py-3 backdrop-blur-xl"
-              : "bg-navy-deep py-3.5 md:py-4"
+              ? "rounded-2xl border border-white/12 bg-navy-deep/80 px-3 py-2.5 shadow-[0_18px_50px_-18px_rgba(0,0,0,0.72),0_0_0_1px_rgba(201,168,75,0.08)] backdrop-blur-xl sm:px-4"
+              : "border-b border-white/10 bg-navy-deep px-3 py-3.5 sm:px-5 md:py-4"
           )}
         >
           {/* Mobile */}
@@ -563,7 +576,12 @@ export const Nav: React.FC = () => {
             {/* Brand island */}
             <Link
               href="/"
-              className="group flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-[#0c1a2c] py-2 pl-2 pr-4 shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)] transition-colors hover:border-gold/30"
+              className={cn(
+                "group flex min-w-0 items-center gap-3 rounded-2xl border py-2 pl-2 pr-4 transition-colors hover:border-gold/30",
+                scrolled
+                  ? "border-white/8 bg-white/[0.04]"
+                  : "border-white/10 bg-[#0c1a2c] shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)]"
+              )}
             >
               <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white p-[3px]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -594,7 +612,14 @@ export const Nav: React.FC = () => {
             />
 
             {/* Nav island */}
-            <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-[#0c1a2c] p-1.5 shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)]">
+            <div
+              className={cn(
+                "flex items-center gap-2 rounded-2xl border p-1.5 transition-colors",
+                scrolled
+                  ? "border-white/8 bg-white/[0.04]"
+                  : "border-white/10 bg-[#0c1a2c] shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)]"
+              )}
+            >
               <nav className="flex items-center gap-0.5 px-1">
                 {beforePortals.map((link, i) => (
                   <NavItem
