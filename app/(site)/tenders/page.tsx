@@ -41,7 +41,7 @@ export default function TendersPage() {
       />
 
       <section className="border-b border-line bg-white px-4 py-5">
-        <div className="mx-auto max-w-7xl flex flex-col gap-4 lg:flex-row lg:items-center">
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 lg:flex-row lg:items-center">
           <div className="relative min-w-0 flex-1">
             <Search className="absolute left-3 top-3.5 h-4 w-4 text-muted" />
             <input
@@ -49,18 +49,18 @@ export default function TendersPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by title or reference number..."
-              className="w-full border border-line bg-cream py-3 pr-4 pl-10 text-sm text-navy outline-none focus:border-gold focus:bg-white"
+              className="w-full border border-line bg-cream py-3 pr-4 pl-10 text-sm text-navy outline-none transition focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/15"
             />
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {stateFilters.map((st) => (
               <button
                 key={st}
                 onClick={() => setFilterState(st)}
-                className={`cursor-pointer px-4 py-2.5 text-xs font-bold transition-colors ${
+                className={`cursor-pointer border px-3.5 py-2 text-xs font-bold transition-colors ${
                   filterState === st
-                    ? "bg-navy text-gold"
-                    : "bg-cream text-muted hover:text-navy"
+                    ? "border-navy bg-navy text-gold"
+                    : "border-line bg-cream text-muted hover:border-navy/30 hover:text-navy"
                 }`}
               >
                 {st}
@@ -86,10 +86,9 @@ export default function TendersPage() {
             </div>
           ) : (
             <>
-              {/* Desktop table */}
-              <div className="hidden md:block overflow-x-auto border border-line">
+              <div className="hidden overflow-x-auto border border-line md:block">
                 <table className="w-full text-left text-sm">
-                  <thead className="bg-navy text-white text-[11px] uppercase tracking-wider">
+                  <thead className="sticky top-0 z-10 bg-navy text-[11px] uppercase tracking-wider text-white">
                     <tr>
                       <th className="p-4 font-semibold">Ref</th>
                       <th className="p-4 font-semibold">Title</th>
@@ -102,17 +101,22 @@ export default function TendersPage() {
                   </thead>
                   <tbody className="divide-y divide-line bg-white">
                     {filteredTenders.map((tnd) => (
-                      <tr key={tnd.id} className="hover:bg-cream/80 transition-colors">
-                        <td className="p-4 font-mono text-xs font-bold text-gold-label whitespace-nowrap">
+                      <tr key={tnd.id} className="transition-colors hover:bg-cream/80">
+                        <td className="whitespace-nowrap p-4 font-mono text-xs font-bold text-gold-label">
                           {tnd.tenderNo}
                         </td>
-                        <td className="p-4 font-semibold text-navy max-w-xs">{tnd.title}</td>
-                        <td className="p-4 text-muted text-xs">{tnd.issuingAuthority}</td>
-                        <td className="p-4 text-xs">{tnd.state}</td>
-                        <td className="p-4 font-bold text-emerald-dark text-xs whitespace-nowrap">
+                        <td className="max-w-xs p-4 font-semibold text-navy">{tnd.title}</td>
+                        <td className="p-4 text-xs text-muted">{tnd.issuingAuthority}</td>
+                        <td className="p-4 text-xs">
+                          <span className="inline-flex items-center gap-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden />
+                            {tnd.state}
+                          </span>
+                        </td>
+                        <td className="whitespace-nowrap p-4 text-xs font-bold text-emerald-dark">
                           {tnd.estimatedCost}
                         </td>
-                        <td className="p-4 font-bold text-amber text-xs whitespace-nowrap">
+                        <td className="whitespace-nowrap p-4 text-xs font-bold text-amber">
                           {tnd.closingDate}
                         </td>
                         <td className="p-4">
@@ -139,14 +143,18 @@ export default function TendersPage() {
                 </table>
               </div>
 
-              {/* Mobile list */}
-              <div className="md:hidden divide-y divide-line border-y border-line">
+              <div className="divide-y divide-line border-y border-line md:hidden">
                 {filteredTenders.map((tnd) => (
-                  <div key={tnd.id} className="py-5 space-y-2">
-                    <div className="font-mono text-[11px] font-bold text-gold-label">{tnd.tenderNo}</div>
+                  <div key={tnd.id} className="space-y-2 py-5">
+                    <div className="font-mono text-[11px] font-bold text-gold-label">
+                      {tnd.tenderNo}
+                    </div>
                     <h3 className="font-display text-base font-bold text-navy">{tnd.title}</h3>
-                    <div className="text-xs text-muted">{tnd.issuingAuthority} · {tnd.state}</div>
-                    <div className="flex justify-between text-xs pt-1">
+                    <div className="flex items-center gap-1.5 text-xs text-muted">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden />
+                      {tnd.issuingAuthority} · {tnd.state}
+                    </div>
+                    <div className="flex justify-between pt-1 text-xs">
                       <span className="font-bold text-emerald-dark">{tnd.estimatedCost}</span>
                       <span className="font-bold text-amber">Closes {tnd.closingDate}</span>
                     </div>

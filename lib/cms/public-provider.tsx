@@ -174,7 +174,16 @@ export function usePublicSite(): PublicSite {
 }
 
 export function usePublicNav(location: "header" | "portal" | "footer") {
-  return useContext(CmsPublicContext).navigation[location];
+  const links = useContext(CmsPublicContext).navigation[location] || [];
+  return useMemo(() => {
+    const seen = new Set<string>();
+    return links.filter((link) => {
+      const key = link.href || link.label;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [links]);
 }
 
 export function usePublicGallery() {

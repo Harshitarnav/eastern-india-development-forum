@@ -66,9 +66,9 @@ export function ContactForm({
 
   if (status === "done") {
     return (
-      <div className="rounded-2xl border border-emerald/20 bg-white p-10 text-center shadow-xl md:p-12">
-        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald/15 text-emerald">
-          <CheckCircle className="h-8 w-8" />
+      <div className="eidf-panel border-emerald/25 bg-white p-10 text-center md:p-12">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center border border-emerald/30 bg-emerald/10 text-emerald">
+          <CheckCircle className="h-7 w-7" />
         </div>
         <h3 className="font-display text-2xl font-bold text-navy">Message sent</h3>
         <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-muted">
@@ -79,75 +79,118 @@ export function ContactForm({
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="rounded-2xl border border-line bg-white p-6 shadow-xl md:p-9"
-    >
-      <div className="mb-6">
-        <span className="text-xs font-bold uppercase tracking-widest text-gold">
-          Send a Message
-        </span>
-        <h3 className="mt-1 font-display text-xl font-bold text-navy md:text-2xl">
+    <form onSubmit={onSubmit} className="eidf-panel bg-white">
+      <div className="border-b border-line px-6 py-6 md:px-8 md:py-7">
+        <div className="flex items-center gap-3">
+          <span className="hidden h-px w-8 bg-gold sm:block" aria-hidden />
+          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold-label">
+            Send a Message
+          </span>
+        </div>
+        <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-navy">
           How can we help?
         </h3>
       </div>
 
-      <div className="mb-4 grid gap-4 md:grid-cols-2">
-        <div>
-          <FieldLabel>Name</FieldLabel>
-          <input name="full_name" required className={fieldClass} placeholder="Your name" disabled={status === "loading"} />
-        </div>
-        <div>
-          <FieldLabel>Email</FieldLabel>
-          <input name="email" type="email" required className={fieldClass} placeholder="you@example.com" disabled={status === "loading"} />
-        </div>
-      </div>
-      <div className="mb-4">
-        <FieldLabel>Phone (optional)</FieldLabel>
-        <input name="phone" className={fieldClass} placeholder="+91 ..." disabled={status === "loading"} />
-      </div>
-      <div className="mb-4">
-        <FieldLabel>Subject</FieldLabel>
-        <select name="subject" className={fieldClass} defaultValue={defaultSubject} disabled={status === "loading"}>
-          {subjectOptions.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="mb-5">
-        <FieldLabel>Message</FieldLabel>
-        <textarea
-          name="message"
-          required
-          rows={6}
-          className={fieldClass}
-          placeholder="Tell us about your inquiry..."
-          defaultValue={defaultMessage}
-          disabled={status === "loading"}
-        />
-      </div>
-      {error && (
-        <p className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-          {error}
-        </p>
-      )}
-      <button
-        type="submit"
-        disabled={status === "loading"}
-        className="btn-navy w-full !rounded-full disabled:opacity-60"
-      >
-        {status === "loading" ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" /> Sending…
-          </>
-        ) : (
-          <>
-            Send Message <Send className="h-4 w-4 text-gold" />
-          </>
+      <div className="space-y-7 px-6 py-7 md:px-8 md:py-8">
+        <fieldset className="space-y-4">
+          <legend className="mb-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">
+            Contact details
+          </legend>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <FieldLabel htmlFor="c-full_name">Name</FieldLabel>
+              <input
+                id="c-full_name"
+                name="full_name"
+                required
+                className={fieldClass}
+                placeholder="Your name"
+                disabled={status === "loading"}
+              />
+            </div>
+            <div>
+              <FieldLabel htmlFor="c-email">Email</FieldLabel>
+              <input
+                id="c-email"
+                name="email"
+                type="email"
+                required
+                className={fieldClass}
+                placeholder="you@example.com"
+                disabled={status === "loading"}
+              />
+            </div>
+          </div>
+          <div>
+            <FieldLabel htmlFor="c-phone">Phone (optional)</FieldLabel>
+            <input
+              id="c-phone"
+              name="phone"
+              className={fieldClass}
+              placeholder="+91 ..."
+              disabled={status === "loading"}
+            />
+          </div>
+        </fieldset>
+
+        <fieldset className="space-y-4 border-t border-line pt-7">
+          <legend className="mb-1 text-[11px] font-bold uppercase tracking-[0.14em] text-muted">
+            Inquiry
+          </legend>
+          <div>
+            <FieldLabel htmlFor="c-subject">Subject</FieldLabel>
+            <select
+              id="c-subject"
+              name="subject"
+              className={fieldClass}
+              defaultValue={defaultSubject}
+              disabled={status === "loading"}
+            >
+              {subjectOptions.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <FieldLabel htmlFor="c-message">Message</FieldLabel>
+            <textarea
+              id="c-message"
+              name="message"
+              required
+              rows={6}
+              className={fieldClass}
+              placeholder="Tell us about your inquiry..."
+              defaultValue={defaultMessage}
+              disabled={status === "loading"}
+            />
+          </div>
+        </fieldset>
+
+        {error && (
+          <p className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </p>
         )}
-      </button>
+
+        <button
+          type="submit"
+          disabled={status === "loading"}
+          className="btn-navy w-full disabled:opacity-60"
+        >
+          {status === "loading" ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Sending…
+            </>
+          ) : (
+            <>
+              Send Message <Send className="h-4 w-4 text-gold" />
+            </>
+          )}
+        </button>
+      </div>
     </form>
   );
 }

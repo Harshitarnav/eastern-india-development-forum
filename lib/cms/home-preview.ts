@@ -14,10 +14,10 @@ export const HOMEPAGE_PREVIEW_LIMITS = {
 } as const;
 
 export function homepagePreview<T>(
-  items: T[],
+  items: T[] | null | undefined,
   key: keyof typeof HOMEPAGE_PREVIEW_LIMITS
 ): T[] {
-  return items.slice(0, HOMEPAGE_PREVIEW_LIMITS[key]);
+  return (items ?? []).slice(0, HOMEPAGE_PREVIEW_LIMITS[key]);
 }
 
 /** Accept real image URLs/paths; treat CMS placeholders like "SKILL_CENTRE" as missing. */

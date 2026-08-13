@@ -2,6 +2,11 @@ import { Footer } from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { SiteContent } from "@/components/loading/SiteContent";
 import { JsonLd } from "@/components/seo/JsonLd";
+import {
+  CustomCursor,
+  SectionProgress,
+  SmoothScroll,
+} from "@/components/motion";
 import { CmsPublicProvider } from "@/lib/cms/public-provider";
 import { buildOrganizationJsonLd } from "@/lib/cms/jsonld";
 import { getPublicCmsBundle } from "@/lib/cms/server";
@@ -21,12 +26,16 @@ export default async function SiteLayout({
 
   return (
     <CmsPublicProvider value={cms}>
-      <JsonLd data={orgJsonLd} />
-      <Nav />
-      <main className="flex flex-1 flex-col">
-        <SiteContent>{children}</SiteContent>
-      </main>
-      <Footer />
+      <SmoothScroll>
+        <JsonLd data={orgJsonLd} />
+        <SectionProgress />
+        <CustomCursor />
+        <Nav />
+        <main className="flex flex-1 flex-col">
+          <SiteContent>{children}</SiteContent>
+        </main>
+        <Footer />
+      </SmoothScroll>
     </CmsPublicProvider>
   );
 }

@@ -27,7 +27,8 @@ export const Footer: React.FC = () => {
           full_name: email.split("@")[0] || "Subscriber",
           email,
           subject: "Newsletter",
-          message: "Please add this email to monthly EIDF briefings on RFPs, investment policy, and project milestones.",
+          message:
+            "Please add this email to monthly EIDF briefings on RFPs, investment policy, and project milestones.",
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -45,11 +46,23 @@ export const Footer: React.FC = () => {
   }
 
   return (
-    <footer className="border-t border-white/10 bg-navy-deep text-white">
-      <div className="mx-auto max-w-7xl px-4 md:px-6 py-14">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-3">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
+    <footer className="relative overflow-hidden border-t border-white/10 bg-navy-deep text-white eidf-grain">
+      <div className="pointer-events-none absolute inset-0 eidf-depth opacity-80" />
+      <div className="pointer-events-none absolute -bottom-24 left-1/2 h-64 w-[80%] -translate-x-1/2 rounded-full bg-gold/5 blur-3xl" />
+
+      <div className="relative mx-auto max-w-7xl px-4 md:px-6 pt-16 pb-8">
+        <div className="mb-12 overflow-hidden">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-gold/80 mb-3">
+            Eastern India Development Forum
+          </p>
+          <div className="font-display text-display-xl font-extrabold text-white/8 select-none leading-none">
+            EIDF
+          </div>
+        </div>
+
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <div className="flex items-center gap-3 mb-5">
               <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-md ring-2 ring-gold/60">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -62,10 +75,10 @@ export const Footer: React.FC = () => {
                 {site.name}
               </span>
             </div>
-            <p className="text-sm text-white/55 leading-relaxed mb-5 max-w-sm">
+            <p className="text-sm text-white/55 leading-relaxed mb-6 max-w-sm">
               {site.tagline}
             </p>
-            <div className="space-y-2 text-sm text-white/70">
+            <div className="space-y-2.5 text-sm text-white/70">
               <div className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 text-gold shrink-0 mt-0.5" />
                 <span>{site.headquarters}</span>
@@ -87,9 +100,9 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          <div>
-            <h4 className="font-display text-sm font-bold text-gold mb-4">Explore</h4>
-            <ul className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm text-white/60">
+          <div className="lg:col-span-4">
+            <h4 className="font-display text-sm font-bold text-gold mb-5">Explore</h4>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm text-white/60">
               {footerLinks.map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className="hover:text-white transition-colors">
@@ -100,13 +113,13 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          <div>
+          <div className="lg:col-span-4">
             <h4 className="font-display text-sm font-bold text-gold mb-4">Briefings</h4>
             <p className="text-sm text-white/55 leading-relaxed mb-4">
               Monthly updates on RFPs, investment policy, and project milestones.
             </p>
             {status === "done" ? (
-              <p className="rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald">
+              <p className="border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald">
                 You&apos;re subscribed. We&apos;ll be in touch.
               </p>
             ) : (
@@ -118,13 +131,13 @@ export const Footer: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Professional email"
                   disabled={status === "loading"}
-                  className="w-full rounded-lg border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/35 focus:border-gold focus:outline-none disabled:opacity-60"
+                  className="w-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/35 focus:border-gold focus:outline-none disabled:opacity-60"
                 />
                 {error && <p className="text-xs text-red-300">{error}</p>}
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="btn-primary !rounded-lg w-full !py-3 disabled:opacity-60"
+                  className="btn-primary w-full !py-3 disabled:opacity-60"
                 >
                   {status === "loading" ? (
                     <span className="inline-flex items-center justify-center gap-2">
@@ -139,11 +152,11 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <span>
             © {new Date().getFullYear()} {site.name}
           </span>
-          <div className="flex gap-4">
+          <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-white">
               Privacy
             </Link>

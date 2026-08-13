@@ -5,39 +5,47 @@ export function PageHero({
   crumb,
   title,
   description,
+  eyebrow,
   compact = false,
   children,
 }: {
   crumb: string;
   title: string;
   description?: string;
-  /** @deprecated Pills removed — kept for call-site compatibility */
   eyebrow?: string;
   compact?: boolean;
   children?: React.ReactNode;
 }) {
   return (
     <section
-      className={`relative overflow-hidden text-white ${
-        compact ? "px-4 py-12 md:py-14" : "px-4 py-14 md:py-20"
+      className={`relative overflow-hidden text-white eidf-grain ${
+        compact ? "px-4 py-14 md:py-16" : "px-4 py-16 md:py-24"
       }`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-navy-deep via-navy to-navy-mid" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-emerald/10 to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+      <div className="absolute inset-0 eidf-depth" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(232,163,23,0.04)_50%,transparent_100%)]" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+      <div className="pointer-events-none absolute -right-24 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-gold/5 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl">
-        <div className="mb-4 text-[11px] tracking-wide text-white/40">{crumb}</div>
-        <h1 className="max-w-3xl font-display text-3xl font-extrabold leading-[1.15] tracking-tight sm:text-4xl md:text-[2.75rem]">
+        <div className="mb-5 text-[11px] font-medium tracking-[0.12em] uppercase text-white/35">
+          {crumb}
+        </div>
+        {eyebrow && (
+          <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
+            {eyebrow}
+          </div>
+        )}
+        <h1 className="max-w-4xl font-display text-display-fluid font-extrabold text-white">
           {title}
         </h1>
         {description && (
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-white/65 md:text-[15px]">
+          <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/65 md:text-base">
             {description}
           </p>
         )}
         {children && (
-          <div className="mt-7 flex flex-wrap items-center gap-3">{children}</div>
+          <div className="mt-8 flex flex-wrap items-center gap-3">{children}</div>
         )}
       </div>
     </section>
@@ -60,26 +68,28 @@ export function SectionHeader({
   description,
   align = "left",
   light = false,
+  className = "",
 }: {
   eyebrow: string;
   title: string;
   description?: string;
   align?: "center" | "left";
   light?: boolean;
+  className?: string;
 }) {
   return (
-    <div className={`mb-10 ${align === "center" ? "text-center" : "text-left"}`}>
+    <div className={`mb-10 md:mb-12 ${align === "center" ? "text-center" : "text-left"} ${className}`}>
       <div
         className={`inline-flex items-center gap-3 ${
           align === "center" ? "justify-center" : ""
         }`}
       >
         <span
-          className={`hidden h-px w-8 sm:block ${light ? "bg-gold/60" : "bg-gold"}`}
+          className={`hidden h-px w-10 sm:block ${light ? "bg-gold/60" : "bg-gold"}`}
           aria-hidden
         />
         <span
-          className={`text-[11px] font-bold uppercase tracking-[0.16em] ${
+          className={`text-[11px] font-bold uppercase tracking-[0.18em] ${
             light ? "text-gold" : "text-gold-label"
           }`}
         >
@@ -87,7 +97,7 @@ export function SectionHeader({
         </span>
       </div>
       <h2
-        className={`mt-3 font-display text-3xl font-bold tracking-tight md:text-4xl ${
+        className={`mt-4 font-display text-3xl font-bold tracking-tight md:text-4xl lg:text-[2.75rem] ${
           light ? "text-white" : "text-navy"
         }`}
       >
@@ -95,7 +105,7 @@ export function SectionHeader({
       </h2>
       {description && (
         <p
-          className={`mt-3 max-w-2xl text-sm leading-relaxed md:text-[15px] ${
+          className={`mt-4 max-w-2xl text-sm leading-relaxed md:text-[15px] ${
             light ? "text-white/65" : "text-muted"
           } ${align === "center" ? "mx-auto" : ""}`}
         >
@@ -134,13 +144,14 @@ export function CtaBand({
   secondary?: { label: string; href: string };
 }) {
   return (
-    <section className="relative overflow-hidden px-4 py-16 text-white md:py-20">
-      <div className="absolute inset-0 bg-navy-deep" />
+    <section className="relative overflow-hidden px-4 py-20 text-white md:py-24 eidf-grain">
+      <div className="absolute inset-0 eidf-depth" />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald/10 via-transparent to-gold/10" />
+      <div className="pointer-events-none absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
-      <div className="relative mx-auto max-w-7xl flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-2xl space-y-3">
-          <h2 className="font-display text-3xl font-bold tracking-tight md:text-4xl">
+      <div className="relative mx-auto max-w-7xl flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-2xl space-y-4">
+          <h2 className="font-display text-3xl font-bold tracking-tight md:text-5xl">
             {title}
           </h2>
           {description && (
@@ -150,7 +161,7 @@ export function CtaBand({
           )}
         </div>
         <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <Link href={primary.href} className="btn-primary">
+          <Link href={primary.href} className="btn-primary" data-cursor="VIEW">
             {primary.label}
             <ArrowRight className="h-4 w-4" />
           </Link>
@@ -165,14 +176,25 @@ export function CtaBand({
   );
 }
 
-export function FieldLabel({ children }: { children: React.ReactNode }) {
+export function FieldLabel({
+  children,
+  htmlFor,
+}: {
+  children: React.ReactNode;
+  htmlFor?: string;
+}) {
   return (
-    <label className="mb-1.5 block text-xs font-bold text-navy">{children}</label>
+    <label
+      htmlFor={htmlFor}
+      className="mb-1.5 block text-[11px] font-bold uppercase tracking-[0.08em] text-navy/80"
+    >
+      {children}
+    </label>
   );
 }
 
 export const fieldClass =
-  "w-full rounded-lg border border-line bg-white px-4 py-3.5 text-sm text-navy outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/20";
+  "w-full rounded border border-line bg-cream/50 px-4 py-3.5 text-sm text-navy outline-none transition placeholder:text-muted/65 hover:border-navy/25 focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/20 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function AdminFieldLabel({ children }: { children: React.ReactNode }) {
   return (

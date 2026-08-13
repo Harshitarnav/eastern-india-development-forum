@@ -58,7 +58,7 @@ export default function AnalyticsPage() {
 
       <section className="metric-strip grid-cols-3">
         <div>
-          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">
+          <div className="font-display text-2xl font-extrabold text-navy md:text-3xl">
             ₹{totalCapital.toLocaleString("en-IN")} Cr
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
         <div>
-          <div className="font-display text-2xl md:text-3xl font-extrabold text-emerald-dark">
+          <div className="font-display text-2xl font-extrabold text-emerald-dark md:text-3xl">
             {stateCapitalData.length}
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
@@ -74,7 +74,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
         <div>
-          <div className="font-display text-2xl md:text-3xl font-extrabold text-navy">
+          <div className="font-display text-2xl font-extrabold text-navy md:text-3xl">
             {corridors?.value ?? site.projects.length}
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
@@ -91,9 +91,9 @@ export default function AnalyticsPage() {
             align="left"
           />
 
-          <div className="grid gap-8 lg:grid-cols-12">
-            <div className="border border-line bg-white p-5 md:p-7 lg:col-span-7">
-              <h3 className="flex items-center gap-2 font-display text-lg font-bold text-navy border-b border-line pb-3">
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+            <div className="eidf-panel bg-white p-5 md:p-7 lg:col-span-7">
+              <h3 className="flex items-center gap-2 border-b border-line pb-3 font-display text-lg font-bold text-navy">
                 <BarChart3 className="h-5 w-5 text-gold" />
                 Pledged Capital by State (₹ Cr)
               </h3>
@@ -107,18 +107,18 @@ export default function AnalyticsPage() {
                       contentStyle={{
                         backgroundColor: "#0a1f3d",
                         borderColor: "#e8a317",
-                        borderRadius: "4px",
+                        borderRadius: "2px",
                         color: "#fff",
                       }}
                     />
-                    <Bar dataKey="capital" fill="#0a1f3d" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="capital" fill="#0a1f3d" radius={[2, 2, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            <div className="border border-line bg-white p-5 md:p-7 lg:col-span-5">
-              <h3 className="flex items-center gap-2 font-display text-lg font-bold text-navy border-b border-line pb-3">
+            <div className="eidf-panel bg-white p-5 md:p-7 lg:col-span-5">
+              <h3 className="flex items-center gap-2 border-b border-line pb-3 font-display text-lg font-bold text-navy">
                 <PieIcon className="h-5 w-5 text-emerald" />
                 Sector Capital Share
               </h3>
@@ -142,10 +142,14 @@ export default function AnalyticsPage() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="grid grid-cols-1 gap-2 pt-2 text-xs">
+              <div className="grid grid-cols-1 gap-2.5 border-t border-line pt-4 text-xs">
                 {sectorData.map((sec) => (
-                  <div key={sec.name} className="flex items-center gap-2">
-                    <span className="h-2.5 w-2.5 shrink-0" style={{ backgroundColor: sec.color }} />
+                  <div key={sec.name} className="flex items-center gap-2.5">
+                    <span
+                      className="h-2 w-2 shrink-0"
+                      style={{ backgroundColor: sec.color }}
+                      aria-hidden
+                    />
                     <span className="font-medium text-muted">
                       {sec.name} ({sec.value}%)
                     </span>

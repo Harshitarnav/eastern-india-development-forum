@@ -292,10 +292,16 @@ export function getNavLinks(
   snap: CmsStoreSnapshot,
   location: "header" | "portal" | "footer"
 ) {
+  const seen = new Set<string>();
   return snap.navigation
     .filter((n) => n.location === location && n.is_visible !== false)
     .sort((a, b) => a.sort_order - b.sort_order)
-    .map((n) => ({ href: n.href, label: n.label }));
+    .map((n) => ({ href: n.href, label: n.label }))
+    .filter((n) => {
+      if (seen.has(n.href)) return false;
+      seen.add(n.href);
+      return true;
+    });
 }
 
 export function getGalleryItems(snap: CmsStoreSnapshot) {

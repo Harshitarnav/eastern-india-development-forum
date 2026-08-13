@@ -27,39 +27,42 @@ export default async function MembershipPage() {
         </Link>
       </PageHero>
 
-      <section className="px-4 py-16 md:py-20">
-        <div className="mx-auto max-w-7xl grid gap-14 lg:grid-cols-12">
-          <div className="lg:col-span-5">
+      <section className="px-4 py-16 md:py-24">
+        <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="section-rail pl-5 lg:col-span-5 lg:pl-6">
             <SectionHeader
               eyebrow="Why Join"
               title="Membership that creates real impact"
               align="left"
             />
-            <ol className="space-y-6">
+            <ol className="space-y-7">
               {site.benefits.map((b, i) => (
                 <li key={b.title} className="flex gap-4">
-                  <span className="font-display text-2xl font-extrabold text-gold leading-none">
+                  <span className="font-display text-2xl font-extrabold leading-none text-gold">
                     0{i + 1}
                   </span>
                   <div>
                     <h3 className="font-display text-lg font-bold text-navy">{b.title}</h3>
-                    <p className="mt-1 text-sm text-muted leading-relaxed">{b.desc}</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted">{b.desc}</p>
                   </div>
                 </li>
               ))}
             </ol>
 
-            <div className="mt-10 pt-8 border-t border-line">
-              <div className="text-[11px] font-bold uppercase tracking-widest text-gold-label mb-4">
-                How it works
+            <div className="mt-12 border-t border-line pt-8">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="h-px w-8 bg-gold" aria-hidden />
+                <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold-label">
+                  How it works
+                </div>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {site.applySteps.map((s) => (
                   <div key={s.n} className="flex gap-3">
-                    <span className="text-sm font-bold text-navy">{s.n}</span>
+                    <span className="font-mono text-sm font-bold text-navy">{s.n}</span>
                     <div>
                       <div className="text-sm font-bold text-navy">{s.title}</div>
-                      <div className="text-xs text-muted mt-0.5">{s.desc}</div>
+                      <div className="mt-0.5 text-xs leading-relaxed text-muted">{s.desc}</div>
                     </div>
                   </div>
                 ))}
@@ -73,12 +76,13 @@ export default async function MembershipPage() {
         </div>
       </section>
 
-      <section className="bg-navy-deep px-4 py-12 text-center text-white">
-        <p className="text-base">
+      <section className="relative overflow-hidden bg-navy-deep px-4 py-14 text-center text-white eidf-grain">
+        <div className="pointer-events-none absolute inset-0 eidf-depth opacity-70" />
+        <p className="relative text-base md:text-lg">
           Prefer to fund a project directly?{" "}
           <Link
             href="/contact?intent=donate"
-            className="inline-flex items-center gap-1.5 font-bold text-gold hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 font-bold text-gold transition-colors hover:text-white"
           >
             Visit Donate <ArrowRight className="h-4 w-4" />
           </Link>
