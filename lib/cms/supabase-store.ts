@@ -47,7 +47,7 @@ export function isSupabaseTemporarilyDown() {
   return Date.now() < supabaseDownUntil;
 }
 
-function markSupabaseDown(reason: unknown) {
+export function markSupabaseDown(reason: unknown) {
   const alreadyDown = Date.now() < supabaseDownUntil;
   supabaseDownUntil = Date.now() + DOWN_COOLDOWN_MS;
   if (alreadyDown) return;

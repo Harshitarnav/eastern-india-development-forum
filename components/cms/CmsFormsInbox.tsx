@@ -7,6 +7,12 @@ import { cn } from "@/lib/utils";
 
 type Tab = "membership" | "contact" | "proposal";
 
+const FORM_API: Record<Tab, string> = {
+  membership: "membership",
+  contact: "contact",
+  proposal: "proposals",
+};
+
 export function CmsFormsInbox() {
   const [tab, setTab] = useState<Tab>("membership");
   const qc = useQueryClient();
@@ -14,7 +20,7 @@ export function CmsFormsInbox() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["cms-forms", tab],
     queryFn: async () => {
-      const res = await fetch(`/api/cms/forms/${tab}`);
+      const res = await fetch(`/api/cms/forms/${FORM_API[tab]}`);
       if (!res.ok) throw new Error("Failed to load");
       return res.json() as Promise<{
         rows: Record<string, unknown>[];
@@ -26,7 +32,7 @@ export function CmsFormsInbox() {
 
   const patchStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const res = await fetch(`/api/cms/forms/${tab}`, {
+      const res = await fetch(`/api/cms/forms/${FORM_API[tab]}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status }),
