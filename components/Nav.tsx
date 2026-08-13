@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,11 +19,6 @@ import {
   LayoutDashboard,
   Calendar,
   Images,
-  Home,
-  Info,
-  FolderKanban,
-  Users,
-  Mail,
   ArrowUpRight,
   Sparkles,
 } from "lucide-react";
@@ -43,15 +39,6 @@ const PORTAL_ICONS: Record<string, typeof FileText> = {
   "/analytics": BarChart3,
   "/events": Calendar,
   "/gallery": Images,
-};
-
-const PRIMARY_ICONS: Record<string, typeof Home> = {
-  "/": Home,
-  "/about": Info,
-  "/projects": FolderKanban,
-  "/membership": Users,
-  "/events": Calendar,
-  "/contact": Mail,
 };
 
 const PORTAL_META: Record<
@@ -105,10 +92,15 @@ export const Nav: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const overlayOpen = mobileMenuOpen || searchOpen;
 
   useLenisLock(overlayOpen);
+
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
 
   const portalsActive = portalLinks.some((p) => pathname.startsWith(p.href));
 
@@ -178,9 +170,13 @@ export const Nav: React.FC = () => {
   }, [dropdownOpen]);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
+    const mq = window.matchMedia("(min-width: 1280px)");
     const onChange = () => {
       if (mq.matches) setMobileMenuOpen(false);
+      else {
+        setDropdownOpen(false);
+        clearCloseTimer();
+      }
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
@@ -220,7 +216,7 @@ export const Nav: React.FC = () => {
       <Link
         href={href}
         className={cn(
-          "relative px-2.5 py-1.5 text-[13px] font-semibold whitespace-nowrap transition-colors duration-200 xl:px-3",
+          "relative px-2 py-1.5 text-[12px] font-semibold whitespace-nowrap transition-colors duration-200 2xl:px-3 2xl:text-[13px]",
           active ? "text-white" : "text-white/60 hover:text-white"
         )}
       >
@@ -257,7 +253,7 @@ export const Nav: React.FC = () => {
         }}
         onFocus={openDropdown}
         className={cn(
-          "relative flex items-center gap-1 px-2.5 py-1.5 text-[13px] font-semibold cursor-pointer transition-colors duration-200 xl:px-3",
+          "relative flex items-center gap-1 px-2 py-1.5 text-[12px] font-semibold cursor-pointer transition-colors duration-200 2xl:px-3 2xl:text-[13px]",
           portalsActive || dropdownOpen
             ? "text-white"
             : "text-white/60 hover:text-white"
@@ -293,21 +289,21 @@ export const Nav: React.FC = () => {
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            "absolute inset-x-0 top-full z-[80] pt-3",
+            "absolute inset-x-0 top-full z-[80] hidden pt-3 xl:block",
             scrolled ? "px-1 sm:px-2" : "px-3 sm:px-4"
           )}
           onMouseEnter={openDropdown}
           onMouseLeave={scheduleCloseDropdown}
         >
-          <div className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-          <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl border border-white/12 bg-navy-deep shadow-[0_40px_100px_-30px_rgba(0,0,0,0.85)]">
+          <div className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
+          <div className="mx-auto max-h-[min(80vh,720px)] max-w-7xl overflow-y-auto overflow-x-hidden rounded-2xl border border-gold/35 bg-gradient-to-b from-[#214868] to-[#173552] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,168,75,0.12)]">
             <div className="grid lg:grid-cols-12">
               {/* Featured panel */}
               {featuredPortal && (
                 <Link
                   href={featuredPortal.href}
                   onClick={() => setDropdownOpen(false)}
-                  className="group relative isolate overflow-hidden border-b border-white/10 p-6 lg:col-span-4 lg:border-b-0 lg:border-r lg:p-7"
+                  className="group relative isolate overflow-hidden border-b border-white/15 p-6 lg:col-span-4 lg:border-b-0 lg:border-r lg:p-7"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -315,9 +311,9 @@ export const Nav: React.FC = () => {
                     alt=""
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/85 to-navy/40" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#173552] via-[#173552]/88 to-[#214868]/45" />
                   <div className="absolute inset-0 bg-gradient-to-br from-gold/15 via-transparent to-emerald/20 opacity-80" />
-                  <div className="relative flex h-full min-h-[240px] flex-col justify-between">
+                  <div className="relative flex h-full min-h-[160px] flex-col justify-between xl:min-h-[200px] 2xl:min-h-[240px]">
                     <div>
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-gold">
                         <Sparkles className="h-3 w-3" />
@@ -341,7 +337,7 @@ export const Nav: React.FC = () => {
 
               {/* Portal grid */}
               <div className="lg:col-span-8">
-                <div className="flex items-end justify-between gap-3 border-b border-white/8 px-5 py-4 sm:px-6">
+                <div className="flex items-end justify-between gap-3 border-b border-white/15 px-5 py-4 sm:px-6">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gold">
                       Command portals
@@ -350,7 +346,7 @@ export const Nav: React.FC = () => {
                       Data, capital, programmes, and intelligence — unified
                     </p>
                   </div>
-                  <span className="hidden rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-semibold text-white/45 sm:inline">
+                  <span className="hidden rounded-full border border-white/20 bg-white/[0.08] px-3 py-1 text-[10px] font-semibold text-white/55 sm:inline">
                     {portalLinks.length} portals
                   </span>
                 </div>
@@ -379,7 +375,7 @@ export const Nav: React.FC = () => {
                               "group relative flex h-full flex-col overflow-hidden rounded-xl border p-4 transition-all duration-300",
                               active
                                 ? "border-gold/40 bg-gold/10"
-                                : "border-white/8 bg-white/[0.03] hover:-translate-y-0.5 hover:border-gold/30 hover:bg-white/[0.06]"
+                                : "border-white/20 bg-white/[0.08] hover:-translate-y-0.5 hover:border-gold/35 hover:bg-white/[0.12]"
                             )}
                           >
                             <div
@@ -394,7 +390,7 @@ export const Nav: React.FC = () => {
                                   "flex h-11 w-11 items-center justify-center rounded-xl border transition-colors",
                                   active
                                     ? "border-gold/40 bg-gold/15 text-gold"
-                                    : "border-white/10 bg-navy/40 text-gold group-hover:border-gold/35 group-hover:bg-gold/10"
+                                    : "border-white/20 bg-white/10 text-gold group-hover:border-gold/35 group-hover:bg-gold/10"
                                 )}
                               >
                                 <Icon className="h-5 w-5" />
@@ -432,7 +428,7 @@ export const Nav: React.FC = () => {
                   )}
                 </div>
 
-                <div className="flex flex-col gap-3 border-t border-white/8 bg-white/[0.02] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <div className="flex flex-col gap-3 border-t border-white/15 bg-white/[0.06] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/50">
                     <Link
                       href="/proposals/submit"
@@ -473,17 +469,17 @@ export const Nav: React.FC = () => {
         className={cn(
           "z-[70] w-full text-white transition-[padding] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
           layout.sticky || scrolled ? "sticky top-0" : "relative",
-          scrolled ? "px-2.5 pt-2.5 sm:px-4 sm:pt-3" : "px-0 pt-0"
+          scrolled ? "xl:px-4 xl:pt-3" : "xl:px-0 xl:pt-0"
         )}
       >
-        {/* Meta strip */}
+        {/* Meta strip — desktop only */}
         {layout.showTopBar && (
           <div
             className={cn(
-              "overflow-hidden border-white/10 bg-[#050b14] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+              "hidden overflow-hidden border-white/10 bg-[#050b14] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] xl:block",
               scrolled
-                ? "max-h-0 border-b-0 py-0 opacity-0"
-                : "max-h-12 border-b px-3 py-1.5 opacity-100 sm:px-5"
+                ? "xl:max-h-0 xl:border-b-0 xl:py-0 xl:opacity-0"
+                : "xl:max-h-12 xl:border-b xl:px-5 xl:py-1.5 xl:opacity-100"
             )}
             aria-hidden={scrolled}
           >
@@ -522,15 +518,16 @@ export const Nav: React.FC = () => {
         <div
           className={cn(
             "relative overflow-visible transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            "border-b border-gold/35 bg-gradient-to-b from-[#214868] to-[#173552] px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]",
             scrolled
-              ? "rounded-2xl border border-white/12 bg-navy-deep/80 px-3 py-2.5 shadow-[0_18px_50px_-18px_rgba(0,0,0,0.72),0_0_0_1px_rgba(201,168,75,0.08)] backdrop-blur-xl sm:px-4"
-              : "border-b border-white/10 bg-navy-deep px-3 py-3.5 sm:px-5 md:py-4"
+              ? "xl:rounded-2xl xl:border xl:border-white/20 xl:bg-[#1a3a5c]/88 xl:px-4 xl:py-2.5 xl:pt-2.5 xl:shadow-[0_18px_50px_-18px_rgba(0,0,0,0.72),0_0_0_1px_rgba(201,168,75,0.16)] xl:backdrop-blur-xl"
+              : "xl:border-x-0 xl:border-t-0 xl:px-5 xl:py-4 xl:pt-4"
           )}
         >
           {/* Mobile */}
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 lg:hidden">
-            <Link href="/" className="flex min-w-0 items-center gap-2.5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white p-[3px] ring-2 ring-gold/45">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 xl:hidden">
+            <Link href="/" className="flex min-w-0 items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-[2px]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={site.logo || "/images/logo.png"}
@@ -539,25 +536,29 @@ export const Nav: React.FC = () => {
                 />
               </span>
               {layout.showBrandText && (
-                <span className="truncate font-display text-sm font-extrabold">
+                <span className="truncate font-display text-base font-extrabold tracking-tight">
                   {site.shortName || "EIDF"}
                 </span>
               )}
             </Link>
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-1">
               {layout.showSearch && (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/12 bg-white/[0.05] text-white/75 cursor-pointer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-white/80 cursor-pointer"
                   aria-label="Search"
                 >
-                  <Search className="h-4 w-4" />
+                  <Search className="h-5 w-5" />
                 </button>
               )}
               <button
                 type="button"
-                onClick={() => setMobileMenuOpen((open) => !open)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/12 bg-white/[0.05] text-white cursor-pointer"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMobileMenuOpen((open) => !open);
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-full text-white cursor-pointer"
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
@@ -572,18 +573,13 @@ export const Nav: React.FC = () => {
           </div>
 
           {/* Desktop: two islands */}
-          <div className="relative mx-auto hidden max-w-7xl items-center justify-between gap-4 lg:flex">
+          <div className="relative mx-auto hidden max-w-7xl items-center justify-between gap-3 xl:flex 2xl:gap-4">
             {/* Brand island */}
             <Link
               href="/"
-              className={cn(
-                "group flex min-w-0 items-center gap-3 rounded-2xl border py-2 pl-2 pr-4 transition-colors hover:border-gold/30",
-                scrolled
-                  ? "border-white/8 bg-white/[0.04]"
-                  : "border-white/10 bg-[#0c1a2c] shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)]"
-              )}
+              className="nav-island group flex min-w-0 max-w-[11.5rem] shrink-0 items-center gap-3 rounded-2xl py-2 pl-2 pr-3 2xl:max-w-none 2xl:pr-4"
             >
-              <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white p-[3px]">
+              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white p-[3px] 2xl:h-11 2xl:w-11">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={site.logo || "/images/logo.png"}
@@ -593,11 +589,12 @@ export const Nav: React.FC = () => {
               </span>
               {layout.showBrandText && (
                 <div className="min-w-0">
-                  <div className="truncate font-display text-[14px] font-extrabold leading-tight tracking-tight text-white transition-colors group-hover:text-gold-soft">
-                    {brandName}
+                  <div className="truncate font-display text-[13px] font-extrabold leading-tight tracking-tight text-white transition-colors group-hover:text-gold-soft 2xl:text-[14px]">
+                    <span className="2xl:hidden">{site.shortName || "EIDF"}</span>
+                    <span className="hidden 2xl:inline">{brandName}</span>
                   </div>
                   {layout.brandTextMode === "full" && (
-                    <div className="mt-0.5 truncate text-[10px] text-white/40">
+                    <div className="mt-0.5 hidden truncate text-[10px] text-white/40 2xl:block">
                       {site.poweredBy}
                     </div>
                   )}
@@ -608,19 +605,12 @@ export const Nav: React.FC = () => {
             {/* Subtle bridge */}
             <div
               aria-hidden
-              className="hidden h-px flex-1 bg-gradient-to-r from-white/10 via-gold/25 to-white/10 xl:block"
+              className="hidden h-px min-w-4 flex-1 bg-gradient-to-r from-white/10 via-gold/25 to-white/10 2xl:block"
             />
 
             {/* Nav island */}
-            <div
-              className={cn(
-                "flex items-center gap-2 rounded-2xl border p-1.5 transition-colors",
-                scrolled
-                  ? "border-white/8 bg-white/[0.04]"
-                  : "border-white/10 bg-[#0c1a2c] shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)]"
-              )}
-            >
-              <nav className="flex items-center gap-0.5 px-1">
+            <div className="nav-island flex min-w-0 items-center gap-1 rounded-2xl p-1 2xl:gap-2 2xl:p-1.5">
+              <nav className="flex min-w-0 items-center gap-0 overflow-x-auto px-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden 2xl:gap-0.5 2xl:px-1">
                 {beforePortals.map((link, i) => (
                   <NavItem
                     key={`nav-before-${link.href}-${i}`}
@@ -649,13 +639,13 @@ export const Nav: React.FC = () => {
 
               <span
                 aria-hidden
-                className="mx-0.5 h-6 w-px bg-white/10"
+                className="mx-0.5 hidden h-6 w-px bg-white/15 2xl:block"
               />
 
               {layout.showSearch && (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/[0.07] hover:text-gold-soft cursor-pointer"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/[0.07] hover:text-gold-soft cursor-pointer 2xl:h-9 2xl:w-9"
                   aria-label="Search"
                 >
                   <Search className="h-4 w-4" />
@@ -665,7 +655,7 @@ export const Nav: React.FC = () => {
               {layout.showCta && (
                 <Link
                   href={layout.ctaHref || "/membership"}
-                  className="group inline-flex items-center gap-1.5 rounded-xl bg-gold px-3.5 py-2 text-xs font-bold text-navy-deep transition-colors hover:bg-gold-hover"
+                  className="group inline-flex shrink-0 items-center gap-1 rounded-xl bg-gold px-2.5 py-1.5 text-[11px] font-bold text-navy-deep transition-colors hover:bg-gold-hover 2xl:gap-1.5 2xl:px-3.5 2xl:py-2 2xl:text-xs"
                   data-cursor="VIEW"
                 >
                   {layout.ctaLabel || "Join Us"}
@@ -679,158 +669,162 @@ export const Nav: React.FC = () => {
         </div>
       </div>
 
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 z-50" id="mobile-nav">
-            <motion.button
-              type="button"
-              aria-label="Close menu overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="absolute inset-0 bg-navy-deep/85 backdrop-blur-md"
-              onClick={() => setMobileMenuOpen(false)}
-            />
+      {portalReady &&
+        createPortal(
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div
+                id="mobile-nav"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Navigation menu"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="fixed inset-0 z-[200] flex h-dvh w-full flex-col overflow-hidden text-white xl:hidden"
+                style={{
+                  paddingTop: "env(safe-area-inset-top)",
+                  paddingBottom: "env(safe-area-inset-bottom)",
+                }}
+              >
+                <div className="pointer-events-none absolute inset-0 hero-mesh" />
+                <div className="pointer-events-none absolute inset-0 eidf-grain opacity-40" />
+                <div className="pointer-events-none absolute -right-16 top-24 h-56 w-56 rounded-full bg-gold/15 blur-3xl" />
+                <div className="pointer-events-none absolute -left-10 bottom-24 h-48 w-48 rounded-full bg-emerald/15 blur-3xl" />
 
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-label="Navigation menu"
-              initial={{ opacity: 0, y: "100%" }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 280 }}
-              className="absolute inset-0 flex flex-col eidf-depth text-white"
-              style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-            >
-              <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
-                <div className="flex min-w-0 items-center gap-3">
-                  <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white p-0.5 ring-2 ring-gold/60">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={site.logo || "/images/logo.png"}
-                      alt=""
-                      className="h-full w-full rounded-full object-contain"
-                    />
-                  </span>
-                  <div className="min-w-0">
-                    <div className="truncate font-display text-lg font-extrabold">
+                <div className="relative z-10 flex shrink-0 items-center justify-between px-5 py-4">
+                  <Link
+                    href="/"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex min-w-0 items-center gap-2.5"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-[1.5px]">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={site.logo || "/images/logo.png"}
+                        alt=""
+                        className="h-full w-full rounded-full object-contain"
+                      />
+                    </span>
+                    <span className="truncate text-[11px] font-bold uppercase tracking-[0.22em] text-white/55">
                       {site.shortName || "EIDF"}
-                    </div>
-                    <div className="truncate text-[10px] uppercase tracking-[0.14em] text-white/45">
-                      Navigation
-                    </div>
-                  </div>
+                    </span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white cursor-pointer"
+                    aria-label="Close menu"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white cursor-pointer"
-                  aria-label="Close menu"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
 
-              <nav className="flex-1 overflow-y-auto overscroll-contain px-4 py-6">
-                <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gold/80">
-                  Explore
-                </p>
-                <ul className="space-y-1.5">
-                  {headerLinks.map((item, i) => {
-                    const active = isActive(item.href);
-                    const Icon = PRIMARY_ICONS[item.href] || Home;
-                    return (
-                      <motion.li
-                        key={`m-nav-${item.href}-${i}`}
-                        initial={{ opacity: 0, x: 24 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.05 * i }}
-                      >
-                        <Link
-                          href={item.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className={cn(
-                            "flex min-h-14 items-center gap-4 rounded-2xl border px-4 py-3.5 text-xl font-display font-bold transition-colors",
-                            active
-                              ? "border-white/15 bg-white/[0.1] text-white"
-                              : "border-white/8 bg-white/[0.03] text-white/90 hover:bg-white/[0.06]"
-                          )}
+                <nav className="relative z-10 min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-6">
+                  <ul className="divide-y divide-white/8">
+                    {headerLinks.map((item, i) => {
+                      const active = isActive(item.href);
+                      return (
+                        <motion.li
+                          key={`m-nav-${item.href}-${i}`}
+                          initial={{ opacity: 0, y: 16 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.05 + i * 0.04,
+                            duration: 0.4,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
                         >
-                          <Icon
-                            className={cn(
-                              "h-5 w-5 shrink-0",
-                              active ? "text-gold-soft" : "text-white/35"
-                            )}
-                          />
-                          {item.label}
-                        </Link>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
+                          <Link
+                            href={item.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="group flex items-baseline justify-between gap-4 py-3.5"
+                          >
+                            <span
+                              className={cn(
+                                "font-display text-[1.85rem] font-extrabold leading-none tracking-tight",
+                                active
+                                  ? "text-gold"
+                                  : "text-white group-active:text-gold-soft"
+                              )}
+                            >
+                              {item.label}
+                            </span>
+                            <span
+                              className={cn(
+                                "font-mono text-[11px] tracking-widest",
+                                active ? "text-gold" : "text-white/25"
+                              )}
+                            >
+                              {String(i + 1).padStart(2, "0")}
+                            </span>
+                          </Link>
+                        </motion.li>
+                      );
+                    })}
+                  </ul>
 
-                {layout.showPortalsDropdown && portalLinks.length > 0 && (
-                  <>
-                    <p className="mb-3 mt-8 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gold/80">
-                      {layout.portalsLabel || "Portals"}
-                    </p>
-                    <ul className="grid grid-cols-2 gap-2">
-                      {portalLinks.map((item, i) => {
-                        const active = isActive(item.href);
-                        const Icon = PORTAL_ICONS[item.href] || FileText;
-                        return (
-                          <li key={`m-portal-${item.href}-${i}`}>
+                  {layout.showPortalsDropdown && portalLinks.length > 0 && (
+                    <motion.div
+                      className="mt-8"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.28, duration: 0.35 }}
+                    >
+                      <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.22em] text-gold">
+                        {layout.portalsLabel || "Portals"}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {portalLinks.map((item) => {
+                          const active = isActive(item.href);
+                          return (
                             <Link
+                              key={`m-portal-${item.href}`}
                               href={item.href}
                               onClick={() => setMobileMenuOpen(false)}
                               className={cn(
-                                "flex min-h-16 flex-col justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-semibold transition-colors",
+                                "rounded-full border px-3.5 py-2 text-[13px] font-semibold",
                                 active
-                                  ? "border-gold/40 bg-gold/10 text-gold"
-                                  : "border-white/10 bg-white/5 text-white/85 hover:bg-white/8"
+                                  ? "border-gold bg-gold text-navy-deep"
+                                  : "border-white/15 bg-white/5 text-white/80"
                               )}
                             >
-                              <Icon
-                                className={cn(
-                                  "h-4 w-4",
-                                  active ? "text-gold" : "text-gold/55"
-                                )}
-                              />
                               {item.label}
                             </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </>
-                )}
-              </nav>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </nav>
 
-              <div className="space-y-3 border-t border-white/10 p-5">
-                <a
-                  href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-                  className="flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-3.5 text-xs font-semibold text-white/85 hover:bg-white/10"
-                >
-                  <Phone className="h-3.5 w-3.5 text-emerald" />
-                  {site.phone}
-                </a>
-                {layout.showCta && (
-                  <Link
-                    href={layout.ctaHref || "/membership"}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="btn-primary !w-full !rounded-full"
-                  >
-                    {layout.ctaLabel || "Join Us"}
-                    <ArrowUpRight className="h-4 w-4" />
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          </div>
+                <div className="relative z-10 shrink-0 px-5 pb-5 pt-2">
+                  <div className="flex items-center gap-2 rounded-full border border-white/12 bg-white/8 p-1.5 backdrop-blur-md">
+                    <a
+                      href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
+                      className="flex h-12 flex-1 items-center justify-center gap-2 rounded-full text-sm font-semibold text-white"
+                    >
+                      <Phone className="h-4 w-4 text-gold" />
+                      Call
+                    </a>
+                    {layout.showCta && (
+                      <Link
+                        href={layout.ctaHref || "/membership"}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex h-12 flex-[1.3] items-center justify-center gap-1.5 rounded-full bg-gold px-5 text-sm font-bold text-navy-deep"
+                      >
+                        {layout.ctaLabel || "Join Us"}
+                        <ArrowUpRight className="h-4 w-4" />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
 
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

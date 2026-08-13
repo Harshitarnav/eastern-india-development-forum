@@ -79,7 +79,7 @@ export const GlobalSearch: React.FC<GlobalSearchProps> = ({ isOpen, onClose }) =
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-stretch sm:items-start justify-center sm:pt-12 sm:px-4">
+        <div className="fixed inset-0 z-[90] flex items-stretch sm:items-start justify-center sm:pt-12 sm:px-4">
           <motion.button
             type="button"
             aria-label="Close search"
