@@ -55,8 +55,8 @@ function ServiceCell({
     if (window.matchMedia("(pointer: fine)").matches === false) return;
     const el = ref.current;
     const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) * 0.12;
-    const y = (e.clientY - rect.top - rect.height / 2) * 0.12;
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.1;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.1;
     el.style.transform = `translate(${x}px, ${y}px)`;
   };
 
@@ -72,13 +72,15 @@ function ServiceCell({
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       data-cursor="VIEW"
-      className="group relative flex flex-col items-center gap-2.5 bg-white px-3 py-6 text-center transition-[transform,background-color,box-shadow] duration-200 will-change-transform hover:z-10 hover:bg-cream hover:shadow-[inset_0_0_0_1px_var(--gold)]"
+      className="group relative flex flex-col items-center gap-3 rounded-xl border border-line bg-white px-3 py-6 text-center shadow-[0_1px_2px_rgba(10,31,61,0.03)] transition-[transform,background-color,box-shadow,border-color] duration-300 will-change-transform hover:z-10 hover:-translate-y-1 hover:border-gold/45 hover:bg-cream hover:shadow-[0_16px_36px_-18px_rgba(10,31,61,0.22)]"
     >
-      <span className="flex h-11 w-11 items-center justify-center rounded-sm bg-navy text-gold transition-colors group-hover:bg-navy-deep">
+      <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-navy text-gold shadow-sm transition-colors duration-300 group-hover:bg-navy-deep group-hover:text-gold">
         <Icon className="h-5 w-5" />
       </span>
-      <span className="text-xs font-bold text-navy">{service.label}</span>
-      <span className="hidden text-[10px] leading-tight text-muted sm:block">
+      <span className="text-xs font-bold leading-snug text-navy">
+        {service.label}
+      </span>
+      <span className="hidden text-[10px] leading-relaxed text-muted sm:block">
         {service.desc}
       </span>
     </Link>
@@ -89,21 +91,28 @@ export function ServicesSection({ services, chrome }: ServicesSectionProps) {
   const reduced = usePrefersReducedMotion();
 
   return (
-    <section className="border-b border-line bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-8 md:py-10">
-        <ClipReveal direction="up" className="mb-5 flex items-center justify-between gap-3">
-          <h2 className="text-[11px] font-bold uppercase tracking-[0.16em] text-gold-label">
-            {chrome.title}
-          </h2>
-          <Link
-            href={chrome.helpHref}
-            className="text-xs font-bold text-navy transition-colors hover:text-gold"
-          >
+    <section
+      id="online-services"
+      className="relative border-b border-line bg-white"
+    >
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+      <div className="mx-auto max-w-7xl px-4 py-10 md:py-12">
+        <ClipReveal
+          direction="up"
+          className="mb-6 flex items-end justify-between gap-3"
+        >
+          <div>
+            <p className="section-eyebrow mb-2">{chrome.title}</p>
+            <p className="hidden text-sm text-muted sm:block">
+              Quick access to portals and programmes
+            </p>
+          </div>
+          <Link href={chrome.helpHref} className="eidf-link text-xs shrink-0">
             {chrome.helpLabel}
           </Link>
         </ClipReveal>
 
-        <div className="grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4 lg:grid-cols-8">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
           {services.map((s) => (
             <ServiceCell
               key={s.id || s.href}

@@ -56,7 +56,7 @@ export function OfficesSection({ offices, chrome }: OfficesSectionProps) {
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
             {offices.map((off, i) => (
               <ClipReveal key={off.city} direction="up" delay={0.05 * i}>
-                <div className="relative h-full rounded-sm border border-line bg-white p-5">
+                <div className="relative h-full rounded-xl border border-line bg-white p-5 shadow-[0_1px_2px_rgba(10,31,61,0.03)] transition-all duration-300 hover:-translate-y-1 hover:border-gold/35 hover:shadow-[0_16px_36px_-18px_rgba(10,31,61,0.18)]">
                   <motion.span
                     className="absolute -top-1.5 left-5 h-3 w-3 rounded-full bg-gold ring-4 ring-gold/20"
                     animate={

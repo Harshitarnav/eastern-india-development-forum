@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -23,6 +23,8 @@ import {
   FolderKanban,
   Users,
   Mail,
+  ArrowUpRight,
+  Sparkles,
 } from "lucide-react";
 import {
   usePublicHeaderLayout,
@@ -32,14 +34,6 @@ import {
 import { GlobalSearch } from "./GlobalSearch";
 import { cn } from "@/lib/utils";
 import { useLenisLock } from "@/components/motion";
-
-const navLink = (active: boolean) =>
-  cn(
-    "relative px-3 py-2 text-[13px] font-semibold transition-colors whitespace-nowrap",
-    active ? "text-gold" : "text-white/70 hover:text-white",
-    active &&
-      "after:absolute after:inset-x-3 after:bottom-0.5 after:h-px after:bg-gold"
-  );
 
 const PORTAL_ICONS: Record<string, typeof FileText> = {
   "/tenders": FileText,
@@ -60,6 +54,47 @@ const PRIMARY_ICONS: Record<string, typeof Home> = {
   "/contact": Mail,
 };
 
+const PORTAL_META: Record<
+  string,
+  { blurb: string; detail: string; tone: string }
+> = {
+  "/tenders": {
+    blurb: "Live tenders & RFPs",
+    detail: "Browse active procurement opportunities across Eastern India.",
+    tone: "from-amber/20 to-gold/5",
+  },
+  "/investors": {
+    blurb: "Zones & capital access",
+    detail: "Explore PPP corridors, industrial parks, and investment facilitation.",
+    tone: "from-emerald/25 to-brand-blue/10",
+  },
+  "/schemes": {
+    blurb: "Govt programmes",
+    detail: "Central and state schemes mapped for enterprise and community impact.",
+    tone: "from-brand-blue/20 to-navy-light/10",
+  },
+  "/resources": {
+    blurb: "Reports & briefs",
+    detail: "Research, policy notes, and knowledge assets for decision-makers.",
+    tone: "from-gold/20 to-amber/5",
+  },
+  "/analytics": {
+    blurb: "Regional intelligence",
+    detail: "Track corridors, outcomes, and development signals in one view.",
+    tone: "from-emerald/20 to-gold/5",
+  },
+  "/events": {
+    blurb: "Forums & conclaves",
+    detail: "Upcoming summits, dialogues, and stakeholder convenings.",
+    tone: "from-brand-blue/20 to-emerald/10",
+  },
+  "/gallery": {
+    blurb: "Visual archive",
+    detail: "Moments from projects, events, and regional development work.",
+    tone: "from-white/10 to-gold/5",
+  },
+};
+
 export const Nav: React.FC = () => {
   const pathname = usePathname();
   const site = usePublicSite();
@@ -70,19 +105,45 @@ export const Nav: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const overlayOpen = mobileMenuOpen || searchOpen;
 
   useLenisLock(overlayOpen);
 
   const portalsActive = portalLinks.some((p) => pathname.startsWith(p.href));
 
+  const clearCloseTimer = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+
+  const openDropdown = () => {
+    clearCloseTimer();
+    setDropdownOpen(true);
+  };
+
+  const scheduleCloseDropdown = () => {
+    clearCloseTimer();
+    closeTimer.current = setTimeout(() => setDropdownOpen(false), 220);
+  };
+
+  useEffect(() => {
+    return () => clearCloseTimer();
+  }, []);
+
   useEffect(() => {
     setMobileMenuOpen(false);
     setDropdownOpen(false);
+    clearCloseTimer();
   }, [pathname]);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 16);
+      setDropdownOpen(false);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -164,217 +225,418 @@ export const Nav: React.FC = () => {
           ? "mx-auto"
           : "";
 
-  const compact = scrolled;
+  const NavItem = ({
+    href,
+    label,
+  }: {
+    href: string;
+    label: string;
+  }) => {
+    const active = isActive(href);
+    return (
+      <Link
+        href={href}
+        className={cn(
+          "relative rounded-md px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors duration-200",
+          active
+            ? "text-gold-soft"
+            : "text-white/75 hover:text-white"
+        )}
+      >
+        {label}
+        {active && (
+          <span
+            className="absolute inset-x-3 bottom-1 h-px bg-gold-soft/80"
+            aria-hidden
+          />
+        )}
+      </Link>
+    );
+  };
 
-  const PortalsDropdown = (
-    <div className="relative" data-portals-menu>
+  const featuredPortal =
+    portalLinks.find((p) => p.href === "/investors") || portalLinks[0];
+  const gridPortals = portalLinks.filter(
+    (p) => p.href !== featuredPortal?.href
+  );
+
+  const PortalsTrigger = (
+    <div
+      className="relative"
+      data-portals-menu
+      onMouseEnter={openDropdown}
+      onMouseLeave={scheduleCloseDropdown}
+    >
       <button
         type="button"
-        onClick={() => setDropdownOpen((o) => !o)}
-        className={`flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold cursor-pointer transition-colors ${
-          portalsActive ? "text-gold" : "text-white/75 hover:text-white"
-        }`}
+        onClick={() => {
+          clearCloseTimer();
+          setDropdownOpen((o) => !o);
+        }}
+        onFocus={openDropdown}
+        className={cn(
+          "relative flex items-center gap-1.5 rounded-md px-3 py-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200",
+          portalsActive || dropdownOpen
+            ? "text-gold-soft"
+            : "text-white/75 hover:text-white"
+        )}
         aria-expanded={dropdownOpen}
         aria-haspopup="true"
       >
         {layout.portalsLabel || "Portals"}
         <ChevronDown
-          className={`h-3.5 w-3.5 text-gold/80 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+          className={cn(
+            "h-3.5 w-3.5 transition-transform duration-200",
+            dropdownOpen ? "rotate-180 text-gold-soft" : "text-white/45"
+          )}
         />
-      </button>
-      <AnimatePresence>
-        {dropdownOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 mt-3 w-[22rem] border border-white/10 bg-navy-deep/95 p-2 shadow-2xl z-50 backdrop-blur-xl"
-          >
-            <div className="mb-2 border-b border-white/10 px-3 py-2">
-              <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-gold">
-                Command portals
-              </div>
-              <p className="mt-0.5 text-[11px] text-white/45">
-                Access data, investment, and programme interfaces
-              </p>
-            </div>
-            <div className="grid grid-cols-1 gap-0.5">
-              {portalLinks.map((item, i) => {
-                const Icon = PORTAL_ICONS[item.href] || FileText;
-                return (
-                  <Link
-                    key={`portal-${item.href}-${i}`}
-                    href={item.href}
-                    onClick={() => setDropdownOpen(false)}
-                    className="group flex items-center gap-3 px-3 py-3 text-[13px] text-white/80 transition-colors hover:bg-white/6 hover:text-gold"
-                  >
-                    <span className="flex h-9 w-9 items-center justify-center border border-white/10 bg-white/5 text-gold/80 group-hover:border-gold/40">
-                      <Icon className="h-4 w-4" />
-                    </span>
-                    <span className="font-semibold">{item.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </motion.div>
+        {(portalsActive || dropdownOpen) && (
+          <span
+            className="absolute inset-x-3 bottom-1 h-px bg-gold-soft/80"
+            aria-hidden
+          />
         )}
-      </AnimatePresence>
+      </button>
     </div>
+  );
+
+  const MegaMenu = (
+    <AnimatePresence>
+      {dropdownOpen && layout.showPortalsDropdown && (
+        <motion.div
+          data-portals-menu
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 8 }}
+          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute inset-x-0 top-full z-[80] px-2 pt-3 sm:px-3"
+          onMouseEnter={openDropdown}
+          onMouseLeave={scheduleCloseDropdown}
+        >
+          <div className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+          <div className="mx-auto max-w-7xl overflow-hidden rounded-2xl border border-white/12 bg-navy-deep shadow-[0_40px_100px_-30px_rgba(0,0,0,0.85)]">
+            <div className="grid lg:grid-cols-12">
+              {/* Featured panel */}
+              {featuredPortal && (
+                <Link
+                  href={featuredPortal.href}
+                  onClick={() => setDropdownOpen(false)}
+                  className="group relative isolate overflow-hidden border-b border-white/10 p-6 lg:col-span-4 lg:border-b-0 lg:border-r lg:p-7"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/eidf_03.jpg"
+                    alt=""
+                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/85 to-navy/40" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-gold/15 via-transparent to-emerald/20 opacity-80" />
+                  <div className="relative flex h-full min-h-[240px] flex-col justify-between">
+                    <div>
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-gold">
+                        <Sparkles className="h-3 w-3" />
+                        Featured portal
+                      </span>
+                      <h3 className="mt-4 font-display text-2xl font-bold tracking-tight text-white md:text-[1.7rem]">
+                        {featuredPortal.label}
+                      </h3>
+                      <p className="mt-2 max-w-xs text-sm leading-relaxed text-white/65">
+                        {PORTAL_META[featuredPortal.href]?.detail ||
+                          "Open this portal to explore opportunities across Eastern India."}
+                      </p>
+                    </div>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-gold transition-transform duration-300 group-hover:translate-x-1">
+                      Enter portal
+                      <ArrowUpRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              )}
+
+              {/* Portal grid */}
+              <div className="lg:col-span-8">
+                <div className="flex items-end justify-between gap-3 border-b border-white/8 px-5 py-4 sm:px-6">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gold">
+                      Command portals
+                    </p>
+                    <p className="mt-1 text-sm text-white/50">
+                      Data, capital, programmes, and intelligence — unified
+                    </p>
+                  </div>
+                  <span className="hidden rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[10px] font-semibold text-white/45 sm:inline">
+                    {portalLinks.length} portals
+                  </span>
+                </div>
+
+                <div className="grid gap-2 p-3 sm:grid-cols-2 sm:p-4 xl:grid-cols-3">
+                  {(gridPortals.length ? gridPortals : portalLinks).map(
+                    (item, i) => {
+                      const Icon = PORTAL_ICONS[item.href] || FileText;
+                      const meta = PORTAL_META[item.href];
+                      const active = isActive(item.href);
+                      return (
+                        <motion.div
+                          key={`mega-${item.href}-${i}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.04 * i,
+                            duration: 0.28,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
+                        >
+                          <Link
+                            href={item.href}
+                            onClick={() => setDropdownOpen(false)}
+                            className={cn(
+                              "group relative flex h-full flex-col overflow-hidden rounded-xl border p-4 transition-all duration-300",
+                              active
+                                ? "border-gold/40 bg-gold/10"
+                                : "border-white/8 bg-white/[0.03] hover:-translate-y-0.5 hover:border-gold/30 hover:bg-white/[0.06]"
+                            )}
+                          >
+                            <div
+                              className={cn(
+                                "pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+                                meta?.tone || "from-gold/10 to-transparent"
+                              )}
+                            />
+                            <div className="relative flex items-start justify-between gap-3">
+                              <span
+                                className={cn(
+                                  "flex h-11 w-11 items-center justify-center rounded-xl border transition-colors",
+                                  active
+                                    ? "border-gold/40 bg-gold/15 text-gold"
+                                    : "border-white/10 bg-navy/40 text-gold group-hover:border-gold/35 group-hover:bg-gold/10"
+                                )}
+                              >
+                                <Icon className="h-5 w-5" />
+                              </span>
+                              <ArrowUpRight
+                                className={cn(
+                                  "h-4 w-4 transition-all duration-300",
+                                  active
+                                    ? "text-gold"
+                                    : "text-white/25 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-gold"
+                                )}
+                              />
+                            </div>
+                            <div className="relative mt-3.5">
+                              <div
+                                className={cn(
+                                  "font-display text-[15px] font-bold leading-snug",
+                                  active ? "text-gold" : "text-white"
+                                )}
+                              >
+                                {item.label}
+                              </div>
+                              <p className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-gold/70">
+                                {meta?.blurb || "Open portal"}
+                              </p>
+                              <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-white/45 group-hover:text-white/60">
+                                {meta?.detail ||
+                                  "Explore this EIDF portal interface."}
+                              </p>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      );
+                    }
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-3 border-t border-white/8 bg-white/[0.02] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-white/50">
+                    <Link
+                      href="/proposals/submit"
+                      onClick={() => setDropdownOpen(false)}
+                      className="font-semibold text-white/70 transition-colors hover:text-gold"
+                    >
+                      Submit a proposal
+                    </Link>
+                    <span className="hidden h-3 w-px bg-white/15 sm:block" />
+                    <Link
+                      href="/contact"
+                      onClick={() => setDropdownOpen(false)}
+                      className="transition-colors hover:text-gold"
+                    >
+                      Talk to EIDF desk
+                    </Link>
+                  </div>
+                  <Link
+                    href={layout.ctaHref || "/membership"}
+                    onClick={() => setDropdownOpen(false)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-gold px-4 py-2 text-xs font-bold text-navy-deep transition-colors hover:bg-gold-hover"
+                  >
+                    {layout.ctaLabel || "Join Us"}
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 
   return (
     <>
       <div
         className={cn(
-          "z-40 w-full text-white",
+          "relative z-[70] w-full text-white",
           layout.sticky ? "sticky top-0" : "relative"
         )}
       >
-        {layout.showTopBar && (
-          <div className="border-b border-white/10 bg-navy-deep px-3 sm:px-4 py-1.5 text-[10px] sm:text-[11px] font-medium text-white">
-            <div className="mx-auto flex max-w-7xl items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 min-w-0">
-                <ShieldCheck className="h-3.5 w-3.5 text-gold shrink-0" />
-                <span className="truncate">
-                  <span className="text-white/50">Reg. </span>
-                  <span className="font-semibold tracking-wide">{site.regNo}</span>
-                </span>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-3 shrink-0 text-white/80">
-                <a
-                  href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-                  className="flex items-center gap-1 hover:text-gold transition-colors"
-                  aria-label="Call"
-                >
-                  <Phone className="h-3 w-3 text-emerald" />
-                  <span className="hidden sm:inline">{site.phone}</span>
-                </a>
-                <a
-                  href={`mailto:${site.email}`}
-                  className="hidden sm:inline hover:text-gold transition-colors truncate max-w-[160px] md:max-w-none"
-                >
-                  {site.email}
-                </a>
+        <div className="relative overflow-visible border-b border-white/10 bg-navy-deep">
+          {layout.showTopBar && (
+            <div className="border-b border-white/10 bg-[#050d18] px-3 py-1.5 sm:px-5">
+              <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 text-[10px] sm:text-[11px] font-medium">
+                <div className="flex min-w-0 items-center gap-1.5 text-white/60">
+                  <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-gold-soft" />
+                  <span className="truncate">
+                    <span className="text-white/40">Reg. </span>
+                    <span className="font-semibold tracking-wide text-white/75">
+                      {site.regNo}
+                    </span>
+                  </span>
+                </div>
+                <div className="flex shrink-0 items-center gap-3 text-white/60">
+                  <a
+                    href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
+                    className="flex items-center gap-1.5 transition-colors hover:text-gold-soft"
+                    aria-label="Call"
+                  >
+                    <Phone className="h-3 w-3 text-emerald" />
+                    <span className="hidden sm:inline">{site.phone}</span>
+                  </a>
+                  <span className="hidden h-3 w-px bg-white/15 sm:block" />
+                  <a
+                    href={`mailto:${site.email}`}
+                    className="hidden truncate transition-colors hover:text-gold-soft sm:inline max-w-[180px] md:max-w-none"
+                  >
+                    {site.email}
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-
-        <header
-          className={cn(
-            "w-full border-b border-white/10 bg-navy-deep transition-shadow duration-300",
-            compact && "shadow-[0_8px_24px_-12px_rgba(0,0,0,0.55)]"
           )}
-        >
-          <div
+
+          <header
             className={cn(
-              "relative mx-auto flex max-w-7xl items-center gap-3 px-4 md:px-6 py-3",
-              shellAlign
+              "transition-shadow duration-300",
+              scrolled && "shadow-[0_10px_30px_-16px_rgba(0,0,0,0.65)]"
             )}
           >
-            <Link
-              href="/"
-              className="flex items-center gap-2.5 sm:gap-3 group min-w-0 shrink"
-            >
-              <span className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-md ring-2 ring-gold/70 group-hover:ring-gold transition-all">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={site.logo || "/images/logo.png"}
-                  alt="EIDF"
-                  className="h-full w-full rounded-full object-contain"
-                />
-              </span>
-              {layout.showBrandText && (
-                <div className="flex min-w-0 flex-col">
-                  <span className="font-display text-[13px] sm:text-sm md:text-[15px] font-extrabold tracking-tight leading-tight group-hover:text-gold transition-colors truncate">
-                    <span className="sm:hidden">{site.shortName || "EIDF"}</span>
-                    <span className="hidden sm:inline">{brandName}</span>
-                  </span>
-                  {layout.brandTextMode === "full" && (
-                    <span className="hidden sm:block text-[10px] text-white/45 font-medium mt-0.5 truncate">
-                      {site.poweredBy}
-                    </span>
-                  )}
-                </div>
-              )}
-            </Link>
-
-            <nav className={cn("hidden lg:flex items-center gap-0.5", navAlign)}>
-              {beforePortals.map((link, i) => (
-                <Link
-                  key={`nav-before-${link.href}-${i}`}
-                  href={link.href}
-                  className={navLink(isActive(link.href))}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {layout.showPortalsDropdown &&
-                layout.portalsPosition === "after-primary" &&
-                PortalsDropdown}
-
-              {afterPortals.map((link, i) => (
-                <Link
-                  key={`nav-after-${link.href}-${i}`}
-                  href={link.href}
-                  className={navLink(isActive(link.href))}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {layout.showPortalsDropdown &&
-                (layout.portalsPosition === "before-cta" ||
-                  layout.portalsPosition === "end") &&
-                PortalsDropdown}
-            </nav>
-
             <div
               className={cn(
-                "flex items-center gap-1.5 sm:gap-2 shrink-0",
-                layout.menuAlign === "left" && "ml-auto",
-                layout.menuAlign === "center" && "absolute right-4 md:right-6"
+                "relative mx-auto flex max-w-7xl items-center gap-3 px-3 sm:px-5 py-3",
+                shellAlign
               )}
             >
-              {layout.showSearch && (
-                <button
-                  onClick={() => setSearchOpen(true)}
-                  className="flex h-10 w-10 items-center justify-center border border-white/15 bg-white/[0.04] text-white/70 hover:bg-white/10 hover:text-white transition-colors cursor-pointer"
-                  aria-label="Search"
-                >
-                  <Search className="h-4 w-4 text-gold" />
-                </button>
-              )}
-
-              {layout.showCta && (
-                <Link
-                  href={layout.ctaHref || "/membership"}
-                  className="hidden sm:inline-flex btn-primary !px-4 !py-2 !w-auto text-xs"
-                  data-cursor="VIEW"
-                >
-                  {layout.ctaLabel || "Join Us"}
-                </Link>
-              )}
-
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen((open) => !open)}
-                className="lg:hidden flex h-10 w-10 items-center justify-center border border-white/15 bg-white/[0.04] text-white hover:bg-white/10 cursor-pointer"
-                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                aria-expanded={mobileMenuOpen}
-                aria-controls="mobile-nav"
+              <Link
+                href="/"
+                className="group flex min-w-0 shrink items-center gap-2.5 sm:gap-3"
               >
-                {mobileMenuOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
+                <span className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full bg-white p-[3px] ring-2 ring-gold/50 shadow-md transition-transform duration-200 group-hover:scale-[1.03]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={site.logo || "/images/logo.png"}
+                    alt="EIDF"
+                    className="h-full w-full rounded-full object-contain"
+                  />
+                </span>
+                {layout.showBrandText && (
+                  <div className="flex min-w-0 flex-col">
+                    <span className="truncate font-display text-[13px] font-extrabold leading-tight tracking-tight text-white group-hover:text-gold-soft transition-colors sm:text-sm md:text-[15px]">
+                      <span className="sm:hidden">{site.shortName || "EIDF"}</span>
+                      <span className="hidden sm:inline">{brandName}</span>
+                    </span>
+                    {layout.brandTextMode === "full" && (
+                      <span className="mt-0.5 hidden truncate text-[10px] font-medium text-white/45 sm:block">
+                        {site.poweredBy}
+                      </span>
+                    )}
+                  </div>
                 )}
-              </button>
+              </Link>
+
+              <nav className={cn("hidden items-center gap-0.5 lg:flex", navAlign)}>
+                {beforePortals.map((link, i) => (
+                  <NavItem
+                    key={`nav-before-${link.href}-${i}`}
+                    href={link.href}
+                    label={link.label}
+                  />
+                ))}
+
+                {layout.showPortalsDropdown &&
+                  layout.portalsPosition === "after-primary" &&
+                  PortalsTrigger}
+
+                {afterPortals.map((link, i) => (
+                  <NavItem
+                    key={`nav-after-${link.href}-${i}`}
+                    href={link.href}
+                    label={link.label}
+                  />
+                ))}
+
+                {layout.showPortalsDropdown &&
+                  (layout.portalsPosition === "before-cta" ||
+                    layout.portalsPosition === "end") &&
+                  PortalsTrigger}
+              </nav>
+
+              <div
+                className={cn(
+                  "flex shrink-0 items-center gap-2",
+                  layout.menuAlign === "left" && "ml-auto",
+                  layout.menuAlign === "center" && "absolute right-3 sm:right-5"
+                )}
+              >
+                {layout.showSearch && (
+                  <button
+                    onClick={() => setSearchOpen(true)}
+                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white/75 transition-colors hover:border-gold/40 hover:bg-white/10 hover:text-gold-soft cursor-pointer"
+                    aria-label="Search"
+                  >
+                    <Search className="h-4 w-4" />
+                  </button>
+                )}
+
+                {layout.showCta && (
+                  <Link
+                    href={layout.ctaHref || "/membership"}
+                    className="hidden items-center gap-1.5 rounded-lg bg-gold px-4 py-2.5 text-xs font-bold text-navy-deep transition-colors hover:bg-gold-hover sm:inline-flex"
+                    data-cursor="VIEW"
+                  >
+                    {layout.ctaLabel || "Join Us"}
+                    <ArrowUpRight className="h-3.5 w-3.5" />
+                  </Link>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen((open) => !open)}
+                  className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white transition-colors hover:bg-white/10 cursor-pointer"
+                  aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                  aria-expanded={mobileMenuOpen}
+                  aria-controls="mobile-nav"
+                >
+                  {mobileMenuOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
-        </header>
+          </header>
+
+          {MegaMenu}
+        </div>
       </div>
 
       <AnimatePresence>
@@ -413,10 +675,10 @@ export const Nav: React.FC = () => {
                     />
                   </span>
                   <div className="min-w-0">
-                    <div className="font-display text-lg font-extrabold truncate">
+                    <div className="truncate font-display text-lg font-extrabold">
                       {site.shortName || "EIDF"}
                     </div>
-                    <div className="text-[10px] text-white/45 truncate uppercase tracking-[0.14em]">
+                    <div className="truncate text-[10px] uppercase tracking-[0.14em] text-white/45">
                       Navigation
                     </div>
                   </div>
@@ -424,7 +686,7 @@ export const Nav: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex h-11 w-11 items-center justify-center border border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white cursor-pointer"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white cursor-pointer"
                   aria-label="Close menu"
                 >
                   <X className="h-5 w-5" />
@@ -432,10 +694,10 @@ export const Nav: React.FC = () => {
               </div>
 
               <nav className="flex-1 overflow-y-auto overscroll-contain px-4 py-6">
-                <p className="px-3 mb-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gold/80">
+                <p className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gold/80">
                   Explore
                 </p>
-                <ul className="space-y-1">
+                <ul className="space-y-1.5">
                   {headerLinks.map((item, i) => {
                     const active = isActive(item.href);
                     const Icon = PRIMARY_ICONS[item.href] || Home;
@@ -449,14 +711,18 @@ export const Nav: React.FC = () => {
                         <Link
                           href={item.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className={`flex min-h-14 items-center gap-4 border-b border-white/8 px-3 py-3.5 text-xl font-display font-bold transition-colors ${
+                          className={cn(
+                            "flex min-h-14 items-center gap-4 rounded-2xl border px-4 py-3.5 text-xl font-display font-bold transition-colors",
                             active
-                              ? "text-gold"
-                              : "text-white/90 hover:text-white"
-                          }`}
+                              ? "border-white/15 bg-white/[0.1] text-white"
+                              : "border-white/8 bg-white/[0.03] text-white/90 hover:bg-white/[0.06]"
+                          )}
                         >
                           <Icon
-                            className={`h-5 w-5 shrink-0 ${active ? "text-gold" : "text-white/35"}`}
+                            className={cn(
+                              "h-5 w-5 shrink-0",
+                              active ? "text-gold-soft" : "text-white/35"
+                            )}
                           />
                           {item.label}
                         </Link>
@@ -467,7 +733,7 @@ export const Nav: React.FC = () => {
 
                 {layout.showPortalsDropdown && portalLinks.length > 0 && (
                   <>
-                    <p className="px-3 mt-8 mb-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gold/80">
+                    <p className="mb-3 mt-8 px-3 text-[10px] font-bold uppercase tracking-[0.18em] text-gold/80">
                       {layout.portalsLabel || "Portals"}
                     </p>
                     <ul className="grid grid-cols-2 gap-2">
@@ -479,14 +745,18 @@ export const Nav: React.FC = () => {
                             <Link
                               href={item.href}
                               onClick={() => setMobileMenuOpen(false)}
-                              className={`flex min-h-16 flex-col justify-center gap-2 border px-3 py-3 text-sm font-semibold transition-colors ${
+                              className={cn(
+                                "flex min-h-16 flex-col justify-center gap-2 rounded-2xl border px-3 py-3 text-sm font-semibold transition-colors",
                                 active
                                   ? "border-gold/40 bg-gold/10 text-gold"
                                   : "border-white/10 bg-white/5 text-white/85 hover:bg-white/8"
-                              }`}
+                              )}
                             >
                               <Icon
-                                className={`h-4 w-4 ${active ? "text-gold" : "text-gold/55"}`}
+                                className={cn(
+                                  "h-4 w-4",
+                                  active ? "text-gold" : "text-gold/55"
+                                )}
                               />
                               {item.label}
                             </Link>
@@ -498,10 +768,10 @@ export const Nav: React.FC = () => {
                 )}
               </nav>
 
-              <div className="border-t border-white/10 p-5 space-y-3">
+              <div className="space-y-3 border-t border-white/10 p-5">
                 <a
                   href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-                  className="flex items-center justify-center gap-2 border border-white/15 bg-white/5 px-4 py-3.5 text-xs font-semibold text-white/85 hover:bg-white/10"
+                  className="flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-4 py-3.5 text-xs font-semibold text-white/85 hover:bg-white/10"
                 >
                   <Phone className="h-3.5 w-3.5 text-emerald" />
                   {site.phone}
@@ -510,9 +780,10 @@ export const Nav: React.FC = () => {
                   <Link
                     href={layout.ctaHref || "/membership"}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="btn-primary !w-full"
+                    className="btn-primary !w-full !rounded-full"
                   >
                     {layout.ctaLabel || "Join Us"}
+                    <ArrowUpRight className="h-4 w-4" />
                   </Link>
                 )}
               </div>

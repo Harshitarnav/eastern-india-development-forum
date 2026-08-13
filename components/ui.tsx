@@ -32,15 +32,16 @@ export function PageHero({
           {crumb}
         </div>
         {eyebrow && (
-          <div className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
+          <div className="mb-3 inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
+            <span className="hidden h-px w-8 bg-gold/70 sm:block" aria-hidden />
             {eyebrow}
           </div>
         )}
-        <h1 className="max-w-4xl font-display text-display-fluid font-extrabold text-white">
+        <h1 className="max-w-4xl font-display text-display-fluid font-extrabold text-white text-balance">
           {title}
         </h1>
         {description && (
-          <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/65 md:text-base">
+          <p className="mt-5 max-w-2xl text-sm leading-relaxed text-white/65 md:text-base md:leading-relaxed">
             {description}
           </p>
         )}
@@ -78,7 +79,9 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <div className={`mb-10 md:mb-12 ${align === "center" ? "text-center" : "text-left"} ${className}`}>
+    <div
+      className={`mb-10 md:mb-12 ${align === "center" ? "text-center" : "text-left"} ${className}`}
+    >
       <div
         className={`inline-flex items-center gap-3 ${
           align === "center" ? "justify-center" : ""
@@ -97,7 +100,7 @@ export function SectionHeader({
         </span>
       </div>
       <h2
-        className={`mt-4 font-display text-3xl font-bold tracking-tight md:text-4xl lg:text-[2.75rem] ${
+        className={`mt-4 font-display text-3xl font-bold tracking-tight text-balance md:text-4xl lg:text-[2.75rem] ${
           light ? "text-white" : "text-navy"
         }`}
       >
@@ -105,7 +108,7 @@ export function SectionHeader({
       </h2>
       {description && (
         <p
-          className={`mt-4 max-w-2xl text-sm leading-relaxed md:text-[15px] ${
+          className={`mt-4 max-w-2xl text-sm leading-relaxed md:text-[15px] md:leading-relaxed ${
             light ? "text-white/65" : "text-muted"
           } ${align === "center" ? "mx-auto" : ""}`}
         >
@@ -125,7 +128,7 @@ export function PlaceholderMedia({
 }) {
   return (
     <div
-      className={`flex items-center justify-center bg-[repeating-linear-gradient(45deg,#eef3f8,#eef3f8_10px,#f7f9fc_10px,#f7f9fc_20px)] p-3 text-center font-mono text-[11px] text-muted ${className}`}
+      className={`flex items-center justify-center rounded-xl bg-[repeating-linear-gradient(45deg,#eef3f8,#eef3f8_10px,#f7f9fc_10px,#f7f9fc_20px)] p-3 text-center font-mono text-[11px] text-muted ${className}`}
     >
       {label}
     </div>
@@ -149,9 +152,9 @@ export function CtaBand({
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald/10 via-transparent to-gold/10" />
       <div className="pointer-events-none absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
-      <div className="relative mx-auto max-w-7xl flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl space-y-4">
-          <h2 className="font-display text-3xl font-bold tracking-tight md:text-5xl">
+          <h2 className="font-display text-3xl font-bold tracking-tight text-balance md:text-5xl">
             {title}
           </h2>
           {description && (
@@ -160,7 +163,7 @@ export function CtaBand({
             </p>
           )}
         </div>
-        <div className="flex flex-wrap items-center gap-3 shrink-0">
+        <div className="flex shrink-0 flex-wrap items-center gap-3">
           <Link href={primary.href} className="btn-primary" data-cursor="VIEW">
             {primary.label}
             <ArrowRight className="h-4 w-4" />
@@ -194,7 +197,7 @@ export function FieldLabel({
 }
 
 export const fieldClass =
-  "w-full rounded border border-line bg-cream/50 px-4 py-3.5 text-sm text-navy outline-none transition placeholder:text-muted/65 hover:border-navy/25 focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/20 disabled:cursor-not-allowed disabled:opacity-60";
+  "w-full rounded-lg border border-line bg-cream/50 px-4 py-3.5 text-sm text-navy outline-none transition placeholder:text-muted/65 hover:border-navy/25 focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/20 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function AdminFieldLabel({ children }: { children: React.ReactNode }) {
   return (

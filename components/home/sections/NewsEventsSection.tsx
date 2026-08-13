@@ -38,7 +38,7 @@ export function NewsEventsSection({
 
           {featured && (
             <ClipReveal direction="clip" delay={0.08}>
-              <article className="relative overflow-hidden rounded-sm border border-line bg-navy p-6 text-white md:p-8">
+              <article className="relative overflow-hidden rounded-xl border border-line bg-navy p-6 text-white shadow-[0_20px_40px_-24px_rgba(10,31,61,0.45)] md:p-8">
                 <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gold/10 blur-2xl" />
                 <div className="text-[11px] text-white/50">
                   {featured.date} · {featured.source}
@@ -63,7 +63,7 @@ export function NewsEventsSection({
           )}
 
           {restNews.length > 0 && (
-            <div className="mt-3 divide-y divide-line overflow-hidden rounded-sm border border-line bg-white">
+            <div className="mt-3 divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">
               {restNews.map((nw, i) => (
                 <ClipReveal key={nw.id} direction="left" delay={0.06 * i}>
                   <article className="p-5">
@@ -111,7 +111,7 @@ export function NewsEventsSection({
             )}
           </div>
 
-          <div className="divide-y divide-line overflow-hidden rounded-sm border border-line bg-white">
+          <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-white">
             {events.map((ev, i) => (
               <ClipReveal key={ev.id} direction="right" delay={0.06 * i}>
                 <div className="flex items-start justify-between gap-4 p-5">

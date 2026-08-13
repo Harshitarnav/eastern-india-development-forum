@@ -46,7 +46,7 @@ export function ResourcesSection({ reports, chrome }: ResourcesSectionProps) {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {reports.map((rep, i) => (
             <ClipReveal key={rep.id} direction="scale" delay={0.06 * i}>
-              <article className="group flex h-full flex-col overflow-hidden rounded-sm border border-line bg-white transition-transform duration-300 hover:-translate-y-1">
+              <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-white shadow-[0_1px_2px_rgba(10,31,61,0.03)] transition-all duration-300 hover:-translate-y-1.5 hover:border-gold/30 hover:shadow-[0_20px_40px_-20px_rgba(10,31,61,0.22)]">
                 <div
                   className={`relative flex min-h-[160px] items-end bg-gradient-to-br ${coverTone[i % coverTone.length]} p-5 text-white`}
                 >
@@ -72,7 +72,7 @@ export function ResourcesSection({ reports, chrome }: ResourcesSectionProps) {
                   </div>
                   <a
                     href={rep.downloadUrl}
-                    className="inline-flex items-center gap-2 self-start rounded-sm border border-navy bg-navy px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-navy-light"
+                    className="inline-flex items-center gap-2 self-start rounded-lg border border-navy bg-navy px-4 py-2.5 text-xs font-bold text-white transition-colors hover:bg-navy-light"
                     data-cursor="VIEW"
                   >
                     <Download className="h-3.5 w-3.5 text-gold" />

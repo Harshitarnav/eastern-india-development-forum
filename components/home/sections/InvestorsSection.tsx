@@ -42,7 +42,7 @@ export function InvestorsSection({ zones, chrome }: InvestorsSectionProps) {
           )}
         </div>
 
-        <div className="relative overflow-hidden rounded-sm border border-line bg-white">
+        <div className="relative overflow-hidden rounded-xl border border-line bg-white">
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
             aria-hidden
@@ -106,7 +106,7 @@ export function InvestorsSection({ zones, chrome }: InvestorsSectionProps) {
                     {zone.focusIndustries.map((ind) => (
                       <span
                         key={ind}
-                        className="rounded-sm border border-line bg-cream px-2 py-0.5 text-[11px] font-semibold text-navy"
+                        className="rounded-md border border-line bg-cream px-2.5 py-1 text-[11px] font-semibold text-navy"
                       >
                         {ind}
                       </span>

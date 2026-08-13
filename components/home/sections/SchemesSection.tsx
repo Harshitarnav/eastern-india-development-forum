@@ -50,7 +50,7 @@ export function SchemesSection({ schemes, chrome }: SchemesSectionProps) {
             return (
               <ClipReveal key={sch.id} direction="up" delay={0.05 * i}>
                 <article
-                  className={`overflow-hidden rounded-sm border bg-white transition-shadow ${
+                  className={`overflow-hidden rounded-xl border bg-white transition-shadow ${
                     open
                       ? "border-gold/40 shadow-[0_12px_40px_-24px_rgba(10,31,61,0.45)]"
                       : "border-line"

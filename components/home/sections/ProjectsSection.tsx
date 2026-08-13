@@ -49,7 +49,7 @@ export function ProjectsSection({ projects, chrome }: ProjectsSectionProps) {
             <ClipReveal key={proj.id} direction="up" delay={0.05 * idx}>
               <Link
                 href="/projects"
-                className="group relative block min-h-[260px] overflow-hidden rounded-sm"
+                className="group relative block min-h-[260px] overflow-hidden rounded-xl"
                 data-cursor="VIEW"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -96,7 +96,7 @@ export function ProjectsSection({ projects, chrome }: ProjectsSectionProps) {
               >
                 <Link
                   href="/projects"
-                  className="group relative block min-h-[420px] overflow-hidden rounded-sm lg:min-h-[480px]"
+                  className="group relative block min-h-[420px] overflow-hidden rounded-xl lg:min-h-[480px]"
                   data-cursor="VIEW"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

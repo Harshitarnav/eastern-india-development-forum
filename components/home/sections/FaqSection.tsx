@@ -34,7 +34,7 @@ export function FaqSection({ faqs, chrome }: FaqSectionProps) {
             return (
               <ClipReveal key={faq.id} direction="up" delay={0.04 * i}>
                 <div
-                  className={`overflow-hidden rounded-sm border transition-colors ${
+                  className={`overflow-hidden rounded-xl border transition-colors ${
                     isOpen
                       ? "border-gold/40 bg-white"
                       : "border-line bg-white/80"

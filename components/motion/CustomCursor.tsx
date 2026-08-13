@@ -154,7 +154,7 @@ export function CustomCursor() {
         style={{ left: x, top: y }}
       >
         <motion.span
-          className="block rounded-full bg-gold shadow-[0_0_10px_rgba(232,163,23,0.5)]"
+          className="block rounded-full bg-gold shadow-[0_0_10px_rgba(201,168,75,0.45)]"
           animate={{
             width: mode === "label" ? 0 : mode === "hover" ? 5 : 7,
             height: mode === "label" ? 0 : mode === "hover" ? 5 : 7,

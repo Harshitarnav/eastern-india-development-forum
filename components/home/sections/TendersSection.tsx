@@ -45,7 +45,7 @@ export function TendersSection({ tenders, chrome }: TendersSectionProps) {
         </div>
 
         <ClipReveal direction="up" delay={0.08}>
-          <div className="hidden overflow-x-auto rounded-sm border border-line md:block">
+          <div className="hidden overflow-x-auto rounded-xl border border-line md:block">
             <table className="w-full text-left text-sm">
               <thead className="bg-navy text-[11px] uppercase tracking-wider text-white">
                 <tr>
@@ -105,7 +105,7 @@ export function TendersSection({ tenders, chrome }: TendersSectionProps) {
           </div>
         </ClipReveal>
 
-        <div className="divide-y divide-line overflow-hidden rounded-sm border border-line bg-white md:hidden">
+        <div className="divide-y divide-line overflow-hidden rounded-xl border border-line bg-white md:hidden">
           {tenders.map((tnd, i) => (
             <ClipReveal key={tnd.id} direction="up" delay={0.04 * i}>
               <Link href="/tenders" className="block space-y-1.5 p-4 hover:bg-cream/80">

@@ -44,10 +44,6 @@ export default function HomePage() {
       {show("hero") && (
         <HeroSection
           site={{
-            name: site.name,
-            logo: site.logo,
-            poweredBy: site.poweredBy,
-            regNo: site.regNo,
             hero: site.hero,
           }}
         />
