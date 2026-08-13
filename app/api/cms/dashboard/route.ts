@@ -92,6 +92,17 @@ async function loadMembershipRows(): Promise<MembershipFormRow[]> {
 }
 
 async function loadProposalRows(): Promise<ProposalFormRow[]> {
+  if (isSupabaseConfigured()) {
+    try {
+      const rows = await supabaseSelect(
+        "project_proposals",
+        "select=*&order=created_at.desc"
+      );
+      return rows as ProposalFormRow[];
+    } catch {
+      // fall through
+    }
+  }
   return listForms("proposal");
 }
 
@@ -250,7 +261,7 @@ export async function GET() {
     meta: {
       cmsUpdatedAt: snap.updatedAt,
       siteName: snap.settings?.name || "EIDF",
-      source: isSupabaseConfigured() ? "supabase+file" : "file",
+      source: isSupabaseConfigured() ? "database" : "local-file",
     },
   });
 }

@@ -1,3 +1,17 @@
+import type {
+  CmsAssistantSettings,
+  CmsPagesSettings,
+} from "@/lib/cms/page-settings";
+
+export type { CmsAssistantSettings, CmsPagesSettings } from "@/lib/cms/page-settings";
+export {
+  DEFAULT_ASSISTANT,
+  DEFAULT_HERO_BRIDGES,
+  DEFAULT_PAGES,
+  mergeAssistant,
+  mergePages,
+} from "@/lib/cms/page-settings";
+
 export type CmsCollection =
   | "projects"
   | "allProjects"
@@ -21,7 +35,8 @@ export type CmsCollection =
   | "upcomingEvents"
   | "sections"
   | "testimonials"
-  | "onlineServices";
+  | "onlineServices"
+  | "creatives";
 
 export type CmsHomepageSectionCopy = {
   eyebrow: string;
@@ -359,6 +374,13 @@ export interface CmsSettings {
       tertiary: { label: string; href: string };
     };
     floatingMetrics: { label: string; value: string }[];
+    bridgesLabel?: string;
+    bridgesTagline?: string;
+    bridges?: { label: string; href: string }[];
+    depthImage1?: string;
+    depthImage2?: string;
+    depthImage1Label?: string;
+    depthImage2Label?: string;
   };
   analytics: {
     stateCapital: { name: string; capital: number }[];
@@ -367,6 +389,8 @@ export interface CmsSettings {
   headerLayout?: CmsHeaderLayout;
   homepage?: CmsHomepageSettings;
   investorsPage?: CmsInvestorsPageSettings;
+  pages?: CmsPagesSettings;
+  assistant?: CmsAssistantSettings;
   siteUrl: string;
   robotsExtra?: string;
 }
@@ -406,4 +430,5 @@ export const CMS_COLLECTIONS: { key: CmsCollection; label: string; adminHref: st
   { key: "upcomingEvents", label: "Events (legacy alias)", adminHref: "/admin/events" },
   { key: "sections", label: "Page Sections", adminHref: "/admin/cms?tab=homepage" },
   { key: "testimonials", label: "Testimonials", adminHref: "/admin/testimonials" },
+  { key: "creatives", label: "Brand Creatives", adminHref: "/admin/creatives" },
 ];

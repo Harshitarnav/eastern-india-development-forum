@@ -14,6 +14,12 @@ export default function Page() {
         { key: "role", label: "Role" },
         { key: "quote", label: "Quote", type: "textarea", required: true },
         { key: "org", label: "Organisation" },
+        {
+          key: "image",
+          label: "Photo",
+          type: "image",
+          folder: "testimonials",
+        },
       ]}
     />
   );

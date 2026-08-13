@@ -67,6 +67,8 @@ export function revalidateCms(scope: keyof typeof CMS_TAGS | "everything" = "eve
     "/analytics",
     "/creatives",
     "/proposals/submit",
+    "/privacy",
+    "/terms",
   ];
   for (const p of paths) {
     try {

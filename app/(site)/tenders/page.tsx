@@ -5,9 +5,11 @@ import Link from "next/link";
 import { Download, FileText, Search } from "lucide-react";
 import { usePublicSite } from "@/lib/cms/public-provider";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export default function TendersPage() {
   const site = usePublicSite();
+  const page = site.pages?.tenders || DEFAULT_PAGES.tenders;
   const [filterState, setFilterState] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -35,9 +37,9 @@ export default function TendersPage() {
   return (
     <>
       <PageHero
-        crumb="Home / Tenders"
-        title="Tender Assistance Center"
-        description="Verified public-sector RFPs and procurement opportunities across Bihar, Jharkhand, Odisha, West Bengal, and Assam."
+        crumb={page.crumb}
+        title={page.title}
+        description={page.description}
       />
 
       <section className="border-b border-line bg-white px-4 py-5">
@@ -48,7 +50,7 @@ export default function TendersPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by title or reference number..."
+              placeholder={page.searchPlaceholder || "Search by title or reference number..."}
               className="w-full border border-line bg-cream py-3 pr-4 pl-10 text-sm text-navy outline-none transition focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/15"
             />
           </div>
@@ -73,16 +75,16 @@ export default function TendersPage() {
       <section className="px-4 py-12 md:py-16">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
-            eyebrow="Open Opportunities"
-            title={`${filteredTenders.length} tender${filteredTenders.length === 1 ? "" : "s"}`}
+            eyebrow={page.sectionEyebrow}
+            title={`${filteredTenders.length} ${page.sectionTitle || "tender"}${filteredTenders.length === 1 ? "" : "s"}`}
             align="left"
           />
 
           {filteredTenders.length === 0 ? (
             <div className="border border-dashed border-line py-16 text-center">
               <FileText className="mx-auto mb-3 h-10 w-10 text-gold" />
-              <h3 className="font-display text-lg font-bold text-navy">No tenders found</h3>
-              <p className="mt-1 text-sm text-muted">Try adjusting filters or search keywords.</p>
+              <h3 className="font-display text-lg font-bold text-navy">{page.emptyTitle}</h3>
+              <p className="mt-1 text-sm text-muted">{page.emptyDescription}</p>
             </div>
           ) : (
             <>
@@ -125,7 +127,7 @@ export default function TendersPage() {
                               href="/contact?intent=tender_guidance"
                               className="text-xs font-bold text-navy hover:text-gold"
                             >
-                              Guidance
+                              {page.itemCtaLabel || "Guidance"}
                             </Link>
                             <a
                               href={docHref(tnd)}
@@ -181,10 +183,10 @@ export default function TendersPage() {
       </section>
 
       <CtaBand
-        title="Need bid preparation support?"
-        description="EIDF's tender desk helps with documentation, consortium formation, and compliance readiness."
-        primary={{ label: "Request Guidance", href: "/contact?intent=tender_guidance" }}
-        secondary={{ label: "View Schemes", href: "/schemes" }}
+        title={page.ctaTitle}
+        description={page.ctaDescription}
+        primary={{ label: page.ctaPrimaryLabel, href: page.ctaPrimaryHref }}
+        secondary={{ label: page.ctaSecondaryLabel, href: page.ctaSecondaryHref }}
       />
     </>
   );

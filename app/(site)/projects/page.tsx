@@ -5,6 +5,7 @@ import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { buildPageMetadata } from "@/lib/cms/seo";
 import { cmsMediaUrl } from "@/lib/cms/home-preview";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/projects", { title: "Projects" });
@@ -12,26 +13,27 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProjectsPage() {
   const { site } = await getPublicCmsBundle();
+  const page = site.pages?.projects || DEFAULT_PAGES.projects;
   return (
     <>
-      <PageHero
-        crumb="Home / Projects"
-        title="Our Projects"
-        description="Every project is funded by members, corporates and government partners — delivered at no cost to the communities it serves."
-      >
-        <Link href="/contact?intent=donate" className="btn-primary">
-          Fund a Project
-        </Link>
-        <Link href="/proposals/submit" className="btn-secondary">
-          Submit a Proposal
-        </Link>
+      <PageHero crumb={page.crumb} title={page.title} description={page.description}>
+        {page.primaryCtaLabel ? (
+          <Link href={page.primaryCtaHref} className="btn-primary">
+            {page.primaryCtaLabel}
+          </Link>
+        ) : null}
+        {page.secondaryCtaLabel ? (
+          <Link href={page.secondaryCtaHref} className="btn-secondary">
+            {page.secondaryCtaLabel}
+          </Link>
+        ) : null}
       </PageHero>
 
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
-            eyebrow="Active Initiatives"
-            title="Transforming communities across Eastern India"
+            eyebrow={page.sectionEyebrow}
+            title={page.sectionTitle}
             align="left"
           />
 
@@ -73,7 +75,7 @@ export default async function ProjectsPage() {
                     href="/contact?intent=donate"
                     className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-navy transition-colors hover:text-gold"
                   >
-                    Support this project <ArrowRight className="h-4 w-4" />
+                    {page.itemCtaLabel} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
               </article>
@@ -85,7 +87,7 @@ export default async function ProjectsPage() {
       <section className="border-y border-line bg-white px-4 py-12">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 gap-y-3">
           <span className="text-[11px] font-bold uppercase tracking-widest text-muted">
-            Working with
+            {page.partnersLabel}
           </span>
           {site.partners.map((pn) => (
             <span key={pn} className="border-b border-transparent text-sm font-semibold text-navy">
@@ -96,10 +98,10 @@ export default async function ProjectsPage() {
       </section>
 
       <CtaBand
-        title="Have a project or partnership in mind?"
-        description="Tell us about your initiative — we help structure funding, partnerships, and delivery."
-        primary={{ label: "Submit a Proposal", href: "/proposals/submit" }}
-        secondary={{ label: "Talk to Us", href: "/contact" }}
+        title={page.ctaTitle}
+        description={page.ctaDescription}
+        primary={{ label: page.ctaPrimaryLabel, href: page.ctaPrimaryHref }}
+        secondary={{ label: page.ctaSecondaryLabel, href: page.ctaSecondaryHref }}
       />
     </>
   );

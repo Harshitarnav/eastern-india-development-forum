@@ -13,7 +13,8 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import { PageHero, CtaBand } from "@/components/ui";
-import { usePublicGallery } from "@/lib/cms/public-provider";
+import { usePublicGallery, usePublicSite } from "@/lib/cms/public-provider";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 interface GalleryImage {
   id: string;
@@ -34,6 +35,7 @@ const FALLBACK_CATEGORIES = [
 
 export default function GalleryPage() {
   const galleryImages = usePublicGallery() as GalleryImage[];
+  const page = usePublicSite().pages?.gallery || DEFAULT_PAGES.gallery;
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
@@ -75,17 +77,21 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-cream">
       <PageHero
-        crumb="Home / Gallery"
-        title="Media Hub"
-        description="Seminars, site visits, community moments, and brand assets from across Eastern India."
+        crumb={page.crumb}
+        title={page.title}
+        description={page.description}
         compact
       >
-        <Link href="/creatives" className="btn-primary">
-          Brand Creatives
-        </Link>
-        <Link href="/events" className="btn-secondary">
-          Events & News
-        </Link>
+        {page.primaryCtaLabel ? (
+          <Link href={page.primaryCtaHref} className="btn-primary">
+            {page.primaryCtaLabel}
+          </Link>
+        ) : null}
+        {page.secondaryCtaLabel ? (
+          <Link href={page.secondaryCtaHref} className="btn-secondary">
+            {page.secondaryCtaLabel}
+          </Link>
+        ) : null}
       </PageHero>
 
       <section className="border-b border-line bg-white px-4 py-5">
@@ -115,7 +121,7 @@ export default function GalleryPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search assets..."
+              placeholder={page.searchPlaceholder || "Search assets..."}
               className="w-full border border-line bg-cream py-3 pr-4 pl-10 text-sm text-navy outline-none transition focus:border-gold focus:bg-white focus:ring-2 focus:ring-gold/15"
             />
           </div>
@@ -133,8 +139,8 @@ export default function GalleryPage() {
         {filteredImages.length === 0 ? (
           <div className="space-y-3 border border-dashed border-line bg-white py-20 text-center">
             <ImageIcon className="mx-auto h-12 w-12 text-gold" />
-            <h3 className="font-display text-lg font-bold text-navy">No media assets found</h3>
-            <p className="text-xs text-muted">Try adjusting your filters or search keywords.</p>
+            <h3 className="font-display text-lg font-bold text-navy">{page.emptyTitle}</h3>
+            <p className="text-xs text-muted">{page.emptyDescription}</p>
           </div>
         ) : (
           <motion.div layout className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -273,10 +279,10 @@ export default function GalleryPage() {
       </AnimatePresence>
 
       <CtaBand
-        title="Capture the next chapter with us"
-        description="Attend seminars, site visits, and conventions — then find the moments here."
-        primary={{ label: "View Upcoming Events", href: "/events" }}
-        secondary={{ label: "Join the Network", href: "/membership" }}
+        title={page.ctaTitle}
+        description={page.ctaDescription}
+        primary={{ label: page.ctaPrimaryLabel, href: page.ctaPrimaryHref }}
+        secondary={{ label: page.ctaSecondaryLabel, href: page.ctaSecondaryHref }}
       />
     </div>
   );

@@ -4,6 +4,7 @@ import React, { createContext, useContext, useMemo } from "react";
 import type { PublicSite } from "@/lib/cms/map-to-site";
 import type { CmsHeaderLayout, CmsNavItem } from "@/lib/cms/types";
 import { DEFAULT_HEADER_LAYOUT, DEFAULT_HOMEPAGE, DEFAULT_INVESTORS_PAGE } from "@/lib/cms/types";
+import { DEFAULT_ASSISTANT, DEFAULT_PAGES } from "@/lib/cms/page-settings";
 import { site as seedSite } from "@/content/site";
 
 const defaultOnlineServices = [
@@ -134,6 +135,10 @@ const defaultValue: CmsPublicValue = {
     ...seedSite,
     homepage: DEFAULT_HOMEPAGE,
     investorsPage: DEFAULT_INVESTORS_PAGE,
+    pages: DEFAULT_PAGES,
+    assistant: DEFAULT_ASSISTANT,
+    testimonials: [],
+    creatives: [],
     onlineServices: defaultOnlineServices,
     sections: defaultSections,
   } as PublicSite,

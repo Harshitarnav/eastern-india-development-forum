@@ -5,6 +5,7 @@ import { MembershipForm } from "@/components/MembershipForm";
 import { PageHero, SectionHeader } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { buildPageMetadata } from "@/lib/cms/seo";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/membership", { title: "Membership" });
@@ -12,27 +13,32 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function MembershipPage() {
   const { site } = await getPublicCmsBundle();
+  const page = site.pages?.membership || DEFAULT_PAGES.membership;
   return (
     <>
       <PageHero
-        crumb="Home / Membership"
-        title="Join the Movement"
-        description="Direct your time, skill, funds, or network toward projects transforming Eastern India."
+        crumb={page.crumb}
+        title={page.title}
+        description={page.description}
       >
-        <a href="#apply" className="btn-primary">
-          Apply Now
-        </a>
-        <Link href="/contact?intent=donate" className="btn-secondary">
-          Fund a Project Instead
-        </Link>
+        {page.primaryCtaLabel ? (
+          <a href={page.primaryCtaHref} className="btn-primary">
+            {page.primaryCtaLabel}
+          </a>
+        ) : null}
+        {page.secondaryCtaLabel ? (
+          <Link href={page.secondaryCtaHref} className="btn-secondary">
+            {page.secondaryCtaLabel}
+          </Link>
+        ) : null}
       </PageHero>
 
       <section className="px-4 py-16 md:py-24">
         <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-12 lg:gap-16">
           <div className="section-rail pl-5 lg:col-span-5 lg:pl-6">
             <SectionHeader
-              eyebrow="Why Join"
-              title="Membership that creates real impact"
+              eyebrow={page.whyEyebrow}
+              title={page.whyTitle}
               align="left"
             />
             <ol className="space-y-7">
@@ -53,7 +59,7 @@ export default async function MembershipPage() {
               <div className="mb-5 flex items-center gap-3">
                 <span className="h-px w-8 bg-gold" aria-hidden />
                 <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold-label">
-                  How it works
+                  {page.stepsLabel}
                 </div>
               </div>
               <div className="space-y-5">
@@ -79,12 +85,12 @@ export default async function MembershipPage() {
       <section className="relative overflow-hidden bg-navy-deep px-4 py-14 text-center text-white eidf-grain">
         <div className="pointer-events-none absolute inset-0 eidf-depth opacity-70" />
         <p className="relative text-base md:text-lg">
-          Prefer to fund a project directly?{" "}
+          {page.donateBand}{" "}
           <Link
-            href="/contact?intent=donate"
+            href={page.donateLinkHref}
             className="inline-flex items-center gap-1.5 font-bold text-gold transition-colors hover:text-white"
           >
-            Visit Donate <ArrowRight className="h-4 w-4" />
+            {page.donateLinkLabel} <ArrowRight className="h-4 w-4" />
           </Link>
         </p>
       </section>

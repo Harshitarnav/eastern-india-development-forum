@@ -85,6 +85,13 @@ export const EVENT_FIELDS: FieldDef[] = [
   { key: "mode", label: "Mode (In-Person / Hybrid / Online)" },
   { key: "desc", label: "Description", type: "textarea" },
   { key: "registerUrl", label: "Register URL" },
+  {
+    key: "image",
+    label: "Featured image",
+    type: "image",
+    placeholder: "/images/eidf_06.jpg",
+    folder: "events",
+  },
 ];
 
 export const REPORT_FIELDS: FieldDef[] = [

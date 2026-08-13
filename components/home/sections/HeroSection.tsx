@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { useMagnetic, useAllowMotion, useLenisLock } from "@/components/motion";
 import { cmsMediaUrl } from "@/lib/cms/home-preview";
+import { DEFAULT_HERO_BRIDGES } from "@/lib/cms/page-settings";
 
 type HeroCta = { label: string; href: string };
 type HeroLightboxImage = { src: string; label: string };
@@ -164,16 +165,16 @@ type HeroSectionProps = {
         tertiary?: HeroCta;
       };
       floatingMetrics?: { label: string; value: string }[];
+      bridgesLabel?: string;
+      bridgesTagline?: string;
+      bridges?: { label: string; href: string }[];
+      depthImage1?: string;
+      depthImage2?: string;
+      depthImage1Label?: string;
+      depthImage2Label?: string;
     };
   };
 };
-
-const BRIDGE_NODES = [
-  { label: "Governments", href: "/about" },
-  { label: "Investors", href: "/investors" },
-  { label: "Enterprise", href: "/projects" },
-  { label: "Communities", href: "/membership" },
-] as const;
 
 function DepthPlane({
   src,
@@ -226,8 +227,18 @@ function DepthPlane({
   );
 }
 
-function BridgesBar({ skipMotion }: { skipMotion: boolean }) {
-  const [active, setActive] = useState(2);
+function BridgesBar({
+  skipMotion,
+  label,
+  tagline,
+  nodes,
+}: {
+  skipMotion: boolean;
+  label: string;
+  tagline: string;
+  nodes: { label: string; href: string }[];
+}) {
+  const [active, setActive] = useState(Math.min(2, Math.max(0, nodes.length - 1)));
 
   return (
     <motion.div
@@ -246,15 +257,15 @@ function BridgesBar({ skipMotion }: { skipMotion: boolean }) {
       />
       <div className="relative mb-2 flex items-baseline justify-between gap-3">
         <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/80">
-          EIDF Bridges
+          {label}
         </span>
         <span className="shrink-0 text-[10px] font-medium text-gold-soft/85">
-          One regional council
+          {tagline}
         </span>
       </div>
       <div className="relative flex items-center overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {BRIDGE_NODES.map((node, i) => (
-          <div key={node.label} className="flex items-center">
+        {nodes.map((node, i) => (
+          <div key={`${node.label}-${i}`} className="flex items-center">
             <div className="relative">
               {active === i && (
                 <span
@@ -272,7 +283,7 @@ function BridgesBar({ skipMotion }: { skipMotion: boolean }) {
                 {node.label}
               </Link>
             </div>
-            {i < BRIDGE_NODES.length - 1 && (
+            {i < nodes.length - 1 && (
               <div className="relative mx-0.5 h-px w-3 bg-gold/70 sm:mx-1 sm:w-5">
                 {active === i + 1 && (
                   <span
@@ -353,13 +364,19 @@ export function HeroSection({ site }: HeroSectionProps) {
   );
 
   const imageSrc = cmsMediaUrl(hero.image, "/images/hero-banner.jpg");
-  const planeA = "/images/eidf_03.jpg";
-  const planeB = "/images/eidf_07.jpg";
+  const planeA = cmsMediaUrl(hero.depthImage1, DEFAULT_HERO_BRIDGES.depthImage1);
+  const planeB = cmsMediaUrl(hero.depthImage2, DEFAULT_HERO_BRIDGES.depthImage2);
   const metrics = (hero.floatingMetrics || []).slice(0, 2);
   const gallery: HeroLightboxImage[] = [
     { src: imageSrc, label: hero.headline },
-    { src: planeA, label: "Regional development corridor" },
-    { src: planeB, label: "Field engagement" },
+    {
+      src: planeA,
+      label: hero.depthImage1Label || DEFAULT_HERO_BRIDGES.depthImage1Label,
+    },
+    {
+      src: planeB,
+      label: hero.depthImage2Label || DEFAULT_HERO_BRIDGES.depthImage2Label,
+    },
   ];
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const pointerDown = useRef<{ x: number; y: number } | null>(null);
@@ -552,7 +569,14 @@ export function HeroSection({ site }: HeroSectionProps) {
             {hero.subheading}
           </motion.p>
 
-          <BridgesBar skipMotion={skipMotion} />
+          <BridgesBar
+            skipMotion={skipMotion}
+            label={hero.bridgesLabel || DEFAULT_HERO_BRIDGES.bridgesLabel}
+            tagline={hero.bridgesTagline || DEFAULT_HERO_BRIDGES.bridgesTagline}
+            nodes={
+              hero.bridges?.length ? hero.bridges : DEFAULT_HERO_BRIDGES.bridges
+            }
+          />
 
           <motion.div
             className="mt-3.5 flex flex-wrap items-center gap-2.5 md:mt-4"

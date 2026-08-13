@@ -5,6 +5,7 @@ import { PageHero, SectionHeader } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { buildPageMetadata } from "@/lib/cms/seo";
 import { sanitizeTel, subjectFromIntent } from "@/lib/utils";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/contact", { title: "Contact" });
@@ -36,6 +37,7 @@ export default async function ContactPage({
   searchParams: Promise<{ intent?: string; zone?: string; ref?: string }>;
 }) {
   const { site } = await getPublicCmsBundle();
+  const page = site.pages?.contact || DEFAULT_PAGES.contact;
   const params = await searchParams;
   const defaultSubject = subjectFromIntent(params.intent);
   const defaultMessage = messageFromParams(params);
@@ -43,9 +45,9 @@ export default async function ContactPage({
   return (
     <>
       <PageHero
-        crumb="Home / Contact"
-        title="We're here to help"
-        description="Reach the EIDF secretariat for membership, funding, media, or partnership inquiries."
+        crumb={page.crumb}
+        title={page.title}
+        description={page.description}
         compact
       />
 
@@ -62,7 +64,7 @@ export default async function ContactPage({
                 <div className="flex items-center gap-3">
                   <span className="h-px w-8 bg-gold" aria-hidden />
                   <div className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold">
-                    Head Office
+                    {page.officeLabel}
                   </div>
                 </div>
                 <div className="mt-5 space-y-1 text-sm leading-relaxed text-white/75">
@@ -88,7 +90,7 @@ export default async function ContactPage({
             </div>
 
             <div>
-              <SectionHeader eyebrow="Regional Offices" title="Also present in" align="left" />
+              <SectionHeader eyebrow={page.officesEyebrow} title={page.officesTitle} align="left" />
               <div className="-mt-4 divide-y divide-line border-y border-line">
                 {site.offices.map((o) => (
                   <div key={o.city} className="flex items-start justify-between gap-3 py-4">

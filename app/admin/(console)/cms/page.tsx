@@ -14,6 +14,9 @@ import {
   Home,
   Plus,
   Trash2,
+  FileText,
+  Cloud,
+  HardDrive,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AdminFieldLabel, adminFieldClass } from "@/components/ui";
@@ -22,13 +25,16 @@ import { cn } from "@/lib/utils";
 import { CmsNavigationEditor } from "@/components/cms/CmsNavigationEditor";
 import { CmsCollectionPage } from "@/components/cms/CmsCollectionPage";
 import { CmsHomepageEditor } from "@/components/cms/CmsHomepageEditor";
+import { CmsPagesEditor } from "@/components/cms/CmsPagesEditor";
 import { CmsImageField } from "@/components/cms/CmsImageField";
 import type { CmsSettings } from "@/lib/cms/types";
+import { DEFAULT_ASSISTANT, DEFAULT_HERO_BRIDGES } from "@/lib/cms/page-settings";
 
 const tabs = [
   { id: "general" as const, label: "General", icon: Settings },
   { id: "hero" as const, label: "Hero", icon: Sparkles },
   { id: "homepage" as const, label: "Homepage", icon: Home },
+  { id: "pages" as const, label: "Pages", icon: FileText },
   { id: "nav" as const, label: "Navigation", icon: Menu },
   { id: "stats" as const, label: "Stats", icon: BarChart3 },
   { id: "seed" as const, label: "Seed / Reset", icon: Database },
@@ -40,6 +46,7 @@ function tabFromParam(value: string | null): TabId {
   if (
     value === "hero" ||
     value === "homepage" ||
+    value === "pages" ||
     value === "stats" ||
     value === "nav" ||
     value === "seed"
@@ -60,20 +67,24 @@ function WebsiteCMSContent() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   const { data } = useQuery({
-    queryKey: ["cms-settings"],
+    queryKey: ["cms-settings-bundle"],
     queryFn: async () => {
       const res = await fetch("/api/cms/settings");
       if (!res.ok) throw new Error("Failed");
-      return (await res.json()).settings as CmsSettings;
+      return (await res.json()) as {
+        settings: CmsSettings;
+        meta?: { source?: string };
+      };
     },
   });
+  const source = data?.meta?.source || "local-file";
 
   useEffect(() => {
     setActiveTab(tabFromParam(searchParams.get("tab")));
   }, [searchParams]);
 
   useEffect(() => {
-    if (data) setForm(data);
+    if (data?.settings) setForm(data.settings);
   }, [data]);
 
   const save = useMutation({
@@ -89,6 +100,7 @@ function WebsiteCMSContent() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cms-settings"] });
+      qc.invalidateQueries({ queryKey: ["cms-settings-bundle"] });
       setSaveError(null);
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 2500);
@@ -132,6 +144,7 @@ function WebsiteCMSContent() {
       siteUrl: form.siteUrl,
       hero: form.hero,
       logo: form.logo,
+      assistant: form.assistant,
     });
   };
 
@@ -159,9 +172,40 @@ function WebsiteCMSContent() {
           Website CMS
         </h1>
         <p className="mt-1 text-sm text-[var(--admin-muted)]">
-          Site identity, hero, homepage sections, navigation, and collection
-          shortcuts. Changes revalidate the public site.
+          Site identity, hero, homepage, inner pages, navigation, and collection
+          shortcuts. Saves go to the database when Supabase is configured, so
+          live picks up the same content.
         </p>
+      </div>
+
+      <div
+        className={cn(
+          "flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm",
+          source === "database"
+            ? "border-emerald/25 bg-emerald/10 text-emerald-dark dark:text-emerald"
+            : "border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-200"
+        )}
+      >
+        {source === "database" ? (
+          <Cloud className="mt-0.5 h-4 w-4 shrink-0" />
+        ) : (
+          <HardDrive className="mt-0.5 h-4 w-4 shrink-0" />
+        )}
+        <div>
+          {source === "database" ? (
+            <>
+              <strong>Live database connected.</strong> Admin saves write to
+              Supabase, so local and production show the same content.
+            </>
+          ) : (
+            <>
+              <strong>Local file store only.</strong> Changes stay on this
+              machine until you add Supabase keys in <code>.env.local</code>,
+              run <code>supabase/schema.sql</code>, then{" "}
+              <code>npm run sync:cms</code>.
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 shadow-xl md:p-6">
@@ -244,6 +288,61 @@ function WebsiteCMSContent() {
               />
             </div>
           ))}
+          <div className="border-t border-[var(--admin-border)] pt-4 space-y-3">
+            <h3 className="font-display text-base font-bold text-[var(--admin-text)]">
+              Homepage assistant
+            </h3>
+            {(
+              [
+                ["buttonTitle", "Launcher title"],
+                ["buttonSubtitle", "Launcher subtitle"],
+                ["headerTitle", "Panel title"],
+                ["headerStatus", "Panel status"],
+                ["welcome", "Welcome message"],
+                ["fallback", "Fallback reply"],
+                ["placeholder", "Input placeholder"],
+              ] as const
+            ).map(([key, label]) => (
+              <div key={key}>
+                <AdminFieldLabel>{label}</AdminFieldLabel>
+                {key === "welcome" || key === "fallback" ? (
+                  <textarea
+                    className={cn(adminFieldClass, "min-h-20")}
+                    value={String(
+                      (form.assistant || DEFAULT_ASSISTANT)[key] || ""
+                    )}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        assistant: {
+                          ...DEFAULT_ASSISTANT,
+                          ...prev.assistant,
+                          [key]: e.target.value,
+                        },
+                      }))
+                    }
+                  />
+                ) : (
+                  <input
+                    className={adminFieldClass}
+                    value={String(
+                      (form.assistant || DEFAULT_ASSISTANT)[key] || ""
+                    )}
+                    onChange={(e) =>
+                      setForm((prev) => ({
+                        ...prev,
+                        assistant: {
+                          ...DEFAULT_ASSISTANT,
+                          ...prev.assistant,
+                          [key]: e.target.value,
+                        },
+                      }))
+                    }
+                  />
+                )}
+              </div>
+            ))}
+          </div>
           <button
             type="submit"
             disabled={save.isPending}
@@ -425,6 +524,161 @@ function WebsiteCMSContent() {
             ))}
           </div>
 
+          <div className="border-t border-[var(--admin-border)] pt-4 space-y-3">
+            <h3 className="font-display text-base font-bold text-[var(--admin-text)]">
+              Bridges bar
+            </h3>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div>
+                <AdminFieldLabel>Label</AdminFieldLabel>
+                <input
+                  className={adminFieldClass}
+                  value={form.hero.bridgesLabel || DEFAULT_HERO_BRIDGES.bridgesLabel}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      hero: { ...prev.hero!, bridgesLabel: e.target.value },
+                    }))
+                  }
+                />
+              </div>
+              <div>
+                <AdminFieldLabel>Tagline</AdminFieldLabel>
+                <input
+                  className={adminFieldClass}
+                  value={form.hero.bridgesTagline || DEFAULT_HERO_BRIDGES.bridgesTagline}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      hero: { ...prev.hero!, bridgesTagline: e.target.value },
+                    }))
+                  }
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-between">
+              <AdminFieldLabel>Nodes</AdminFieldLabel>
+              <button
+                type="button"
+                onClick={() =>
+                  setForm((prev) => ({
+                    ...prev,
+                    hero: {
+                      ...prev.hero!,
+                      bridges: [
+                        ...(prev.hero?.bridges || DEFAULT_HERO_BRIDGES.bridges),
+                        { label: "New", href: "/" },
+                      ],
+                    },
+                  }))
+                }
+                className="inline-flex items-center gap-1 rounded-lg border border-[var(--admin-border)] px-3 py-1.5 text-xs font-bold"
+              >
+                <Plus className="h-3.5 w-3.5" /> Add
+              </button>
+            </div>
+            {(form.hero.bridges || DEFAULT_HERO_BRIDGES.bridges).map((node, index) => (
+              <div
+                key={index}
+                className="grid gap-3 rounded-xl border border-[var(--admin-border)] p-3 md:grid-cols-[1fr_1fr_auto]"
+              >
+                <input
+                  className={adminFieldClass}
+                  placeholder="Label"
+                  value={node.label}
+                  onChange={(e) =>
+                    setForm((prev) => {
+                      const rows = [
+                        ...(prev.hero?.bridges || DEFAULT_HERO_BRIDGES.bridges),
+                      ];
+                      rows[index] = { ...rows[index], label: e.target.value };
+                      return { ...prev, hero: { ...prev.hero!, bridges: rows } };
+                    })
+                  }
+                />
+                <input
+                  className={adminFieldClass}
+                  placeholder="/path"
+                  value={node.href}
+                  onChange={(e) =>
+                    setForm((prev) => {
+                      const rows = [
+                        ...(prev.hero?.bridges || DEFAULT_HERO_BRIDGES.bridges),
+                      ];
+                      rows[index] = { ...rows[index], href: e.target.value };
+                      return { ...prev, hero: { ...prev.hero!, bridges: rows } };
+                    })
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setForm((prev) => ({
+                      ...prev,
+                      hero: {
+                        ...prev.hero!,
+                        bridges: (prev.hero?.bridges || DEFAULT_HERO_BRIDGES.bridges).filter(
+                          (_, i) => i !== index
+                        ),
+                      },
+                    }))
+                  }
+                  className="rounded-lg border border-red-500/30 p-2 text-red-500"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            ))}
+            <CmsImageField
+              label="Depth image 1"
+              value={String(form.hero.depthImage1 || DEFAULT_HERO_BRIDGES.depthImage1)}
+              folder="hero"
+              onChange={(next) =>
+                setForm((prev) => ({
+                  ...prev,
+                  hero: { ...prev.hero!, depthImage1: next },
+                }))
+              }
+            />
+            <div>
+              <AdminFieldLabel>Depth image 1 label</AdminFieldLabel>
+              <input
+                className={adminFieldClass}
+                value={form.hero.depthImage1Label || DEFAULT_HERO_BRIDGES.depthImage1Label}
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    hero: { ...prev.hero!, depthImage1Label: e.target.value },
+                  }))
+                }
+              />
+            </div>
+            <CmsImageField
+              label="Depth image 2"
+              value={String(form.hero.depthImage2 || DEFAULT_HERO_BRIDGES.depthImage2)}
+              folder="hero"
+              onChange={(next) =>
+                setForm((prev) => ({
+                  ...prev,
+                  hero: { ...prev.hero!, depthImage2: next },
+                }))
+              }
+            />
+            <div>
+              <AdminFieldLabel>Depth image 2 label</AdminFieldLabel>
+              <input
+                className={adminFieldClass}
+                value={form.hero.depthImage2Label || DEFAULT_HERO_BRIDGES.depthImage2Label}
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    hero: { ...prev.hero!, depthImage2Label: e.target.value },
+                  }))
+                }
+              />
+            </div>
+          </div>
+
           <button
             type="submit"
             disabled={save.isPending}
@@ -444,6 +698,8 @@ function WebsiteCMSContent() {
       )}
 
       {activeTab === "homepage" && <CmsHomepageEditor />}
+
+      {activeTab === "pages" && <CmsPagesEditor />}
 
       {activeTab === "nav" && <CmsNavigationEditor />}
 
@@ -470,7 +726,9 @@ function WebsiteCMSContent() {
           </h3>
           <p className="mt-2 text-sm text-[var(--admin-muted)]">
             Rebuilds CMS content from the code seed (content/site.ts + gallery).
-            This overwrites existing CMS data in the file/Supabase store.
+            This overwrites existing CMS data in the file store and, when
+            configured, the live Supabase database. After local-only edits, run
+            npm run sync:cms to push store.json to the server.
           </p>
           {seedMsg && <p className="mt-3 text-sm text-emerald">{seedMsg}</p>}
           <button

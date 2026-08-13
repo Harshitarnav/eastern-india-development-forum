@@ -96,6 +96,7 @@ export interface EventItem {
   mode: "Hybrid" | "In-Person" | "Virtual";
   desc: string;
   registerUrl: string;
+  image?: string;
 }
 
 export interface NewsItem {

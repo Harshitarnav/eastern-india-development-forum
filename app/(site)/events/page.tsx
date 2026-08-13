@@ -4,6 +4,8 @@ import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import { PageHero, SectionHeader, CtaBand } from "@/components/ui";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { buildPageMetadata } from "@/lib/cms/seo";
+import { cmsMediaUrl } from "@/lib/cms/home-preview";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/events", { title: "Events & News" });
@@ -11,32 +13,33 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function EventsPage() {
   const { site } = await getPublicCmsBundle();
+  const page = site.pages?.events || DEFAULT_PAGES.events;
   const featured = site.events[0];
 
   return (
     <>
-      <PageHero
-        crumb="Home / Events"
-        title="Events & News"
-        description="Seminars, investor meets, and announcements shaping Eastern India's development agenda."
-      >
-        <Link href="/gallery" className="btn-primary">
-          View Gallery
-        </Link>
-        <Link href="/membership" className="btn-secondary">
-          Get Event Updates
-        </Link>
+      <PageHero crumb={page.crumb} title={page.title} description={page.description}>
+        {page.primaryCtaLabel ? (
+          <Link href={page.primaryCtaHref} className="btn-primary">
+            {page.primaryCtaLabel}
+          </Link>
+        ) : null}
+        {page.secondaryCtaLabel ? (
+          <Link href={page.secondaryCtaHref} className="btn-secondary">
+            {page.secondaryCtaLabel}
+          </Link>
+        ) : null}
       </PageHero>
 
       {featured && (
         <section className="px-4 py-16 md:py-20">
           <div className="mx-auto max-w-7xl">
-            <SectionHeader eyebrow="Featured" title={featured.title} align="left" />
+            <SectionHeader eyebrow={page.featuredEyebrow} title={featured.title} align="left" />
             <div className="grid items-center gap-8 lg:grid-cols-12 lg:gap-12">
               <div className="relative min-h-[300px] overflow-hidden rounded-sm lg:col-span-5 [clip-path:polygon(0_0,100%_0,100%_96%,0_100%)]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/images/eidf_06.jpg"
+                  src={cmsMediaUrl(featured.image, page.featuredFallbackImage || "/images/eidf_06.jpg")}
                   alt={featured.title}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -65,7 +68,7 @@ export default async function EventsPage() {
                   href={featured.registerUrl || "/gallery"}
                   className="mt-7 inline-flex items-center gap-2 border-b border-navy/20 pb-0.5 text-sm font-bold text-navy transition-colors hover:border-gold hover:text-gold"
                 >
-                  {featured.registerUrl ? "Register" : "View gallery"}{" "}
+                  {featured.registerUrl ? page.itemCtaLabel : "View gallery"}{" "}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -76,7 +79,7 @@ export default async function EventsPage() {
 
       <section className="border-y border-line bg-cream-warm px-4 py-16">
         <div className="mx-auto max-w-7xl">
-          <SectionHeader eyebrow="Calendar" title="All events" align="left" />
+          <SectionHeader eyebrow={page.calendarEyebrow} title={page.calendarTitle} align="left" />
           <div className="divide-y divide-line border-y border-line bg-white/50">
             {site.events.map((ev) => (
               <div
@@ -103,7 +106,7 @@ export default async function EventsPage() {
                     href={ev.registerUrl}
                     className="inline-flex items-center gap-1 text-sm font-bold text-navy hover:text-gold"
                   >
-                    Register <ArrowRight className="h-4 w-4" />
+                    {page.itemCtaLabel} <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
               </div>
@@ -115,7 +118,7 @@ export default async function EventsPage() {
       {site.news.length > 0 && (
         <section className="px-4 py-16 md:py-20">
           <div className="mx-auto max-w-7xl">
-            <SectionHeader eyebrow="News" title="Latest announcements" align="left" />
+            <SectionHeader eyebrow={page.newsEyebrow} title={page.newsTitle} align="left" />
             <div className="divide-y divide-line border-y border-line">
               {site.news.map((nw) => (
                 <article key={nw.id} className="py-7">
@@ -141,10 +144,10 @@ export default async function EventsPage() {
       )}
 
       <CtaBand
-        title="Stay updated on every seminar and site visit"
-        description="Join the member network to receive event invitations and briefings."
-        primary={{ label: "Become a Member", href: "/membership" }}
-        secondary={{ label: "Contact Us", href: "/contact" }}
+        title={page.ctaTitle}
+        description={page.ctaDescription}
+        primary={{ label: page.ctaPrimaryLabel, href: page.ctaPrimaryHref }}
+        secondary={{ label: page.ctaSecondaryLabel, href: page.ctaSecondaryHref }}
       />
     </>
   );

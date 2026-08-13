@@ -7,6 +7,11 @@ import type {
   CmsStoreSnapshot,
 } from "@/lib/cms/types";
 import { DEFAULT_HEADER_LAYOUT, DEFAULT_HOMEPAGE, DEFAULT_INVESTORS_PAGE } from "@/lib/cms/types";
+import {
+  DEFAULT_ASSISTANT,
+  DEFAULT_HERO_BRIDGES,
+  DEFAULT_PAGES,
+} from "@/lib/cms/page-settings";
 
 const GALLERY_SEED = [
   { id: "img-hero", src: "/images/hero-banner.jpg", title: "EIDF Core Development Vision Banner", category: "Identity & Media", description: "Flagship promotional banner illustrating regional infrastructure integration.", location: "Ranchi HQ, Jharkhand", date: "July 2026" },
@@ -79,6 +84,7 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
     hero: {
       ...site.hero,
       image: "/images/hero-banner.jpg",
+      ...DEFAULT_HERO_BRIDGES,
     },
     analytics: {
       stateCapital: [
@@ -100,6 +106,8 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
     headerLayout: { ...DEFAULT_HEADER_LAYOUT },
     homepage: { ...DEFAULT_HOMEPAGE },
     investorsPage: { ...DEFAULT_INVESTORS_PAGE },
+    pages: JSON.parse(JSON.stringify(DEFAULT_PAGES)),
+    assistant: JSON.parse(JSON.stringify(DEFAULT_ASSISTANT)),
   };
 
   const navigation: CmsNavItem[] = [
@@ -274,6 +282,17 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
       { id: "cta", key: "cta", title: "Bottom CTA", is_visible: true },
     ]),
     ...toItems("testimonials", []),
+    ...toItems("creatives", [
+      {
+        id: "creative-poster",
+        title: "Seminar Poster",
+        category: "Print Template",
+        image: "/images/eidf_poster.jpg",
+        downloadUrl: "/images/eidf_poster.jpg",
+        downloadLabel: "Download Poster",
+        description: "Official print-ready poster template for seminars and conventions.",
+      },
+    ]),
   ];
 
   const paths = [
@@ -291,6 +310,8 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
     "/analytics",
     "/creatives",
     "/proposals/submit",
+    "/privacy",
+    "/terms",
   ];
 
   const seo: CmsSeoRecord[] = paths.map((path) => {
@@ -309,6 +330,8 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
       "/analytics": "Development Analytics",
       "/creatives": "Brand Creatives",
       "/proposals/submit": "Submit a Proposal",
+      "/privacy": "Privacy Policy",
+      "/terms": "Terms of Use",
     };
     return {
       path,

@@ -4,6 +4,7 @@ import { Download } from "lucide-react";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 import { buildPageMetadata } from "@/lib/cms/seo";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/resources", { title: "Knowledge Center" });
@@ -11,26 +12,27 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ResourcesPage() {
   const { site } = await getPublicCmsBundle();
+  const page = site.pages?.resources || DEFAULT_PAGES.resources;
   return (
     <>
-      <PageHero
-        crumb="Home / Resources"
-        title="Knowledge Center"
-        description="Research reports, macroeconomic assessments, and state policy frameworks for investors and partners."
-      >
-        <Link href="/analytics" className="btn-primary">
-          View Analytics
-        </Link>
-        <Link href="/schemes" className="btn-secondary">
-          Browse Schemes
-        </Link>
+      <PageHero crumb={page.crumb} title={page.title} description={page.description}>
+        {page.primaryCtaLabel ? (
+          <Link href={page.primaryCtaHref} className="btn-primary">
+            {page.primaryCtaLabel}
+          </Link>
+        ) : null}
+        {page.secondaryCtaLabel ? (
+          <Link href={page.secondaryCtaHref} className="btn-secondary">
+            {page.secondaryCtaLabel}
+          </Link>
+        ) : null}
       </PageHero>
 
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
-            eyebrow="Publications"
-            title="Research you can act on"
+            eyebrow={page.sectionEyebrow}
+            title={page.sectionTitle}
             align="left"
           />
 
@@ -72,10 +74,10 @@ export default async function ResourcesPage() {
       </section>
 
       <CtaBand
-        title="Need a custom brief for your state or sector?"
-        description="Request a tailored research note from the EIDF knowledge desk."
-        primary={{ label: "Request a Briefing", href: "/contact" }}
-        secondary={{ label: "Join as Member", href: "/membership" }}
+        title={page.ctaTitle}
+        description={page.ctaDescription}
+        primary={{ label: page.ctaPrimaryLabel, href: page.ctaPrimaryHref }}
+        secondary={{ label: page.ctaSecondaryLabel, href: page.ctaSecondaryHref }}
       />
     </>
   );

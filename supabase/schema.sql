@@ -29,6 +29,24 @@ create table if not exists public.contact_messages (
   status text not null default 'new'
 );
 
+create table if not exists public.project_proposals (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  ref_id text not null,
+  title text not null,
+  state text not null,
+  sector text not null,
+  budget text not null,
+  summary text not null,
+  contact_name text not null,
+  contact_email text not null,
+  contact_phone text,
+  dpr_note text,
+  status text not null default 'new'
+);
+
+create unique index if not exists project_proposals_ref_id_idx on public.project_proposals(ref_id);
+
 -- ========== CMS Settings (singleton row) ==========
 create table if not exists public.cms_settings (
   id text primary key default 'site',
@@ -120,6 +138,7 @@ create table if not exists public.cms_audit_log (
 -- ========== RLS ==========
 alter table public.membership_applications enable row level security;
 alter table public.contact_messages enable row level security;
+alter table public.project_proposals enable row level security;
 alter table public.cms_settings enable row level security;
 alter table public.cms_navigation enable row level security;
 alter table public.cms_items enable row level security;
@@ -136,6 +155,10 @@ create policy "Anyone can submit membership applications"
 drop policy if exists "Anyone can submit contact messages" on public.contact_messages;
 create policy "Anyone can submit contact messages"
   on public.contact_messages for insert to anon, authenticated with check (true);
+
+drop policy if exists "Anyone can submit project proposals" on public.project_proposals;
+create policy "Anyone can submit project proposals"
+  on public.project_proposals for insert to anon, authenticated with check (true);
 
 -- Public read for published CMS content
 drop policy if exists "Public read cms_settings" on public.cms_settings;

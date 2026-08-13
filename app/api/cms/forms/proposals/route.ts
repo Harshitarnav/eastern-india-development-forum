@@ -1,16 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireCmsAdmin } from "@/lib/cms/api-auth";
+import {
+  isSupabaseConfigured,
+  supabaseSelect,
+  supabasePatch,
+} from "@/lib/cms/supabase-store";
 import { listForms, updateFormStatus } from "@/lib/cms/forms-store";
 
 export async function GET() {
   const auth = await requireCmsAdmin();
   if ("error" in auth) return auth.error;
 
+  if (isSupabaseConfigured()) {
+    try {
+      const rows = await supabaseSelect(
+        "project_proposals",
+        "select=*&order=created_at.desc"
+      );
+      return NextResponse.json({ rows, source: "supabase" });
+    } catch (err) {
+      console.warn("supabase proposal forms failed, using file store", err);
+    }
+  }
+
   const rows = await listForms("proposal");
   return NextResponse.json({
     rows,
     source: "file",
-    message: "Proposal submissions from the public site.",
+    message: isSupabaseConfigured()
+      ? undefined
+      : "Showing local file-store submissions (configure Supabase for cloud sync).",
   });
 }
 
@@ -26,6 +45,17 @@ export async function PATCH(request: NextRequest) {
   }
   if (!body.id || !body.status) {
     return NextResponse.json({ error: "id and status required" }, { status: 400 });
+  }
+
+  if (isSupabaseConfigured()) {
+    try {
+      await supabasePatch("project_proposals", `id=eq.${body.id}`, {
+        status: body.status,
+      });
+      return NextResponse.json({ ok: true, source: "supabase" });
+    } catch (err) {
+      console.warn("supabase proposal patch failed, using file store", err);
+    }
   }
 
   const updated = await updateFormStatus("proposal", body.id, body.status);

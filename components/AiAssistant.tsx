@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bot, X, Send, Sparkles, FileText, Briefcase, Building2 } from "lucide-react";
 import Link from "next/link";
 import { useLenisLock } from "@/components/motion";
+import { usePublicSite } from "@/lib/cms/public-provider";
+import { DEFAULT_ASSISTANT } from "@/lib/cms/page-settings";
 
 interface Message {
   id: string;
@@ -14,19 +16,17 @@ interface Message {
 }
 
 export const AiAssistant: React.FC = () => {
+  const site = usePublicSite();
+  const assistant = site.assistant || DEFAULT_ASSISTANT;
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   useLenisLock(isOpen);
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<Message[]>(() => [
     {
       id: "welcome",
       sender: "bot",
-      text: "Namaste! I am the EIDF Smart Development Assistant. How can I facilitate your vision for Eastern India today?",
-      links: [
-        { label: "Search Open Tenders", href: "/tenders" },
-        { label: "Check State Subsidies", href: "/schemes" },
-        { label: "Submit Project Proposal", href: "/proposals/submit" },
-      ],
+      text: assistant.welcome,
+      links: assistant.quickLinks,
     },
   ]);
 
@@ -84,9 +84,8 @@ export const AiAssistant: React.FC = () => {
           "Have a development project in mind? You can submit your proposal directly to the EIDF Project Facilitation Board for funding, land allotment, or partnership.";
         links = [{ label: "Submit Development Proposal", href: "/proposals/submit" }];
       } else {
-        botReply =
-          "EIDF connects Governments, Investors, Enterprises, and NGOs to accelerate sustainable growth. What specific domain or state would you like to explore?";
-        links = [
+        botReply = assistant.fallback;
+        links = assistant.quickLinks?.slice(0, 2) || [
           { label: "Browse Focus Areas", href: "/#focus-areas" },
           { label: "Become a Member", href: "/membership" },
         ];
@@ -124,9 +123,9 @@ export const AiAssistant: React.FC = () => {
             </span>
             <span className="hidden sm:flex flex-col items-start">
               <span className="font-display text-xs font-bold tracking-wider uppercase">
-                EIDF Assistant
+                {assistant.buttonTitle}
               </span>
-              <span className="text-[10px] text-white/45">Ask about tenders & investment</span>
+              <span className="text-[10px] text-white/45">{assistant.buttonSubtitle}</span>
             </span>
           </motion.button>
         )}
@@ -158,9 +157,9 @@ export const AiAssistant: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-display text-sm font-bold text-white">
-                      Development Assistant
+                      {assistant.headerTitle}
                     </h3>
-                    <p className="text-[11px] text-emerald font-medium">Online · Facilitation</p>
+                    <p className="text-[11px] text-emerald font-medium">{assistant.headerStatus}</p>
                   </div>
                 </div>
                 <button
@@ -238,7 +237,7 @@ export const AiAssistant: React.FC = () => {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about tenders, schemes, investment..."
+                    placeholder={assistant.placeholder}
                     className="flex-1 border border-white/20 bg-white/10 px-4 py-2.5 text-xs text-white placeholder-white/40 focus:border-gold focus:outline-none"
                   />
                   <button

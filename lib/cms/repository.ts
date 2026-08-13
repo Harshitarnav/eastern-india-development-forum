@@ -6,7 +6,12 @@ import type {
   CmsSettings,
   CmsStoreSnapshot,
 } from "@/lib/cms/types";
-import { DEFAULT_HEADER_LAYOUT, DEFAULT_HOMEPAGE, DEFAULT_INVESTORS_PAGE } from "@/lib/cms/types";
+import {
+  DEFAULT_HEADER_LAYOUT,
+  DEFAULT_HOMEPAGE,
+  DEFAULT_INVESTORS_PAGE,
+} from "@/lib/cms/types";
+import { mergeAssistant, mergePages } from "@/lib/cms/page-settings";
 import { buildSeedSnapshot } from "@/lib/cms/seed";
 import { ensureFileStore, writeFileStore } from "@/lib/cms/file-store";
 import {
@@ -145,6 +150,18 @@ export async function updateCmsSettings(
       ...snap.settings.investorsPage,
       ...patch.investorsPage,
     };
+  }
+  if (patch.pages) {
+    nextSettings.pages = mergePages({
+      ...snap.settings.pages,
+      ...patch.pages,
+    });
+  }
+  if (patch.assistant) {
+    nextSettings.assistant = mergeAssistant({
+      ...snap.settings.assistant,
+      ...patch.assistant,
+    });
   }
   if (patch.homepage) {
     const prev = snap.settings.homepage || DEFAULT_HOMEPAGE;

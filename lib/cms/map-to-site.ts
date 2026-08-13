@@ -1,6 +1,12 @@
 import { site as seedSite } from "@/content/site";
 import type { CmsHomepageSettings, CmsInvestorsPageSettings, CmsStoreSnapshot } from "@/lib/cms/types";
 import { DEFAULT_HOMEPAGE, DEFAULT_INVESTORS_PAGE } from "@/lib/cms/types";
+import {
+  mergeAssistant,
+  mergePages,
+  type CmsAssistantSettings,
+  type CmsPagesSettings,
+} from "@/lib/cms/page-settings";
 
 /** Site-shaped object used by public UI (compatible with content/site.ts). */
 export type PublicSite = Omit<typeof seedSite, "hero"> & {
@@ -15,6 +21,25 @@ export type PublicSite = Omit<typeof seedSite, "hero"> & {
   };
   homepage: CmsHomepageSettings;
   investorsPage: CmsInvestorsPageSettings;
+  pages: CmsPagesSettings;
+  assistant: CmsAssistantSettings;
+  testimonials: {
+    id: string;
+    name: string;
+    role?: string;
+    quote: string;
+    org?: string;
+    image?: string;
+  }[];
+  creatives: {
+    id: string;
+    title: string;
+    category: string;
+    image: string;
+    downloadUrl: string;
+    downloadLabel?: string;
+    description: string;
+  }[];
   onlineServices: {
     id: string;
     label: string;
@@ -197,6 +222,26 @@ export function mapSnapshotToPublicSite(snap: CmsStoreSnapshot): PublicSite {
       ...DEFAULT_INVESTORS_PAGE,
       ...(s.investorsPage || {}),
     },
+    pages: mergePages(s.pages),
+    assistant: mergeAssistant(s.assistant),
+    testimonials: itemsOf<PublicSite["testimonials"][number]>(snap, "testimonials"),
+    creatives: (() => {
+      const rows = itemsOf<PublicSite["creatives"][number]>(snap, "creatives");
+      return rows.length
+        ? rows
+        : [
+            {
+              id: "creative-poster",
+              title: "Seminar Poster",
+              category: "Print Template",
+              image: "/images/eidf_poster.jpg",
+              downloadUrl: "/images/eidf_poster.jpg",
+              downloadLabel: "Download Poster",
+              description:
+                "Official print-ready poster template for seminars and conventions.",
+            },
+          ];
+    })(),
     onlineServices: onlineServices.length
       ? onlineServices
       : DEFAULT_ONLINE_SERVICES,

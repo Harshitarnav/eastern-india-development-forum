@@ -5,6 +5,7 @@ import { getPublicCmsBundle } from "@/lib/cms/server";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 import { buildPageMetadata } from "@/lib/cms/seo";
 import { matchesStateFilter, stateDisplayName } from "@/lib/state-filter";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/schemes", { title: "Government Schemes" });
@@ -16,6 +17,7 @@ export default async function SchemesPage({
   searchParams: Promise<{ state?: string }>;
 }) {
   const { site } = await getPublicCmsBundle();
+  const page = site.pages?.schemes || DEFAULT_PAGES.schemes;
   const params = await searchParams;
   const stateFilter = params.state;
   const stateLabel = stateDisplayName(stateFilter);
@@ -30,21 +32,25 @@ export default async function SchemesPage({
   return (
     <>
       <PageHero
-        crumb="Home / Schemes"
-        title="Government Schemes & Subsidies"
+        crumb={page.crumb}
+        title={page.title}
         description={
           stateLabel
             ? `Fiscal incentives and subsidies relevant to ${stateLabel} and multi-state programmes.`
-            : "Fiscal incentives, interest subvention, stamp duty waivers, and seed grants across Eastern Indian states."
+            : page.description
         }
         eyebrow={stateLabel ? `Filtered · ${stateLabel}` : undefined}
       >
-        <Link href="/contact?intent=scheme_assistance" className="btn-primary">
-          Request Scheme Assistance
-        </Link>
-        <Link href="/resources" className="btn-secondary">
-          Browse Policy Reports
-        </Link>
+        {page.primaryCtaLabel ? (
+          <Link href={page.primaryCtaHref} className="btn-primary">
+            {page.primaryCtaLabel}
+          </Link>
+        ) : null}
+        {page.secondaryCtaLabel ? (
+          <Link href={page.secondaryCtaHref} className="btn-secondary">
+            {page.secondaryCtaLabel}
+          </Link>
+        ) : null}
         {stateFilter && (
           <Link href="/schemes" className="btn-secondary">
             Clear filter
@@ -55,20 +61,20 @@ export default async function SchemesPage({
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionHeader
-            eyebrow="Available Schemes"
+            eyebrow={page.sectionEyebrow}
             title={
               stateLabel
                 ? `Schemes for ${stateLabel}`
-                : "Incentives matched to your venture"
+                : page.sectionTitle
             }
             align="left"
           />
 
           {schemes.length === 0 ? (
             <div className="border border-line bg-white px-6 py-12 text-center">
-              <p className="text-sm text-muted">No schemes matched this state filter.</p>
+              <p className="text-sm text-muted">{page.emptyTitle}</p>
               <Link href="/schemes" className="mt-4 inline-flex text-sm font-bold text-navy hover:text-gold">
-                View all schemes →
+                {page.emptyDescription}
               </Link>
             </div>
           ) : (
@@ -123,7 +129,7 @@ export default async function SchemesPage({
                       href="/contact?intent=scheme_assistance"
                       className="inline-flex items-center gap-2 border-b border-navy/20 pb-0.5 text-sm font-bold text-navy transition-colors hover:border-gold hover:text-gold"
                     >
-                      Apply via EIDF <ArrowRight className="h-4 w-4" />
+                      {page.itemCtaLabel} <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
                 </article>
@@ -134,10 +140,10 @@ export default async function SchemesPage({
       </section>
 
       <CtaBand
-        title="Ready to unlock state incentives?"
-        description="Submit your project profile and let EIDF facilitate scheme applications across Eastern India."
-        primary={{ label: "Request Assistance", href: "/contact?intent=scheme_assistance" }}
-        secondary={{ label: "Submit a Proposal", href: "/proposals/submit" }}
+        title={page.ctaTitle}
+        description={page.ctaDescription}
+        primary={{ label: page.ctaPrimaryLabel, href: page.ctaPrimaryHref }}
+        secondary={{ label: page.ctaSecondaryLabel, href: page.ctaSecondaryHref }}
       />
     </>
   );

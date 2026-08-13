@@ -14,8 +14,12 @@ import {
   Loader2,
 } from "lucide-react";
 import { PageHero, FieldLabel, fieldClass } from "@/components/ui";
+import { usePublicSite } from "@/lib/cms/public-provider";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export default function SubmitProposalPage() {
+  const site = usePublicSite();
+  const page = site.pages?.proposals || DEFAULT_PAGES.proposals;
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [error, setError] = useState("");
   const [refId, setRefId] = useState("");
@@ -67,10 +71,10 @@ export default function SubmitProposalPage() {
   return (
     <>
       <PageHero
-        crumb="Home / Proposals"
-        eyebrow="EIDF Project Facilitation Board"
-        title="Submit a Development Proposal"
-        description="Submit project proposals for infrastructure, renewable energy, skill centers, or agri-tech clusters across Eastern India to request capital facilitation, government clearances, and land allotment guidance."
+        crumb={page.crumb}
+        eyebrow={page.eyebrow || undefined}
+        title={page.title}
+        description={page.description}
         compact
       />
 
@@ -81,17 +85,15 @@ export default function SubmitProposalPage() {
               <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center border border-emerald/30 bg-emerald/10 text-emerald">
                 <CheckCircle className="h-7 w-7" />
               </div>
-              <h2 className="font-display text-3xl font-bold text-navy">
-                Proposal Submitted Successfully
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
-                Your proposal has been logged with EIDF Facilitation Desk. Ref ID:{" "}
-                <span className="font-mono font-bold text-gold">{refId}</span>. An
-                officer will get in touch within 2 business days.
-              </p>
-              <Link href="/investors" className="btn-navy mt-8 inline-flex">
-                Explore Investment Zones <ArrowRight className="h-4 w-4 text-gold" />
-              </Link>
+                <h2 className="font-display text-3xl font-bold text-navy">
+                  {page.successTitle}
+                </h2>
+                <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
+                  {page.successBody.replace("{ref}", refId || "")}
+                </p>
+                <Link href={page.successCtaHref} className="btn-navy mt-8 inline-flex">
+                  {page.successCtaLabel} <ArrowRight className="h-4 w-4 text-gold" />
+                </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="eidf-panel bg-white">
@@ -99,11 +101,11 @@ export default function SubmitProposalPage() {
                 <div className="flex items-center gap-3">
                   <span className="hidden h-px w-8 bg-gold sm:block" aria-hidden />
                   <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gold-label">
-                    Proposal Form
+                    {page.formEyebrow}
                   </span>
                 </div>
                 <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-navy">
-                  Project details
+                  {page.formTitle}
                 </h2>
               </div>
 
@@ -236,11 +238,10 @@ export default function SubmitProposalPage() {
                     <Upload className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-semibold text-navy">
-                        Detailed Project Report
+                        {page.dprTitle}
                       </div>
                       <p className="mt-1 text-xs leading-relaxed text-muted">
-                        After submission, email your DPR / pitch deck (PDF, max 20MB) to the
-                        facilitation desk with your Ref ID in the subject line.
+                        {page.dprBody}
                       </p>
                       <input
                         type="text"
@@ -271,7 +272,7 @@ export default function SubmitProposalPage() {
                     </>
                   ) : (
                     <>
-                      Submit Project Proposal to Board <Send className="h-4 w-4 text-gold" />
+                      {page.submitLabel} <Send className="h-4 w-4 text-gold" />
                     </>
                   )}
                 </button>
@@ -286,20 +287,14 @@ export default function SubmitProposalPage() {
                 <div className="mb-4 flex h-11 w-11 items-center justify-center border border-gold/30 bg-gold/10 text-gold">
                   <ShieldCheck className="h-5 w-5" />
                 </div>
-                <h3 className="mb-3 font-display text-xl font-bold">What happens next?</h3>
+                <h3 className="mb-3 font-display text-xl font-bold">{page.nextTitle}</h3>
                 <ul className="space-y-3 text-sm text-white/75">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
-                    Desk reviews eligibility within 2 business days
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
-                    Matched with state cell & scheme incentives
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
-                    Facilitation for clearances and capital intros
-                  </li>
+                  {(page.nextSteps || []).map((step) => (
+                    <li key={step} className="flex items-start gap-2">
+                      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
+                      {step}
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -308,7 +303,7 @@ export default function SubmitProposalPage() {
               <div className="mb-4 flex items-center gap-3">
                 <span className="h-px w-6 bg-gold" aria-hidden />
                 <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-gold-label">
-                  Also Explore
+                  {page.exploreEyebrow}
                 </div>
               </div>
               <div className="space-y-2">

@@ -319,7 +319,7 @@ export default function AdminDashboardPage() {
                 </h2>
                 <div className="flex items-center gap-2 text-sm font-semibold text-emerald-dark dark:text-emerald">
                   <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-emerald" />
-                  CMS online · {data.meta.source}
+                  CMS online · {data.meta.source === "database" ? "live database" : "local file only"}
                 </div>
                 <p className="mt-2 text-xs leading-relaxed text-[var(--admin-muted)]">
                   {data.meta.siteName} content last updated{" "}

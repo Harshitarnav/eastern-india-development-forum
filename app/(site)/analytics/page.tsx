@@ -17,9 +17,11 @@ import {
 import { BarChart3, PieChart as PieIcon } from "lucide-react";
 import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 import { usePublicSite } from "@/lib/cms/public-provider";
+import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
 
 export default function AnalyticsPage() {
   const site = usePublicSite();
+  const page = site.pages?.analytics || DEFAULT_PAGES.analytics;
   const stateCapitalData = site.analytics?.stateCapital ?? [
     { name: "Odisha", capital: 14800 },
     { name: "Jharkhand", capital: 11200 },
@@ -43,17 +45,17 @@ export default function AnalyticsPage() {
 
   return (
     <>
-      <PageHero
-        crumb="Home / Analytics"
-        title="Development Analytics"
-        description="Capital deployment, state-wise funding, and sector breakdown across Eastern India."
-      >
-        <Link href="/investors" className="btn-primary">
-          Explore Investment Zones
-        </Link>
-        <Link href="/resources" className="btn-secondary">
-          Download Reports
-        </Link>
+      <PageHero crumb={page.crumb} title={page.title} description={page.description}>
+        {page.primaryCtaLabel ? (
+          <Link href={page.primaryCtaHref} className="btn-primary">
+            {page.primaryCtaLabel}
+          </Link>
+        ) : null}
+        {page.secondaryCtaLabel ? (
+          <Link href={page.secondaryCtaHref} className="btn-secondary">
+            {page.secondaryCtaLabel}
+          </Link>
+        ) : null}
       </PageHero>
 
       <section className="metric-strip grid-cols-3">
@@ -62,7 +64,7 @@ export default function AnalyticsPage() {
             ₹{totalCapital.toLocaleString("en-IN")} Cr
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            Total Pledged Capital
+            {page.pledgedLabel}
           </div>
         </div>
         <div>
@@ -70,7 +72,7 @@ export default function AnalyticsPage() {
             {stateCapitalData.length}
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            States &amp; Regions Tracked
+            {page.statesLabel}
           </div>
         </div>
         <div>
@@ -78,7 +80,7 @@ export default function AnalyticsPage() {
             {corridors?.value ?? site.projects.length}
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
-            Active PPP Corridors
+            {page.corridorsLabel}
           </div>
         </div>
       </section>
@@ -86,8 +88,8 @@ export default function AnalyticsPage() {
       <section className="px-4 py-16 md:py-20">
         <div className="mx-auto max-w-7xl space-y-10">
           <SectionHeader
-            eyebrow="Capital Intelligence"
-            title="Where capital is flowing"
+            eyebrow={page.sectionEyebrow}
+            title={page.sectionTitle}
             align="left"
           />
 
@@ -95,7 +97,7 @@ export default function AnalyticsPage() {
             <div className="eidf-panel bg-white p-5 md:p-7 lg:col-span-7">
               <h3 className="flex items-center gap-2 border-b border-line pb-3 font-display text-lg font-bold text-navy">
                 <BarChart3 className="h-5 w-5 text-gold" />
-                Pledged Capital by State (₹ Cr)
+                {page.chartTitle}
               </h3>
               <div className="h-80 w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
@@ -120,7 +122,7 @@ export default function AnalyticsPage() {
             <div className="eidf-panel bg-white p-5 md:p-7 lg:col-span-5">
               <h3 className="flex items-center gap-2 border-b border-line pb-3 font-display text-lg font-bold text-navy">
                 <PieIcon className="h-5 w-5 text-emerald" />
-                Sector Capital Share
+                {page.sectorTitle}
               </h3>
               <div className="h-64 w-full pt-4">
                 <ResponsiveContainer width="100%" height="100%">
@@ -162,10 +164,10 @@ export default function AnalyticsPage() {
       </section>
 
       <CtaBand
-        title="Use this data to guide your next investment"
-        description="Pair analytics with live investment zones and scheme assistance."
-        primary={{ label: "Explore Investment Zones", href: "/investors" }}
-        secondary={{ label: "Talk to Analyst Desk", href: "/contact" }}
+        title={page.ctaTitle}
+        description={page.ctaDescription}
+        primary={{ label: page.ctaPrimaryLabel, href: page.ctaPrimaryHref }}
+        secondary={{ label: page.ctaSecondaryLabel, href: page.ctaSecondaryHref }}
       />
     </>
   );

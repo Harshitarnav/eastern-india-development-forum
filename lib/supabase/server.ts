@@ -3,7 +3,7 @@ import { supabaseAuthHeaders } from "@/lib/supabase/headers";
 type InsertResult = { ok: true } | { ok: false; error: string };
 
 export async function supabaseInsert(
-  table: "membership_applications" | "contact_messages",
+  table: "membership_applications" | "contact_messages" | "project_proposals",
   row: Record<string, unknown>,
 ): Promise<InsertResult> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

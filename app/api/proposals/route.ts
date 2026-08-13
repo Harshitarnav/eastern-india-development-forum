@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { appendProposalForm } from "@/lib/cms/forms-store";
+import { appendProposalForm, makeProposalRefId } from "@/lib/cms/forms-store";
+import { isSupabaseConfigured } from "@/lib/cms/supabase-store";
+import { supabaseInsert } from "@/lib/supabase/server";
 import { checkRateLimit } from "@/lib/auth/rate-limit";
 
 function clientKey(request: NextRequest) {
@@ -45,7 +47,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
     }
 
-    const row = await appendProposalForm({
+    const row = {
       title,
       state,
       sector,
@@ -55,9 +57,20 @@ export async function POST(request: NextRequest) {
       contact_email,
       contact_phone,
       dpr_note,
-    });
+      ref_id: makeProposalRefId(),
+    };
 
-    return NextResponse.json({ ok: true, ref_id: row.ref_id });
+    if (isSupabaseConfigured()) {
+      const result = await supabaseInsert("project_proposals", row);
+      if (!result.ok) {
+        const saved = await appendProposalForm(row);
+        return NextResponse.json({ ok: true, ref_id: saved.ref_id });
+      }
+      return NextResponse.json({ ok: true, ref_id: row.ref_id });
+    }
+
+    const saved = await appendProposalForm(row);
+    return NextResponse.json({ ok: true, ref_id: saved.ref_id });
   } catch (err) {
     console.error("proposals api", err);
     return NextResponse.json({ error: "Unexpected error." }, { status: 500 });
