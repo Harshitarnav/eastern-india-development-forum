@@ -207,24 +207,6 @@ export const Nav: React.FC = () => {
       ? site.shortName || "EIDF"
       : site.name || "Eastern India Development Forum";
 
-  const shellAlign =
-    layout.menuAlign === "left"
-      ? "justify-start"
-      : layout.menuAlign === "right"
-        ? "justify-end"
-        : layout.menuAlign === "center"
-          ? "justify-center"
-          : "justify-between";
-
-  const navAlign =
-    layout.menuAlign === "left"
-      ? "mr-auto"
-      : layout.menuAlign === "right"
-        ? "ml-auto"
-        : layout.menuAlign === "center"
-          ? "mx-auto"
-          : "";
-
   const NavItem = ({
     href,
     label,
@@ -237,17 +219,16 @@ export const Nav: React.FC = () => {
       <Link
         href={href}
         className={cn(
-          "relative rounded-md px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-colors duration-200",
-          active
-            ? "text-gold-soft"
-            : "text-white/75 hover:text-white"
+          "relative px-2.5 py-1.5 text-[13px] font-semibold whitespace-nowrap transition-colors duration-200 xl:px-3",
+          active ? "text-white" : "text-white/60 hover:text-white"
         )}
       >
         {label}
         {active && (
-          <span
-            className="absolute inset-x-3 bottom-1 h-px bg-gold-soft/80"
-            aria-hidden
+          <motion.span
+            layoutId="nav-underline"
+            className="absolute inset-x-2 -bottom-0.5 h-[2px] rounded-full bg-gold"
+            transition={{ type: "spring", stiffness: 420, damping: 34 }}
           />
         )}
       </Link>
@@ -275,10 +256,10 @@ export const Nav: React.FC = () => {
         }}
         onFocus={openDropdown}
         className={cn(
-          "relative flex items-center gap-1.5 rounded-md px-3 py-2 text-[13px] font-semibold cursor-pointer transition-colors duration-200",
+          "relative flex items-center gap-1 px-2.5 py-1.5 text-[13px] font-semibold cursor-pointer transition-colors duration-200 xl:px-3",
           portalsActive || dropdownOpen
-            ? "text-gold-soft"
-            : "text-white/75 hover:text-white"
+            ? "text-white"
+            : "text-white/60 hover:text-white"
         )}
         aria-expanded={dropdownOpen}
         aria-haspopup="true"
@@ -287,13 +268,14 @@ export const Nav: React.FC = () => {
         <ChevronDown
           className={cn(
             "h-3.5 w-3.5 transition-transform duration-200",
-            dropdownOpen ? "rotate-180 text-gold-soft" : "text-white/45"
+            dropdownOpen ? "rotate-180 text-gold" : "text-white/35"
           )}
         />
         {(portalsActive || dropdownOpen) && (
-          <span
-            className="absolute inset-x-3 bottom-1 h-px bg-gold-soft/80"
-            aria-hidden
+          <motion.span
+            layoutId="nav-underline"
+            className="absolute inset-x-2 -bottom-0.5 h-[2px] rounded-full bg-gold"
+            transition={{ type: "spring", stiffness: 420, damping: 34 }}
           />
         )}
       </button>
@@ -309,7 +291,7 @@ export const Nav: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute inset-x-0 top-full z-[80] px-2 pt-3 sm:px-3"
+          className="absolute inset-x-0 top-full z-[80] px-3 pt-3 sm:px-4"
           onMouseEnter={openDropdown}
           onMouseLeave={scheduleCloseDropdown}
         >
@@ -489,80 +471,131 @@ export const Nav: React.FC = () => {
           layout.sticky ? "sticky top-0" : "relative"
         )}
       >
-        <div className="relative overflow-visible border-b border-white/10 bg-navy-deep">
-          {layout.showTopBar && (
-            <div className="border-b border-white/10 bg-[#050d18] px-3 py-1.5 sm:px-5">
-              <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 text-[10px] sm:text-[11px] font-medium">
-                <div className="flex min-w-0 items-center gap-1.5 text-white/60">
-                  <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-gold-soft" />
-                  <span className="truncate">
-                    <span className="text-white/40">Reg. </span>
-                    <span className="font-semibold tracking-wide text-white/75">
-                      {site.regNo}
-                    </span>
+        {/* Meta strip */}
+        {layout.showTopBar && (
+          <div className="border-b border-white/10 bg-[#050b14] px-3 py-1.5 sm:px-5">
+            <div className="mx-auto flex max-w-7xl items-center justify-between gap-2 text-[10px] sm:text-[11px] font-medium">
+              <div className="flex min-w-0 items-center gap-1.5 text-white/50">
+                <ShieldCheck className="h-3 w-3 shrink-0 text-gold-soft/80" />
+                <span className="truncate">
+                  <span className="text-white/35">Reg. </span>
+                  <span className="font-semibold tracking-wide text-white/70">
+                    {site.regNo}
                   </span>
-                </div>
-                <div className="flex shrink-0 items-center gap-3 text-white/60">
-                  <a
-                    href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
-                    className="flex items-center gap-1.5 transition-colors hover:text-gold-soft"
-                    aria-label="Call"
-                  >
-                    <Phone className="h-3 w-3 text-emerald" />
-                    <span className="hidden sm:inline">{site.phone}</span>
-                  </a>
-                  <span className="hidden h-3 w-px bg-white/15 sm:block" />
-                  <a
-                    href={`mailto:${site.email}`}
-                    className="hidden truncate transition-colors hover:text-gold-soft sm:inline max-w-[180px] md:max-w-none"
-                  >
-                    {site.email}
-                  </a>
-                </div>
+                </span>
+              </div>
+              <div className="flex shrink-0 items-center gap-3 text-white/50">
+                <a
+                  href={`tel:${site.phone.replace(/[^\d+]/g, "")}`}
+                  className="flex items-center gap-1.5 transition-colors hover:text-gold-soft"
+                  aria-label="Call"
+                >
+                  <Phone className="h-3 w-3 text-emerald" />
+                  <span className="hidden sm:inline">{site.phone}</span>
+                </a>
+                <span className="hidden h-3 w-px bg-white/12 sm:block" />
+                <a
+                  href={`mailto:${site.email}`}
+                  className="hidden truncate transition-colors hover:text-gold-soft sm:inline max-w-[180px] md:max-w-none"
+                >
+                  {site.email}
+                </a>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Split-islands stage */}
+        <div
+          className={cn(
+            "relative overflow-visible border-b border-white/10 px-3 transition-colors duration-300 sm:px-5",
+            scrolled
+              ? "bg-navy-deep/95 py-3 backdrop-blur-xl"
+              : "bg-navy-deep py-3.5 md:py-4"
           )}
-
-          <header
-            className={cn(
-              "transition-shadow duration-300",
-              scrolled && "shadow-[0_10px_30px_-16px_rgba(0,0,0,0.65)]"
-            )}
-          >
-            <div
-              className={cn(
-                "relative mx-auto flex max-w-7xl items-center gap-3 px-3 sm:px-5 py-3",
-                shellAlign
-              )}
-            >
-              <Link
-                href="/"
-                className="group flex min-w-0 shrink items-center gap-2.5 sm:gap-3"
-              >
-                <span className="relative flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-full bg-white p-[3px] ring-2 ring-gold/50 shadow-md transition-transform duration-200 group-hover:scale-[1.03]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={site.logo || "/images/logo.png"}
-                    alt="EIDF"
-                    className="h-full w-full rounded-full object-contain"
-                  />
+        >
+          {/* Mobile */}
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 lg:hidden">
+            <Link href="/" className="flex min-w-0 items-center gap-2.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white p-[3px] ring-2 ring-gold/45">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={site.logo || "/images/logo.png"}
+                  alt="EIDF"
+                  className="h-full w-full rounded-full object-contain"
+                />
+              </span>
+              {layout.showBrandText && (
+                <span className="truncate font-display text-sm font-extrabold">
+                  {site.shortName || "EIDF"}
                 </span>
-                {layout.showBrandText && (
-                  <div className="flex min-w-0 flex-col">
-                    <span className="truncate font-display text-[13px] font-extrabold leading-tight tracking-tight text-white group-hover:text-gold-soft transition-colors sm:text-sm md:text-[15px]">
-                      <span className="sm:hidden">{site.shortName || "EIDF"}</span>
-                      <span className="hidden sm:inline">{brandName}</span>
-                    </span>
-                    {layout.brandTextMode === "full" && (
-                      <span className="mt-0.5 hidden truncate text-[10px] font-medium text-white/45 sm:block">
-                        {site.poweredBy}
-                      </span>
-                    )}
-                  </div>
+              )}
+            </Link>
+            <div className="flex items-center gap-2">
+              {layout.showSearch && (
+                <button
+                  onClick={() => setSearchOpen(true)}
+                  className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/12 bg-white/[0.05] text-white/75 cursor-pointer"
+                  aria-label="Search"
+                >
+                  <Search className="h-4 w-4" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen((open) => !open)}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/12 bg-white/[0.05] text-white cursor-pointer"
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-nav"
+              >
+                {mobileMenuOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
                 )}
-              </Link>
+              </button>
+            </div>
+          </div>
 
-              <nav className={cn("hidden items-center gap-0.5 lg:flex", navAlign)}>
+          {/* Desktop: two islands */}
+          <div className="relative mx-auto hidden max-w-7xl items-center justify-between gap-4 lg:flex">
+            {/* Brand island */}
+            <Link
+              href="/"
+              className="group flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-[#0c1a2c] py-2 pl-2 pr-4 shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)] transition-colors hover:border-gold/30"
+            >
+              <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white p-[3px]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={site.logo || "/images/logo.png"}
+                  alt="EIDF"
+                  className="h-full w-full rounded-[0.6rem] object-contain"
+                />
+              </span>
+              {layout.showBrandText && (
+                <div className="min-w-0">
+                  <div className="truncate font-display text-[14px] font-extrabold leading-tight tracking-tight text-white transition-colors group-hover:text-gold-soft">
+                    {brandName}
+                  </div>
+                  {layout.brandTextMode === "full" && (
+                    <div className="mt-0.5 truncate text-[10px] text-white/40">
+                      {site.poweredBy}
+                    </div>
+                  )}
+                </div>
+              )}
+            </Link>
+
+            {/* Subtle bridge */}
+            <div
+              aria-hidden
+              className="hidden h-px flex-1 bg-gradient-to-r from-white/10 via-gold/25 to-white/10 xl:block"
+            />
+
+            {/* Nav island */}
+            <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-[#0c1a2c] p-1.5 shadow-[0_12px_32px_-18px_rgba(0,0,0,0.7)]">
+              <nav className="flex items-center gap-0.5 px-1">
                 {beforePortals.map((link, i) => (
                   <NavItem
                     key={`nav-before-${link.href}-${i}`}
@@ -589,51 +622,33 @@ export const Nav: React.FC = () => {
                   PortalsTrigger}
               </nav>
 
-              <div
-                className={cn(
-                  "flex shrink-0 items-center gap-2",
-                  layout.menuAlign === "left" && "ml-auto",
-                  layout.menuAlign === "center" && "absolute right-3 sm:right-5"
-                )}
-              >
-                {layout.showSearch && (
-                  <button
-                    onClick={() => setSearchOpen(true)}
-                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white/75 transition-colors hover:border-gold/40 hover:bg-white/10 hover:text-gold-soft cursor-pointer"
-                    aria-label="Search"
-                  >
-                    <Search className="h-4 w-4" />
-                  </button>
-                )}
+              <span
+                aria-hidden
+                className="mx-0.5 h-6 w-px bg-white/10"
+              />
 
-                {layout.showCta && (
-                  <Link
-                    href={layout.ctaHref || "/membership"}
-                    className="hidden items-center gap-1.5 rounded-lg bg-gold px-4 py-2.5 text-xs font-bold text-navy-deep transition-colors hover:bg-gold-hover sm:inline-flex"
-                    data-cursor="VIEW"
-                  >
-                    {layout.ctaLabel || "Join Us"}
-                    <ArrowUpRight className="h-3.5 w-3.5" />
-                  </Link>
-                )}
-
+              {layout.showSearch && (
                 <button
-                  type="button"
-                  onClick={() => setMobileMenuOpen((open) => !open)}
-                  className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-white transition-colors hover:bg-white/10 cursor-pointer"
-                  aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-                  aria-expanded={mobileMenuOpen}
-                  aria-controls="mobile-nav"
+                  onClick={() => setSearchOpen(true)}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/[0.07] hover:text-gold-soft cursor-pointer"
+                  aria-label="Search"
                 >
-                  {mobileMenuOpen ? (
-                    <X className="h-5 w-5" />
-                  ) : (
-                    <Menu className="h-5 w-5" />
-                  )}
+                  <Search className="h-4 w-4" />
                 </button>
-              </div>
+              )}
+
+              {layout.showCta && (
+                <Link
+                  href={layout.ctaHref || "/membership"}
+                  className="group inline-flex items-center gap-1.5 rounded-xl bg-gold px-3.5 py-2 text-xs font-bold text-navy-deep transition-colors hover:bg-gold-hover"
+                  data-cursor="VIEW"
+                >
+                  {layout.ctaLabel || "Join Us"}
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </Link>
+              )}
             </div>
-          </header>
+          </div>
 
           {MegaMenu}
         </div>
