@@ -22,8 +22,9 @@ function placeholderForName(name: string) {
 
 function resolveLeaderSrc(name: string, image?: string | null) {
   const fallback = placeholderForName(name);
-  const raw = typeof image === "string" ? image.trim() : "";
+  let raw = typeof image === "string" ? image.trim() : "";
   if (!raw) return fallback;
+  raw = raw.replace(/placeholder-fmale\.png$/i, "placeholder-female.png");
   if (MISSING_SEED_PHOTOS.test(raw)) return fallback;
   return raw;
 }

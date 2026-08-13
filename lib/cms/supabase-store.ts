@@ -38,32 +38,77 @@ export function isSupabaseConfigured() {
   return true;
 }
 
+const FETCH_TIMEOUT_MS = Number(process.env.SUPABASE_FETCH_TIMEOUT_MS || 4000);
+const DOWN_COOLDOWN_MS = 30_000;
+
+let supabaseDownUntil = 0;
+
+export function isSupabaseTemporarilyDown() {
+  return Date.now() < supabaseDownUntil;
+}
+
+function markSupabaseDown(reason: unknown) {
+  const alreadyDown = Date.now() < supabaseDownUntil;
+  supabaseDownUntil = Date.now() + DOWN_COOLDOWN_MS;
+  if (alreadyDown) return;
+  const message = reason instanceof Error ? reason.message : String(reason);
+  console.warn(
+    `supabase unreachable (${message}); using local file store for ${DOWN_COOLDOWN_MS / 1000}s`
+  );
+}
+
+export type SupabaseReadResult =
+  | { status: "ok"; snapshot: CmsStoreSnapshot }
+  | { status: "empty" }
+  | { status: "disabled" }
+  | { status: "unreachable" };
+
 async function sbFetch(pathname: string, init?: RequestInit) {
   const creds = credentials();
   if (!creds) throw new Error("Supabase not configured");
-  const res = await fetch(`${creds.url}/rest/v1/${pathname}`, {
-    ...init,
-    headers: {
-      ...supabaseAuthHeaders(creds.key),
-      "Content-Type": "application/json",
-      Prefer: init?.method === "POST" ? "resolution=merge-duplicates,return=representation" : "return=representation",
-      ...(init?.headers || {}),
-    },
-    cache: "no-store",
-  });
-  if (!res.ok) {
+
+  const timeout = AbortSignal.timeout(FETCH_TIMEOUT_MS);
+  const signal =
+    init?.signal && typeof AbortSignal.any === "function"
+      ? AbortSignal.any([init.signal, timeout])
+      : timeout;
+
+  try {
+    const res = await fetch(`${creds.url}/rest/v1/${pathname}`, {
+      ...init,
+      signal,
+      headers: {
+        ...supabaseAuthHeaders(creds.key),
+        "Content-Type": "application/json",
+        Prefer: init?.method === "POST" ? "resolution=merge-duplicates,return=representation" : "return=representation",
+        ...(init?.headers || {}),
+      },
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Supabase ${pathname}: ${res.status} ${text}`);
+    }
+    if (res.status === 204) return null;
     const text = await res.text();
-    throw new Error(`Supabase ${pathname}: ${res.status} ${text}`);
+    if (!text) return null;
+    return JSON.parse(text);
+  } catch (err) {
+    markSupabaseDown(err);
+    throw err;
   }
-  if (res.status === 204) return null;
-  const text = await res.text();
-  if (!text) return null;
-  return JSON.parse(text);
 }
 
 /** Load full snapshot from Supabase tables (if seeded). */
 export async function readSupabaseStore(): Promise<CmsStoreSnapshot | null> {
-  if (!isSupabaseConfigured()) return null;
+  const result = await readSupabaseStoreResult();
+  return result.status === "ok" ? result.snapshot : null;
+}
+
+export async function readSupabaseStoreResult(): Promise<SupabaseReadResult> {
+  if (!isSupabaseConfigured()) return { status: "disabled" };
+  if (isSupabaseTemporarilyDown()) return { status: "unreachable" };
+
   try {
     const [settingsRows, navigation, items, seo, media, redirects] = await Promise.all([
       sbFetch("cms_settings?id=eq.site&select=data,updated_at"),
@@ -74,35 +119,40 @@ export async function readSupabaseStore(): Promise<CmsStoreSnapshot | null> {
       sbFetch("cms_redirects?select=*"),
     ]);
 
-    if (!Array.isArray(settingsRows) || settingsRows.length === 0) return null;
+    if (!Array.isArray(settingsRows) || settingsRows.length === 0) {
+      return { status: "empty" };
+    }
 
     return {
-      version: 1,
-      updatedAt: settingsRows[0].updated_at || new Date().toISOString(),
-      settings: settingsRows[0].data,
-      navigation: navigation || [],
-      items: (items || []).map((row: Record<string, unknown>) => ({
-        id: row.id,
-        collection: row.collection,
-        data: row.data,
-        sort_order: row.sort_order,
-        is_published: row.is_published,
-        slug: row.slug,
-        updated_at: row.updated_at,
-      })),
-      seo: seo || [],
-      media: media || [],
-      redirects: redirects || [],
-    } as CmsStoreSnapshot;
+      status: "ok",
+      snapshot: {
+        version: 1,
+        updatedAt: settingsRows[0].updated_at || new Date().toISOString(),
+        settings: settingsRows[0].data,
+        navigation: navigation || [],
+        items: (items || []).map((row: Record<string, unknown>) => ({
+          id: row.id,
+          collection: row.collection,
+          data: row.data,
+          sort_order: row.sort_order,
+          is_published: row.is_published,
+          slug: row.slug,
+          updated_at: row.updated_at,
+        })),
+        seo: seo || [],
+        media: media || [],
+        redirects: redirects || [],
+      } as CmsStoreSnapshot,
+    };
   } catch (err) {
-    console.error("readSupabaseStore", err);
-    return null;
+    markSupabaseDown(err);
+    return { status: "unreachable" };
   }
 }
 
 /** Upsert full snapshot into Supabase (bootstrap / sync). */
 export async function writeSupabaseStore(snapshot: CmsStoreSnapshot): Promise<void> {
-  if (!isSupabaseConfigured()) return;
+  if (!isSupabaseConfigured() || isSupabaseTemporarilyDown()) return;
 
   await sbFetch("cms_settings", {
     method: "POST",

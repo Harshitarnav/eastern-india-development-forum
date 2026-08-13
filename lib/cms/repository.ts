@@ -16,7 +16,8 @@ import { buildSeedSnapshot } from "@/lib/cms/seed";
 import { ensureFileStore, writeFileStore } from "@/lib/cms/file-store";
 import {
   isSupabaseConfigured,
-  readSupabaseStore,
+  isSupabaseTemporarilyDown,
+  readSupabaseStoreResult,
   writeSupabaseStore,
   writeAuditLog,
 } from "@/lib/cms/supabase-store";
@@ -34,16 +35,18 @@ function cloneSnap(snapshot: CmsStoreSnapshot): CmsStoreSnapshot {
  * file/seed so local + hosted environments share the same content.
  */
 export async function getCmsSnapshot(): Promise<CmsStoreSnapshot> {
-  const fromSb = await readSupabaseStore();
-  if (fromSb) return cloneSnap(fromSb);
+  const remote = await readSupabaseStoreResult();
+  if (remote.status === "ok") return cloneSnap(remote.snapshot);
 
   const fromFile = await ensureFileStore();
 
-  if (isSupabaseConfigured()) {
+  // Only push local seed when the DB is reachable but empty.
+  // Timeouts / JWT / network errors must not re-bootstrap on every request.
+  if (remote.status === "empty") {
     try {
       await writeSupabaseStore(fromFile);
-      const bootstrapped = await readSupabaseStore();
-      if (bootstrapped) return cloneSnap(bootstrapped);
+      const bootstrapped = await readSupabaseStoreResult();
+      if (bootstrapped.status === "ok") return cloneSnap(bootstrapped.snapshot);
     } catch (err) {
       console.error("cms bootstrap to supabase failed", err);
     }
@@ -64,7 +67,7 @@ export async function saveCmsSnapshot(
   // File store is the source of truth for local/dev (and fallback without Supabase)
   await writeFileStore(next);
 
-  if (isSupabaseConfigured()) {
+  if (isSupabaseConfigured() && !isSupabaseTemporarilyDown()) {
     try {
       await writeSupabaseStore(next);
     } catch (err) {
