@@ -2,167 +2,171 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { site } from "@/content/site";
-import { Send, MapPin, Mail, Phone, ShieldCheck, HeartHandshake } from "lucide-react";
+import { MapPin, Mail, Phone, Loader2 } from "lucide-react";
+import { usePublicNav, usePublicSite } from "@/lib/cms/public-provider";
+import { sanitizeTel } from "@/lib/utils";
 
 export const Footer: React.FC = () => {
+  const site = usePublicSite();
+  const footerLinks = usePublicNav("footer");
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [error, setError] = useState("");
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  async function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
-    if (email) {
-      setSubscribed(true);
+    if (!email) return;
+    setStatus("loading");
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: email.split("@")[0] || "Subscriber",
+          email,
+          subject: "Newsletter",
+          message:
+            "Please add this email to monthly EIDF briefings on RFPs, investment policy, and project milestones.",
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setError(json.error || "Could not subscribe. Try again.");
+        setStatus("error");
+        return;
+      }
       setEmail("");
+      setStatus("done");
+    } catch {
+      setError("Network error. Please try again.");
+      setStatus("error");
     }
-  };
+  }
 
   return (
-    <footer className="border-t border-white/10 bg-navy-deep text-white pt-16 pb-12">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
-        {/* Top Newsletter & SDG Bar */}
-        <div className="mb-12 rounded-3xl border border-white/15 bg-gradient-to-r from-navy via-navy-mid to-slate-dark p-6 md:p-8 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-6">
-          <div className="max-w-xl">
-            <span className="text-xs font-bold uppercase tracking-widest text-gold">
-              STAY INFORMED ON EASTERN INDIA&apos;S TRANSFORMATION
-            </span>
-            <h3 className="font-display text-2xl font-bold text-white mt-1">
-              Subscribe to EIDF Development Briefings
-            </h3>
-            <p className="text-xs text-white/70 mt-1">
-              Receive monthly updates on newly published RFPs, state investment policies, and project milestones.
-            </p>
-          </div>
+    <footer className="relative overflow-hidden border-t border-white/10 bg-navy-deep text-white eidf-grain">
+      <div className="pointer-events-none absolute inset-0 eidf-depth opacity-80" />
+      <div className="pointer-events-none absolute -bottom-24 left-1/2 h-64 w-[80%] -translate-x-1/2 rounded-full bg-gold/5 blur-3xl" />
 
-          <form onSubmit={handleSubscribe} className="w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-2">
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your professional email..."
-              className="w-full lg:w-72 rounded-full border border-white/20 bg-white/10 px-4 py-3 text-xs text-white placeholder-white/40 focus:border-gold focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="rounded-full bg-gold px-6 py-3 text-xs font-bold text-navy-deep hover:bg-gold-hover transition-transform hover:scale-105 shrink-0 cursor-pointer w-full sm:w-auto text-center"
-            >
-              {subscribed ? "Subscribed!" : "Subscribe"}
-            </button>
-          </form>
+      <div className="relative mx-auto max-w-7xl px-4 md:px-6 pt-16 pb-8">
+        <div className="mb-12 overflow-hidden">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-gold/80 mb-3">
+            Eastern India Development Forum
+          </p>
+          <div className="font-display text-display-xl font-extrabold text-white/8 select-none leading-none">
+            EIDF
+          </div>
         </div>
 
-        {/* Navigation Grid */}
-        <div className="grid gap-8 grid-cols-2 md:grid-cols-4 lg:grid-cols-5 mb-12 text-xs">
-          {/* Col 1: About EIDF */}
-          <div className="col-span-2 md:col-span-2 lg:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <img src="/images/logo.png" alt="EIDF Logo" className="h-9 w-auto object-contain bg-white rounded-lg p-1" />
-              <span className="font-display text-lg font-bold text-white">
-                Eastern India Development Forum
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-12">
+          <div className="lg:col-span-4">
+            <div className="flex items-center gap-3 mb-5">
+              <span className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white p-0.5 shadow-md ring-2 ring-gold/60">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={site.logo || "/images/logo.png"}
+                  alt="EIDF"
+                  className="h-full w-full rounded-full object-contain"
+                />
+              </span>
+              <span className="font-display text-base font-extrabold leading-tight">
+                {site.name}
               </span>
             </div>
-            <p className="text-white/70 leading-relaxed max-w-sm mb-4">
-              An apex facilitating platform powered by Umanand Eastern Foundation , uniting Governments, Enterprises, Investors, and Diaspora to accelerate sustainable growth across Bihar, Jharkhand, Odisha, West Bengal, Assam, and the North East.
+            <p className="text-sm text-white/55 leading-relaxed mb-6 max-w-sm">
+              {site.tagline}
             </p>
-            <div className="flex flex-col gap-1.5 text-white/80">
-              <span className="flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 text-gold shrink-0" /> {site.headquarters}
-              </span>
-              <span className="flex items-center gap-2">
-                <Mail className="h-3.5 w-3.5 text-emerald shrink-0" /> {site.email}
-              </span>
-              <span className="flex items-center gap-2">
-                <Phone className="h-3.5 w-3.5 text-amber shrink-0" /> {site.phone}
-              </span>
+            <div className="space-y-2.5 text-sm text-white/70">
+              <div className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-gold shrink-0 mt-0.5" />
+                <span>{site.headquarters}</span>
+              </div>
+              <a
+                href={`mailto:${site.email}`}
+                className="flex items-center gap-2 hover:text-gold transition-colors"
+              >
+                <Mail className="h-4 w-4 text-emerald shrink-0" />
+                {site.email}
+              </a>
+              <a
+                href={`tel:${sanitizeTel(site.phone)}`}
+                className="flex items-center gap-2 hover:text-gold transition-colors"
+              >
+                <Phone className="h-4 w-4 text-amber shrink-0" />
+                {site.phone}
+              </a>
             </div>
           </div>
 
-          {/* Col 2: Core Portals */}
-          <div>
-            <h4 className="font-display text-sm font-bold text-white mb-3 text-gold">
-              Portals & Services
-            </h4>
-            <ul className="space-y-2 text-white/70">
-              <li>
-                <Link href="/tenders" className="hover:text-white transition-colors">
-                  Tender Assistance Center
-                </Link>
-              </li>
-              <li>
-                <Link href="/investors" className="hover:text-white transition-colors">
-                  Investor Portal & PPP
-                </Link>
-              </li>
-              <li>
-                <Link href="/schemes" className="hover:text-white transition-colors">
-                  Government Schemes
-                </Link>
-              </li>
-              <li>
-                <Link href="/resources" className="hover:text-white transition-colors">
-                  Knowledge Center & Reports
-                </Link>
-              </li>
-              <li>
-                <Link href="/analytics" className="hover:text-white transition-colors">
-                  Development Analytics
-                </Link>
-              </li>
-              <li>
-                <Link href="/proposals/submit" className="hover:text-white transition-colors">
-                  Submit Project Proposal
-                </Link>
-              </li>
+          <div className="lg:col-span-4">
+            <h4 className="font-display text-sm font-bold text-gold mb-5">Explore</h4>
+            <ul className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm text-white/60">
+              {footerLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="hover:text-white transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Col 3: Focus Areas */}
-          <div>
-            <h4 className="font-display text-sm font-bold text-white mb-3 text-emerald">
-              Focus Areas
-            </h4>
-            <ul className="space-y-2 text-white/70">
-              <li>Core Infrastructure</li>
-              <li>Renewable Energy</li>
-              <li>Manufacturing & SEZ</li>
-              <li>AI & Technology</li>
-              <li>Skill Academies</li>
-              <li>Agri-Tech & Food Parks</li>
-            </ul>
-          </div>
-
-          {/* Col 4: Regional Chapters */}
-          <div>
-            <h4 className="font-display text-sm font-bold text-white mb-3 text-amber">
-              State Chapters
-            </h4>
-            <ul className="space-y-2 text-white/70">
-              <li>Ranchi (Jharkhand HQ)</li>
-              <li>Patna (Bihar)</li>
-              <li>Bhubaneswar (Odisha)</li>
-              <li>Kolkata (West Bengal)</li>
-              <li>Guwahati (Assam & NE)</li>
-            </ul>
+          <div className="lg:col-span-4">
+            <h4 className="font-display text-sm font-bold text-gold mb-4">Briefings</h4>
+            <p className="text-sm text-white/55 leading-relaxed mb-4">
+              Monthly updates on RFPs, investment policy, and project milestones.
+            </p>
+            {status === "done" ? (
+              <p className="border border-emerald/30 bg-emerald/10 px-4 py-3 text-sm text-emerald">
+                You&apos;re subscribed. We&apos;ll be in touch.
+              </p>
+            ) : (
+              <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Professional email"
+                  disabled={status === "loading"}
+                  className="w-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder-white/35 focus:border-gold focus:outline-none disabled:opacity-60"
+                />
+                {error && <p className="text-xs text-red-300">{error}</p>}
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="btn-primary w-full !py-3 disabled:opacity-60"
+                >
+                  {status === "loading" ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" /> Subscribing…
+                    </span>
+                  ) : (
+                    "Subscribe"
+                  )}
+                </button>
+              </form>
+            )}
           </div>
         </div>
 
-        {/* SDG Badges & Compliance Bar */}
-        <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/60">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-4 w-4 text-emerald" />
-            <span>Aligned with UN Sustainable Development Goals (SDGs 1, 8, 9, 11, 13, 17)</span>
+        <div className="mt-14 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+          <span>
+            © {new Date().getFullYear()} {site.name}
+          </span>
+          <div className="flex gap-5">
+            <Link href="/privacy" className="hover:text-white">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-white">
+              Terms
+            </Link>
+            <Link href="/admin/login" className="hover:text-gold text-gold/80">
+              Admin
+            </Link>
           </div>
-
-          <div className="flex flex-wrap gap-4">
-            <Link href="/privacy" className="hover:text-white">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white">Terms of Governance</Link>
-            <Link href="/admin" className="hover:text-gold font-bold text-gold">Admin CMS</Link>
-          </div>
-        </div>
-
-        <div className="mt-4 text-center text-[11px] text-white/40">
-          © {new Date().getFullYear()} Eastern India Development Forum. Powered by Umanand Eastern Foundation. All rights reserved.
         </div>
       </div>
     </footer>

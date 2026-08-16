@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useInView } from "framer-motion";
-import { useRef } from "react";
 
 interface ImpactCounterProps {
   value: number;
@@ -24,22 +23,30 @@ export const ImpactCounter: React.FC<ImpactCounterProps> = ({
   useEffect(() => {
     if (!isInView) return;
 
-    let start = 0;
-    const end = value;
-    const stepTime = Math.abs(Math.floor((duration * 1000) / (end > 100 ? 100 : end)));
-    const increment = end > 100 ? end / 100 : 1;
+    const end = Number(value) || 0;
+    if (end <= 0) {
+      setDisplayValue(0);
+      return;
+    }
 
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setDisplayValue(end);
-        clearInterval(timer);
-      } else {
-        setDisplayValue(Number(start.toFixed(value % 1 !== 0 ? 1 : 0)));
-      }
-    }, stepTime);
+    const isFloat = end % 1 !== 0;
+    const startTime = performance.now();
+    const ms = Math.max(400, duration * 1000);
+    let frame = 0;
 
-    return () => clearInterval(timer);
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - startTime) / ms);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = end * eased;
+      setDisplayValue(
+        isFloat ? Number(current.toFixed(1)) : Math.round(current)
+      );
+      if (t < 1) frame = requestAnimationFrame(tick);
+      else setDisplayValue(end);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
   }, [isInView, value, duration]);
 
   return (

@@ -96,6 +96,7 @@ export interface EventItem {
   mode: "Hybrid" | "In-Person" | "Virtual";
   desc: string;
   registerUrl: string;
+  image?: string;
 }
 
 export interface NewsItem {
@@ -533,7 +534,7 @@ export const site = {
       publishedDate: "28 July 2026",
       closingDate: "25 August 2026",
       status: "Open",
-      docLink: "/docs/tenders/tender-101.pdf",
+      docLink: "/contact?intent=tender_guidance&ref=EIDF/INFRA/2026/089",
     },
     {
       id: "tnd-102",
@@ -546,7 +547,7 @@ export const site = {
       publishedDate: "15 July 2026",
       closingDate: "10 August 2026",
       status: "Closing Soon",
-      docLink: "/docs/tenders/tender-102.pdf",
+      docLink: "/contact?intent=tender_guidance&ref=EIDF/SOLAR/2026/042",
     },
     {
       id: "tnd-103",
@@ -559,7 +560,7 @@ export const site = {
       publishedDate: "01 August 2026",
       closingDate: "30 August 2026",
       status: "Open",
-      docLink: "/docs/tenders/tender-103.pdf",
+      docLink: "/contact?intent=tender_guidance&ref=EIDF/SKILL/2026/014",
     },
   ] as TenderItem[],
 
@@ -597,7 +598,7 @@ export const site = {
       date: "July 2026",
       fileSize: "4.8 MB",
       summary: "A comprehensive policy blueprint mapping ₹1.5 Lakh Crore investment opportunities across inland ports, renewable grids, and technical education.",
-      downloadUrl: "#download-report-1",
+      downloadUrl: "/contact?intent=report_request&ref=rep-1",
     },
     {
       id: "rep-2",
@@ -607,7 +608,7 @@ export const site = {
       date: "June 2026",
       fileSize: "8.2 MB",
       summary: "Analyzing logistics cost reductions and export competitiveness for agricultural produce moving from Bihar/Assam to Bay of Bengal ports.",
-      downloadUrl: "#download-report-2",
+      downloadUrl: "/contact?intent=report_request&ref=rep-2",
     },
   ] as ResearchReport[],
 
@@ -620,7 +621,7 @@ export const site = {
       location: "Biswa Bangla Convention Centre, Kolkata",
       mode: "In-Person",
       desc: "Bringing together 1,200+ industry leaders, NRI diaspora investors, foreign ambassadors, and state chief ministers to sign MoUs.",
-      registerUrl: "/events/register?id=ev-1",
+      registerUrl: "/contact?intent=event_register&ref=ev-1",
     },
     {
       id: "ev-2",
@@ -630,7 +631,27 @@ export const site = {
       location: "Patna Convention Centre, Bihar",
       mode: "Hybrid",
       desc: "Connecting FPOs with venture capitalists, solar cold-chain innovators, and export regulatory authorities.",
-      registerUrl: "/events/register?id=ev-2",
+      registerUrl: "/contact?intent=event_register&ref=ev-2",
+    },
+    {
+      id: "ev-3",
+      title: "Founders' Convention",
+      type: "Convention",
+      date: "Coming Soon",
+      location: "Ranchi",
+      mode: "In-Person",
+      desc: "Annual gathering of EIDF founders, chapter leads, and founding members.",
+      registerUrl: "/membership",
+    },
+    {
+      id: "ev-4",
+      title: "Diaspora Meet — London",
+      type: "Meetup",
+      date: "TBA",
+      location: "London, UK",
+      mode: "In-Person",
+      desc: "Connect with Eastern India diaspora investors and partners in the UK.",
+      registerUrl: "/membership",
     },
   ] as EventItem[],
 
@@ -642,7 +663,7 @@ export const site = {
       source: "Economic Times & EIDF Media Cell",
       summary: "The initiatives will provide industry 4.0 technical skills to over 25,000 students across Jharkhand, Bihar, and Odisha.",
       category: "Press Release",
-      url: "#news-1",
+      url: "",
     },
     {
       id: "nw-2",
@@ -651,15 +672,15 @@ export const site = {
       source: "Financial Express",
       summary: "Global diaspora members in USA, UK, UAE, and Singapore channel funds toward heritage preservation and rural solar grids.",
       category: "Announcement",
-      url: "#news-2",
+      url: "",
     },
   ] as NewsItem[],
 
   leaders: [
-    { name: "Shri Sanjeev Kumar", role: "Chairman, EIDF · CMD, Diamond City Group", image: "/images/leaders/sanjeev-kumar.jpg" },
-    { name: "Mr. Arnab Sinha", role: "Joint Director & Chief Operating Officer", image: "/images/leaders/arnab-sinha.jpg" },
-    { name: "Dr. Sita Kumari", role: "Senior Advisor — Human Rights & Inclusive Social Policy", image: "/images/leaders/sita-kumari.jpg" },
-    { name: "Smt. Nesha Oraon, IRS", role: "Distinguished Policy Advisor", image: "/images/leaders/nesha-oraon.jpg" },
+    { name: "Shri Sanjeev Kumar", role: "Chairman, EIDF · CMD, Diamond City Group", image: "/images/leaders/placeholder-male.png" },
+    { name: "Mr. Arnab Sinha", role: "Joint Director & Chief Operating Officer", image: "/images/leaders/placeholder-male.png" },
+    { name: "Dr. Sita Kumari", role: "Senior Advisor — Human Rights & Inclusive Social Policy", image: "/images/leaders/placeholder-female.png" },
+    { name: "Smt. Nesha Oraon, IRS", role: "Distinguished Policy Advisor", image: "/images/leaders/placeholder-female.png" },
   ],
 
   values: [

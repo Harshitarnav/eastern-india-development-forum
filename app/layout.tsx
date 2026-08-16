@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { Lora, Public_Sans } from "next/font/google";
-import { Footer } from "@/components/Footer";
-import { Nav } from "@/components/Nav";
-import { CMSProvider } from "@/lib/cms-store";
+import { Plus_Jakarta_Sans, Public_Sans } from "next/font/google";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
-const lora = Lora({
-  variable: "--font-lora",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["500", "600", "700", "800"],
 });
 
 const publicSans = Public_Sans({
@@ -32,13 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${lora.variable} ${publicSans.variable} h-full`}>
-      <body className="flex min-h-full flex-col font-sans antialiased bg-cream">
-        <CMSProvider>
-          <Nav />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </CMSProvider>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={`${plusJakarta.variable} ${publicSans.variable} h-full`}
+    >
+      <body className="flex min-h-full flex-col bg-cream font-sans antialiased">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
