@@ -318,6 +318,15 @@ h3,
   padding-block: clamp(3.5rem, 6vw, 6.5rem);
 }
 
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 .eidf-panel {
   border: 1px solid var(--line);
   background: #fff;

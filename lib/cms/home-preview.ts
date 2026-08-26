@@ -5,7 +5,7 @@
 export const HOMEPAGE_PREVIEW_LIMITS = {
   schemes: 3,
   tenders: 3,
-  projects: 3,
+  projects: 4,
   investments: 2,
   news: 2,
   events: 2,
