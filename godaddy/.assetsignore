@@ -1,0 +1,9 @@
+config.php
+config.sample.php
+send.php
+signups.log
+*.zip
+.htaccess
+wrangler.jsonc
+worker.js
+.assetsignore

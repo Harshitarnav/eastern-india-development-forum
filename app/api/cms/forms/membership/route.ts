@@ -6,6 +6,7 @@ import {
   supabasePatch,
 } from "@/lib/cms/supabase-store";
 import { listForms, updateFormStatus } from "@/lib/cms/forms-store";
+import { isLandingSignup } from "@/lib/join";
 
 export async function GET() {
   const auth = await requireCmsAdmin();
@@ -13,17 +14,22 @@ export async function GET() {
 
   if (isSupabaseConfigured()) {
     try {
-      const rows = await supabaseSelect(
+      const rows = await supabaseSelect<{ contribution_type?: string | null }>(
         "membership_applications",
         "select=*&order=created_at.desc"
       );
-      return NextResponse.json({ rows, source: "supabase" });
+      return NextResponse.json({
+        rows: rows.filter((row) => !isLandingSignup(row.contribution_type)),
+        source: "supabase",
+      });
     } catch (err) {
       console.warn("supabase membership forms failed, using file store", err);
     }
   }
 
-  const rows = await listForms("membership");
+  const rows = (await listForms("membership")).filter(
+    (row) => !isLandingSignup(row.contribution_type)
+  );
   return NextResponse.json({
     rows,
     source: "file",

@@ -33,6 +33,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           "/terms",
         ];
 
+  if (!paths.includes("/join")) paths.push("/join");
+
   return paths.map((path) => ({
     url: `${base}${path === "/" ? "" : path}`,
     lastModified: new Date(),

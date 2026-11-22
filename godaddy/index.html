@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Join · Eastern India Development Forum</title>
+    <meta
+      name="description"
+      content="The apex development forum for Eastern India. Read it in your language and leave your name."
+    />
+    <meta name="theme-color" content="#08131f" />
+    <link rel="icon" href="logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@500;700&family=Noto+Sans+Devanagari:wght@500;700&family=Noto+Sans+Oriya:wght@400;700&family=Plus+Jakarta+Sans:wght@600;800&family=Public+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --navy-deep: #08131f;
+        --navy: #0d2138;
+        --gold: #c9a84b;
+        --gold-label: #9a7e38;
+        --gold-soft: #e6d5a3;
+        --emerald: #1a9a72;
+        --cream: #f5f7fa;
+        --ink: #0d2138;
+        --muted: #5e6d7d;
+        --line: #dde5ee;
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        background: var(--cream);
+        color: var(--ink);
+        font-family: "Public Sans", system-ui, sans-serif;
+      }
+      h1, h2, h3 { font-family: "Plus Jakarta Sans", "Public Sans", sans-serif; letter-spacing: -0.02em; }
+      .hi, .hi h3 { font-family: "Noto Sans Devanagari", "Public Sans", sans-serif; letter-spacing: 0; }
+      .bn, .bn h3 { font-family: "Noto Sans Bengali", "Public Sans", sans-serif; letter-spacing: 0; }
+      .or, .or h3 { font-family: "Noto Sans Oriya", "Public Sans", sans-serif; letter-spacing: 0; }
+      .wrap { max-width: 32rem; margin: 0 auto; padding: 0 1rem; }
+      .hero {
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        background:
+          radial-gradient(ellipse 70% 50% at 12% 18%, rgba(30, 158, 110, 0.16), transparent 55%),
+          radial-gradient(ellipse 55% 40% at 88% 12%, rgba(201, 168, 75, 0.14), transparent 50%),
+          linear-gradient(160deg, var(--navy-deep) 0%, var(--navy) 58%, #0e1826 100%);
+      }
+      .hero .wrap { padding-top: 1.75rem; padding-bottom: 2.5rem; }
+      .brand { display: flex; align-items: center; gap: 0.75rem; }
+      .brand img {
+        width: 3rem; height: 3rem; border-radius: 999px; background: #fff;
+        object-fit: contain; padding: 2px; box-shadow: 0 0 0 2px rgba(201, 168, 75, 0.7);
+      }
+      .eyebrow {
+        margin: 0;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--gold-soft);
+      }
+      .brand .hi { margin: 0.15rem 0 0; font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.85); }
+      .reg { margin: 2rem 0 0; font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-soft); }
+      h1 { margin: 0.75rem 0 0; font-size: 2rem; line-height: 1.08; font-weight: 800; }
+      .hook-hi { margin: 0.75rem 0 0; font-size: 1.125rem; font-weight: 700; line-height: 1.35; color: var(--gold-soft); }
+      .sub { margin: 1.25rem 0 0; font-size: 0.9rem; line-height: 1.55; color: rgba(255,255,255,0.75); }
+      .sub.hi { margin-top: 0.4rem; color: rgba(255,255,255,0.82); font-weight: 500; }
+      .btn {
+        display: flex; align-items: center; justify-content: center;
+        min-height: 3rem; width: 100%; margin-top: 1.5rem;
+        border: 0; border-radius: 0.5rem; cursor: pointer; text-decoration: none;
+        background: linear-gradient(180deg, #d4b45c 0%, var(--gold) 100%);
+        color: var(--navy-deep); font-weight: 700; font-size: 1rem;
+      }
+      .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+      .section-label {
+        display: inline-flex; align-items: center; gap: 0.75rem;
+        margin: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em;
+        text-transform: uppercase; color: var(--gold-label);
+      }
+      .section-label::before { content: ""; width: 1.75rem; height: 1px; background: var(--gold); }
+      .pad { padding-top: 2rem; padding-bottom: 2rem; }
+      h2 { margin: 0.75rem 0 0; font-size: 1.5rem; }
+      .lede { margin: 0.25rem 0 0; font-size: 1rem; font-weight: 600; color: rgba(13,33,56,0.8); }
+      .tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+      .tab {
+        min-height: 2.75rem; border-radius: 999px; border: 1px solid var(--line);
+        background: #fff; color: var(--navy); padding: 0.45rem 0.9rem;
+        font-weight: 700; font-size: 0.9rem; cursor: pointer;
+      }
+      .tab[aria-selected="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+      article {
+        margin-top: 1rem; border: 1px solid var(--line); background: #fff;
+        border-radius: 1rem; padding: 1rem;
+      }
+      article h3 { margin: 0; font-size: 1.125rem; }
+      article p { margin: 0.55rem 0 0; font-size: 15px; line-height: 1.65; color: rgba(13,33,56,0.85); }
+      .trust { background: #fff; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+      .fact { margin-top: 0.75rem; border: 1px solid var(--line); background: var(--cream); border-radius: 1rem; padding: 0.8rem 1rem; }
+      .fact dt span { display: block; }
+      .fact .k { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-label); }
+      .fact .kh { margin-top: 0.15rem; font-size: 0.9rem; font-weight: 600; color: rgba(13,33,56,0.7); }
+      .fact dd { margin: 0.4rem 0 0; font-size: 0.9rem; font-weight: 600; line-height: 1.5; }
+      .note { margin: 1rem 0 0; font-size: 0.9rem; line-height: 1.6; color: var(--muted); }
+      .note.hi { margin-top: 0.25rem; color: rgba(13,33,56,0.75); font-weight: 500; }
+      .panel { border: 1px solid var(--line); background: #fff; border-radius: 0.75rem; padding: 1.15rem 1rem 1.25rem; }
+      .goldk { margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-label); }
+      label { display: block; margin-bottom: 0.4rem; }
+      label .en { display: block; font-size: 13px; font-weight: 700; }
+      label .hi { display: block; margin-top: 0.1rem; font-size: 13px; font-weight: 600; color: rgba(13,33,56,0.75); }
+      .req { color: var(--gold-label); }
+      .field { margin-top: 1rem; }
+      input, select {
+        width: 100%; min-height: 3rem; border-radius: 0.5rem; border: 1px solid var(--line);
+        background: #fff; color: var(--navy); padding: 0.75rem 1rem; font-size: 16px;
+        font-family: inherit;
+      }
+      input:focus, select:focus { outline: 2px solid rgba(201,168,75,0.35); border-color: var(--gold); }
+      .hp { display: none; }
+      .err { margin-top: 1rem; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 0.9rem; }
+      .ok { text-align: center; padding: 2.5rem 1.25rem; }
+      .mark {
+        width: 3.5rem; height: 3.5rem; margin: 0 auto 1rem; border-radius: 999px;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid rgba(26,154,114,0.3); background: rgba(26,154,114,0.1); color: var(--emerald);
+        font-size: 1.6rem;
+      }
+      .muted { color: var(--muted); font-size: 0.9rem; line-height: 1.6; }
+      .photos { background: #fff; border-top: 1px solid var(--line); }
+      .carousel { position: relative; margin-top: 1.25rem; }
+      .frame {
+        aspect-ratio: 4 / 3; overflow: hidden; border-radius: 1rem;
+        background: var(--navy); touch-action: pan-y;
+      }
+      .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .car-btn {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        width: 2.6rem; height: 2.6rem; border: 0; border-radius: 999px;
+        background: rgba(8,19,31,0.72); color: #fff; font-size: 1.6rem; line-height: 1;
+        cursor: pointer;
+      }
+      .car-btn.prev { left: 0.55rem; }
+      .car-btn.next { right: 0.55rem; }
+      footer { background: var(--navy-deep); color: rgba(255,255,255,0.7); }
+      footer .wrap { padding-top: 2rem; padding-bottom: 6rem; font-size: 0.9rem; line-height: 1.6; }
+      footer strong { color: #fff; font-family: "Plus Jakarta Sans", sans-serif; }
+      footer .regno { color: var(--gold-soft); font-size: 0.75rem; letter-spacing: 0.04em; }
+      .bar {
+        position: fixed; left: 0; right: 0; bottom: 0; z-index: 20;
+        background: rgba(13,33,56,0.95); border-top: 1px solid rgba(255,255,255,0.1);
+        padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+      }
+      .bar .btn { margin-top: 0; }
+      .bar.hide { display: none; }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap">
+        <div class="brand">
+          <img src="logo.png" alt="EIDF" width="48" height="48" />
+          <div>
+            <p class="eyebrow">Eastern India Development Forum</p>
+            <p class="hi">पूर्वी भारत विकास मंच</p>
+          </div>
+        </div>
+        <p class="reg">Registered forum · U85500JH2025NPL024051</p>
+        <h1>The apex development forum for Eastern India.</h1>
+        <p class="hook-hi hi">पूर्वी भारत का शीर्ष विकास मंच।</p>
+        <p class="sub">Your name is enough to join the work. Choose your language, then leave your name.</p>
+        <p class="sub hi">इस काम से जुड़ने के लिए आपका नाम काफ़ी है। भाषा चुनें, फिर अपना नाम लिखें।</p>
+        <a class="btn" href="#signup">Join · जुड़ें</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="wrap pad" aria-labelledby="idea-heading">
+        <p class="section-label">The idea</p>
+        <h2 id="idea-heading">Choose a language</h2>
+        <p class="lede hi">एक भाषा चुनें</p>
+        <div class="tabs" role="tablist" aria-label="Language" id="tabs"></div>
+        <article id="lang-panel" role="tabpanel"></article>
+      </section>
+
+      <section class="trust" aria-labelledby="trust-heading">
+        <div class="wrap pad">
+          <p class="section-label">Why this is real</p>
+          <h2 id="trust-heading">A registered desk you can place</h2>
+          <p class="lede hi">एक पंजीकृत डेस्क, जिसका पता है</p>
+          <div class="fact"><dt><span class="k">Registered</span><span class="kh hi">पंजीकृत</span></dt><dd>U85500JH2025NPL024051</dd></div>
+          <div class="fact"><dt><span class="k">Run by</span><span class="kh hi">संचालित</span></dt><dd>Umanand Eastern Foundation</dd></div>
+          <div class="fact"><dt><span class="k">Chairman</span><span class="kh hi">अध्यक्ष</span></dt><dd>Shri Sanjeev Kumar</dd></div>
+          <div class="fact"><dt><span class="k">Headquarters</span><span class="kh hi">मुख्यालय</span></dt><dd>Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 834001</dd></div>
+          <p class="note">Offices also sit in Patna, Bhubaneswar, Kolkata, and Guwahati. The work covers Bihar, Jharkhand, Odisha, West Bengal, Assam, and the North East.</p>
+          <p class="note hi">पटना, भुवनेश्वर, कोलकाता और गुवाहाटी में भी कार्यालय हैं। काम बिहार, झारखंड, ओडिशा, पश्चिम बंगाल, असम और पूर्वोत्तर में है।</p>
+        </div>
+      </section>
+
+      <section id="signup" class="wrap pad">
+        <form id="join-form" class="panel">
+          <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+          <p class="goldk">Required · ज़रूरी</p>
+          <h2>Leave your name</h2>
+          <p class="lede hi">अपना नाम लिखें</p>
+          <p class="note">Write in English or Hindi. A person will call you. No payment on this page.</p>
+          <p class="note hi">अंग्रेज़ी या हिन्दी में भरें। कोई व्यक्ति आपको फोन करेगा। इस पेज पर कोई भुगतान नहीं।</p>
+          <div class="field">
+            <label for="full_name"><span class="en">Full name <span class="req">*</span></span><span class="hi">पूरा नाम</span></label>
+            <input id="full_name" name="full_name" required maxlength="80" autocomplete="name" placeholder="Your name · आपका नाम" />
+          </div>
+          <div class="field">
+            <label for="phone"><span class="en">Mobile number <span class="req">*</span></span><span class="hi">मोबाइल नंबर</span></label>
+            <input id="phone" name="phone" type="tel" inputmode="tel" required autocomplete="tel" placeholder="10-digit mobile · 10 अंक" />
+          </div>
+          <div class="field">
+            <label for="state"><span class="en">State <span class="req">*</span></span><span class="hi">राज्य</span></label>
+            <select id="state" name="state" required>
+              <option value="">Select · चुनें</option>
+              <option>Bihar · बिहार</option>
+              <option>Jharkhand · झारखंड</option>
+              <option>Odisha · ओडिशा</option>
+              <option>West Bengal · पश्चिम बंगाल</option>
+              <option>Assam · असम</option>
+              <option>Arunachal Pradesh · अरुणाचल प्रदेश</option>
+              <option>Manipur · मणिपुर</option>
+              <option>Meghalaya · मेघालय</option>
+              <option>Mizoram · मिजोरम</option>
+              <option>Nagaland · नागालैंड</option>
+              <option>Sikkim · सिक्किम</option>
+              <option>Tripura · त्रिपुरा</option>
+              <option>Other · अन्य</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="place"><span class="en">District or village <span class="req">*</span></span><span class="hi">जिला या गाँव</span></label>
+            <input id="place" name="place" required maxlength="80" autocomplete="address-level2" placeholder="Where you live · जहाँ आप रहते हैं" />
+          </div>
+          <div class="field">
+            <label for="intent"><span class="en">I want to <span class="req">*</span></span><span class="hi">मैं जुड़ना चाहता/चाहती हूँ</span></label>
+            <select id="intent" name="intent" required>
+              <option value="">Select · चुनें</option>
+              <option value="member">Become a member · सदस्य बनना</option>
+              <option value="volunteer">Give my time · अपना समय देना</option>
+              <option value="local_need">Share a need from my area · अपने इलाके की ज़रूरत बताना</option>
+              <option value="partner">Partner or support the work · साथ मिलकर काम करना</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="email"><span class="en">Email</span><span class="hi">ईमेल, जरूरी नहीं</span></label>
+            <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="Only if you have one" />
+          </div>
+          <p id="form-error" class="err" hidden></p>
+          <button class="btn" id="submit" type="submit">Send my name · मेरा नाम भेजें</button>
+        </form>
+      </section>
+
+      <section class="photos" aria-labelledby="photos-heading">
+        <div class="wrap pad">
+          <h2 id="photos-heading">Gallery</h2>
+          <div class="carousel">
+            <div class="frame" id="photo-frame">
+              <img id="photo" alt="" />
+            </div>
+            <button type="button" class="car-btn prev" id="photo-prev" aria-label="Previous photograph">‹</button>
+            <button type="button" class="car-btn next" id="photo-next" aria-label="Next photograph">›</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p><strong>Eastern India Development Forum</strong></p>
+        <p class="hi">पूर्वी भारत विकास मंच</p>
+        <p>Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 834001</p>
+        <p class="regno">U85500JH2025NPL024051</p>
+      </div>
+    </footer>
+
+    <div class="bar" id="join-bar">
+      <a class="btn" href="#signup">Join · जुड़ें</a>
+    </div>
+
+    <script>
+      const stories = [
+        { id: "en", lang: "en", cls: "", name: "English", title: "What EIDF is", paragraphs: [
+          "The Eastern India Development Forum helps Bihar, Jharkhand, Odisha, West Bengal, Assam, and the North Eastern states grow together. It brings state governments, companies, investors, and people of this region to one table, including those who now live away from home.",
+          "The work is practical: skill centres for young people, roads and industry, heritage and tourism, and a fair chance for villages, tribal communities, and women. Umanand Eastern Foundation runs EIDF. It does not take the place of government. It helps a project, a person, and the right support find each other."
+        ]},
+        { id: "hi", lang: "hi", cls: "hi", name: "हिन्दी", title: "ईआईडीएफ क्या है", paragraphs: [
+          "पूर्वी भारत विकास मंच बिहार, झारखंड, ओडिशा, पश्चिम बंगाल, असम और पूर्वोत्तर राज्यों को साथ आगे बढ़ाने में मदद करता है। यह राज्य सरकारों, कंपनियों, निवेशकों और इस क्षेत्र के लोगों को एक जगह लाता है, चाहे वे यहाँ रहते हों या घर से दूर।",
+          "काम व्यावहारिक है: युवाओं के कौशल केंद्र, सड़क और उद्योग, विरासत और पर्यटन, और गाँव, आदिवासी समाज तथा महिलाओं के लिए बराबर का मौका। इसे उमानंद ईस्टर्न फाउंडेशन चलाता है। यह सरकार की जगह नहीं लेता। यह किसी काम, किसी व्यक्ति और सही मदद को एक-दूसरे तक पहुँचाता है।"
+        ]},
+        { id: "bn", lang: "bn", cls: "bn", name: "বাংলা", title: "ইআইডিএফ কী", paragraphs: [
+          "ইস্টার্ন ইন্ডিয়া ডেভেলপমেন্ট ফোরাম বিহার, ঝাড়খণ্ড, ওড়িশা, পশ্চিমবঙ্গ, আসাম ও উত্তর-পূর্ব রাজ্যগুলোকে একসঙ্গে এগিয়ে যেতে সাহায্য করে। এটি রাজ্য সরকার, কোম্পানি, বিনিয়োগকারী এবং এই অঞ্চলের মানুষকে এক টেবিলে আনে, তাঁরা এখন বাড়ি থেকে দূরে থাকলেও।",
+          "কাজটি বাস্তব: তরুণদের দক্ষতা কেন্দ্র, রাস্তা ও শিল্প, ঐতিহ্য ও পর্যটন, এবং গ্রাম, আদিবাসী সমাজ ও নারীদের সমান সুযোগ। উমানন্দ ইস্টার্ন ফাউন্ডেশন ইআইডিএফ চালায়। এটি সরকারের জায়গা নেয় না। এটি একটি কাজ, একজন মানুষ এবং সঠিক সহায়তাকে একে অপরের কাছে পৌঁছে দেয়।"
+        ]},
+        { id: "or", lang: "or", cls: "or", name: "ଓଡ଼ିଆ", title: "ଇଆଇଡିଏଫ୍ କ’ଣ", paragraphs: [
+          "ଇଷ୍ଟର୍ଣ୍ଣ ଇଣ୍ଡିଆ ଡେଭଲପମେଣ୍ଟ ଫୋରମ୍ ବିହାର, ଝାଡ଼ଖଣ୍ଡ, ଓଡ଼ିଶା, ପଶ୍ଚିମବଙ୍ଗ, ଆସାମ ଓ ଉତ୍ତର-ପୂର୍ବ ରାଜ୍ୟମାନଙ୍କୁ ଏକାଠି ଆଗକୁ ବଢ଼ିବାରେ ସାହାଯ୍ୟ କରେ। ଏହା ରାଜ୍ୟ ସରକାର, କମ୍ପାନୀ, ନିବେଶକ ଓ ଏହି ଅଞ୍ଚଳର ଲୋକଙ୍କୁ ଗୋଟିଏ ଟେବୁଲକୁ ଆଣେ, ସେମାନେ ବର୍ତ୍ତମାନ ଘରୁ ଦୂରରେ ରହୁଥିଲେ ମଧ୍ୟ।",
+          "କାମଟି ବାସ୍ତବ: ଯୁବକମାନଙ୍କ ଦକ୍ଷତା କେନ୍ଦ୍ର, ରାସ୍ତା ଓ ଶିଳ୍ପ, ଐତିହ୍ୟ ଓ ପର୍ଯ୍ୟଟନ, ଏବଂ ଗାଁ, ଆଦିବାସୀ ସମାଜ ଓ ମହିଳାଙ୍କ ସମାନ ସୁଯୋଗ। ଉମାନନ୍ଦ ଇଷ୍ଟର୍ଣ୍ଣ ଫାଉଣ୍ଡେସନ୍ ଇଆଇଡିଏଫ୍ ଚଳାଏ। ଏହା ସରକାରର ସ୍ଥାନ ନିଏ ନାହିଁ। ଏହା ଏକ କାମ, ଜଣେ ବ୍ୟକ୍ତି ଓ ଠିକ୍ ସାହାଯ୍ୟକୁ ପରସ୍ପର ପାଖରେ ପହଞ୍ଚାଏ।"
+        ]},
+        { id: "as", lang: "as", cls: "bn", name: "অসমীয়া", title: "ইআইডিএফ কি", paragraphs: [
+          "ইষ্টাৰ্ণ ইণ্ডিয়া ডেভেলপমেণ্ট ফ’ৰামে বিহাৰ, ঝাৰখণ্ড, ওড়িশা, পশ্চিমবঙ্গ, অসম আৰু উত্তৰ-পূব ৰাজ্যসমূহক একেলগে আগুৱাই নিয়াত সহায় কৰে। ই ৰাজ্য চৰকাৰ, কোম্পানী, বিনিয়োগকাৰী আৰু এই অঞ্চলৰ মানুহক এখন টেবুললৈ আনে, তেওঁলোক এতিয়া ঘৰৰ পৰা দূৰত থাকিলেও।",
+          "কামটো ব্যৱহাৰিক: যুৱক-যুৱতীৰ দক্ষতা কেন্দ্ৰ, ৰাস্তা আৰু উদ্যোগ, ঐতিহ্য আৰু পৰ্যটন, আৰু গাঁও, জনজাতীয় সমাজ আৰু মহিলাৰ বাবে সমান সুযোগ। উমানন্দ ইষ্টাৰ্ণ ফাউণ্ডেশ্যনে ইআইডিএফ চলায়। ই চৰকাৰৰ ঠাই লোৱা নাই। ই এটা কাম, এজন মানুহ আৰু সঠিক সহায়ক ইজনে সিজনৰ ওচৰলৈ লৈ যায়।"
+        ]}
+      ];
+
+      const tabs = document.getElementById("tabs");
+      const panel = document.getElementById("lang-panel");
+      let active = "en";
+
+      function show(id) {
+        active = id;
+        const item = stories.find((story) => story.id === id);
+        tabs.querySelectorAll("button").forEach((button) => {
+          button.setAttribute("aria-selected", button.dataset.id === id ? "true" : "false");
+        });
+        panel.lang = item.lang;
+        panel.className = item.cls;
+        panel.setAttribute("aria-labelledby", "lang-tab-" + item.id);
+        panel.innerHTML = "<h3>" + item.title + "</h3>" + item.paragraphs.map((paragraph) => "<p>" + paragraph + "</p>").join("");
+      }
+
+      stories.forEach((story) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "tab";
+        button.dataset.id = story.id;
+        button.id = "lang-tab-" + story.id;
+        button.setAttribute("role", "tab");
+        button.textContent = story.name;
+        button.addEventListener("click", () => show(story.id));
+        tabs.appendChild(button);
+      });
+      show("en");
+
+      const states = {
+        "Bihar · बिहार": "Bihar",
+        "Jharkhand · झारखंड": "Jharkhand",
+        "Odisha · ओडिशा": "Odisha",
+        "West Bengal · पश्चिम बंगाल": "West Bengal",
+        "Assam · असम": "Assam",
+        "Arunachal Pradesh · अरुणाचल प्रदेश": "Arunachal Pradesh",
+        "Manipur · मणिपुर": "Manipur",
+        "Meghalaya · मेघालय": "Meghalaya",
+        "Mizoram · मिजोरम": "Mizoram",
+        "Nagaland · नागालैंड": "Nagaland",
+        "Sikkim · सिक्किम": "Sikkim",
+        "Tripura · त्रिपुरा": "Tripura",
+        "Other · अन्य": "Other"
+      };
+
+      const form = document.getElementById("join-form");
+      const errorBox = document.getElementById("form-error");
+      const submit = document.getElementById("submit");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        errorBox.hidden = true;
+        submit.disabled = true;
+        submit.textContent = "Sending · भेज रहे हैं";
+        const data = new FormData(form);
+        const stateLabel = String(data.get("state") || "");
+        try {
+          const res = await fetch("send.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              full_name: data.get("full_name"),
+              phone: data.get("phone"),
+              state: states[stateLabel] || "",
+              place: data.get("place"),
+              intent: data.get("intent"),
+              email: data.get("email"),
+              website: data.get("website")
+            })
+          });
+          const json = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(json.error || "Something went wrong. फिर कोशिश करें।");
+          form.outerHTML = '<div class="panel ok"><div class="mark" aria-hidden="true">✓</div><h2>We have your name.</h2><p class="lede hi">हमने आपका नाम लिख लिया है।</p><p class="muted">The EIDF desk will call you on the mobile number you wrote. This form does not ask for money.</p><p class="note hi">ईआईडीएफ की टीम आपके मोबाइल नंबर पर बात करेगी। यह फॉर्म पैसे नहीं माँगता।</p></div>';
+        } catch (err) {
+          errorBox.hidden = false;
+          errorBox.textContent = err.message || "Network error. Please try again. नेटवर्क की समस्या।";
+          submit.disabled = false;
+          submit.textContent = "Send my name · मेरा नाम भेजें";
+        }
+      });
+
+      const photos = [
+        { src: "photos/hero-banner.jpg", alt: "Eastern India Development Forum" },
+        { src: "photos/eidf_01.jpg", alt: "Eastern Skill Centre Corridor Groundwork" },
+        { src: "photos/eidf_02.jpg", alt: "Ranchi Vocational Lab Setup" },
+        { src: "photos/eidf_03.jpg", alt: "Inland Waterways Sagarmala Freight Hub" },
+        { src: "photos/eidf_04.jpg", alt: "Brahmaputra Organic Agriculture Corridor" },
+        { src: "photos/eidf_05.jpg", alt: "Global Diaspora Investors Roundtable" },
+        { src: "photos/eidf_06.jpg", alt: "Dignitaries Lighting the Inaugural Lamp" },
+        { src: "photos/eidf_07.jpg", alt: "Panel on Tribal Inclusion and Skill Development" },
+        { src: "photos/eidf_08.jpg", alt: "EIDF State Chapter Officers Group" },
+        { src: "photos/eidf_09.jpg", alt: "Floral Tribute and Founding Ceremony" },
+        { src: "photos/eidf_10.jpg", alt: "Youth Skilling Orientation Drive" },
+        { src: "photos/eidf_11.jpg", alt: "Heritage Conservation Inspection Team" },
+        { src: "photos/eidf_12.jpg", alt: "Smart Water Management Briefing" },
+        { src: "photos/eidf_13.jpg", alt: "Rural Electrification Assessment" },
+        { src: "photos/eidf_14.jpg", alt: "Diaspora Cultural Integration Meet" },
+        { src: "photos/eidf_15.jpeg", alt: "EIDF Regional Outreach Moment" },
+        { src: "photos/eidf_poster.jpg", alt: "EIDF poster" }
+      ];
+      const photo = document.getElementById("photo");
+      const photoFrame = document.getElementById("photo-frame");
+      let photoIndex = 0;
+      function showPhoto(index) {
+        photoIndex = (index + photos.length) % photos.length;
+        const item = photos[photoIndex];
+        photo.src = item.src;
+        photo.alt = item.alt;
+      }
+      document.getElementById("photo-prev").addEventListener("click", () => showPhoto(photoIndex - 1));
+      document.getElementById("photo-next").addEventListener("click", () => showPhoto(photoIndex + 1));
+      let touchX = null;
+      photoFrame.addEventListener("touchstart", (event) => { touchX = event.changedTouches[0].clientX; }, { passive: true });
+      photoFrame.addEventListener("touchend", (event) => {
+        if (touchX == null) return;
+        const delta = event.changedTouches[0].clientX - touchX;
+        if (delta > 40) showPhoto(photoIndex - 1);
+        else if (delta < -40) showPhoto(photoIndex + 1);
+        touchX = null;
+      });
+      showPhoto(0);
+
+      const bar = document.getElementById("join-bar");
+      const signup = document.getElementById("signup");
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(([entry]) => {
+          bar.classList.toggle("hide", entry.isIntersecting);
+        }, { threshold: 0.2 });
+        observer.observe(signup);
+      }
+    </script>
+  </body>
+</html>

@@ -2,19 +2,21 @@
 
 import React, { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FileText, Mail, Users, RefreshCw } from "lucide-react";
+import { FileText, Mail, UserPlus, Users, RefreshCw } from "lucide-react";
+import { intentLabel } from "@/lib/join";
 import { cn } from "@/lib/utils";
 
-type Tab = "membership" | "contact" | "proposal";
+type Tab = "signup" | "membership" | "contact" | "proposal";
 
 const FORM_API: Record<Tab, string> = {
+  signup: "signups",
   membership: "membership",
   contact: "contact",
   proposal: "proposals",
 };
 
 export function CmsFormsInbox() {
-  const [tab, setTab] = useState<Tab>("membership");
+  const [tab, setTab] = useState<Tab>("signup");
   const qc = useQueryClient();
 
   const { data, isLoading, refetch } = useQuery({
@@ -52,7 +54,7 @@ export function CmsFormsInbox() {
             Forms inbox
           </h1>
           <p className="mt-1 text-sm text-[var(--admin-muted)]">
-            Membership, contact, and proposal submissions from the public site.
+            Landing-page signups, membership, contact, and proposal submissions.
           </p>
         </div>
         <button
@@ -67,6 +69,7 @@ export function CmsFormsInbox() {
       <div className="flex flex-wrap gap-2">
         {(
           [
+            { id: "signup" as const, label: "Landing signups", icon: UserPlus },
             { id: "membership" as const, label: "Membership", icon: Users },
             { id: "contact" as const, label: "Contact", icon: Mail },
             { id: "proposal" as const, label: "Proposals", icon: FileText },
@@ -102,7 +105,7 @@ export function CmsFormsInbox() {
           No submissions yet.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)]">
+        <div className="overflow-x-auto rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)]">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-[var(--admin-border)] text-xs uppercase text-[var(--admin-muted)]">
               <tr>
@@ -120,8 +123,11 @@ export function CmsFormsInbox() {
                       {String(row.full_name || row.contact_name || "")}
                     </div>
                     <div className="text-xs text-[var(--admin-muted)]">
-                      {String(row.email || row.contact_email || "")}
+                      {String(row.email || row.contact_email || row.phone || row.contact_phone || "")}
                     </div>
+                    {row.email && row.phone ? (
+                      <div className="text-xs text-[var(--admin-muted)]">{String(row.phone)}</div>
+                    ) : null}
                     {row.ref_id ? (
                       <div className="mt-1 font-mono text-[11px] text-gold">
                         {String(row.ref_id)}
@@ -129,16 +135,28 @@ export function CmsFormsInbox() {
                     ) : null}
                   </td>
                   <td className="px-4 py-3 text-[var(--admin-muted)]">
-                    <div className="line-clamp-2">
-                      {String(
-                        row.title ||
-                          row.subject ||
-                          row.contribution_type ||
-                          row.message ||
-                          row.summary ||
-                          "—"
-                      )}
-                    </div>
+                    {tab === "signup" ? (
+                      <div className="space-y-0.5">
+                        <div>{String(row.phone || "—")}</div>
+                        <div>
+                          {[row.country, row.city]
+                            .filter((part): part is string => typeof part === "string" && part.length > 0)
+                            .join(" · ") || "—"}
+                        </div>
+                        <div>{intentLabel(row.contribution_type) || "—"}</div>
+                      </div>
+                    ) : (
+                      <div className="line-clamp-2">
+                        {String(
+                          row.title ||
+                            row.subject ||
+                            row.contribution_type ||
+                            row.message ||
+                            row.summary ||
+                            "—"
+                        )}
+                      </div>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <select

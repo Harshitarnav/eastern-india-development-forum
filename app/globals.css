@@ -163,6 +163,24 @@ h3,
   letter-spacing: -0.02em;
 }
 
+.font-hi,
+.font-hi :is(h1, h2, h3) {
+  font-family: var(--font-hi), var(--font-public-sans), sans-serif;
+  letter-spacing: 0;
+}
+
+.font-bn,
+.font-bn :is(h1, h2, h3) {
+  font-family: var(--font-bn), var(--font-public-sans), sans-serif;
+  letter-spacing: 0;
+}
+
+.font-or,
+.font-or :is(h1, h2, h3) {
+  font-family: var(--font-or), var(--font-public-sans), sans-serif;
+  letter-spacing: 0;
+}
+
 /* Shared professional surfaces */
 .surface-card {
   background: #fff;

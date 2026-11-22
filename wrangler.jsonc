@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "eastern-india-development-forum",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2024-12-30",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "eastern-india-development-forum"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  },
+  "vars": {
+    "NEXTJS_ENV": "production",
+    "NEXT_PUBLIC_SITE_URL": "https://eastern-india-development-forum.harshitarnav.workers.dev"
+  },
+  "routes": [
+    { "pattern": "eidf.info", "custom_domain": true },
+    { "pattern": "www.eidf.info", "custom_domain": true }
+  ]
+}

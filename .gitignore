@@ -42,8 +42,18 @@ yarn-error.log*
 .env*
 !.env.example
 
+# GoDaddy landing mail secret — upload config.php, do not commit it
+/godaddy/config.php
+/godaddy/signups.log
+/godaddy/*.zip
+
 # vercel
 .vercel
+
+# cloudflare / opennext
+.open-next
+.dev.vars
+.wrangler
 
 # typescript
 *.tsbuildinfo
