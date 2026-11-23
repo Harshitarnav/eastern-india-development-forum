@@ -1,4 +1,5 @@
 import { revalidatePath, revalidateTag } from "next/cache";
+import { invalidateCmsMemoryCache } from "@/lib/cms/memory-cache";
 
 export const CMS_TAGS = {
   all: "cms:all",
@@ -21,6 +22,7 @@ export const CMS_TAGS = {
 } as const;
 
 export function revalidateCms(scope: keyof typeof CMS_TAGS | "everything" = "everything") {
+  invalidateCmsMemoryCache();
   try {
     revalidateTag(CMS_TAGS.all, "max");
   } catch {

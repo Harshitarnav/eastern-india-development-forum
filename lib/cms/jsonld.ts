@@ -1,25 +1,42 @@
 import { getCmsSettings } from "@/lib/cms/repository";
 
-export async function buildOrganizationJsonLd() {
-  const settings = await getCmsSettings();
-  const siteUrl = settings.siteUrl || "https://eidf.org.in";
+type OrgJsonLdSource = {
+  name: string;
+  shortName?: string;
+  tagline?: string;
+  email?: string;
+  phone?: string;
+  address?: string[];
+  headquarters?: string;
+  logo?: string;
+  social?: { url: string }[];
+  siteUrl?: string;
+};
+
+export function organizationJsonLdFromSite(site: OrgJsonLdSource) {
+  const siteUrl = site.siteUrl || "https://eidf.org.in";
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: settings.name,
-    alternateName: settings.shortName,
+    name: site.name,
+    alternateName: site.shortName,
     url: siteUrl,
-    logo: `${siteUrl}${settings.logo || "/images/logo.png"}`,
-    email: settings.email,
-    telephone: settings.phone,
+    logo: `${siteUrl}${site.logo || "/images/logo.png"}`,
+    email: site.email,
+    telephone: site.phone,
     address: {
       "@type": "PostalAddress",
-      streetAddress: settings.address?.join(", ") || settings.headquarters,
+      streetAddress: site.address?.join(", ") || site.headquarters,
       addressCountry: "IN",
     },
-    sameAs: (settings.social || []).map((s) => s.url).filter(Boolean),
-    description: settings.tagline,
+    sameAs: (site.social || []).map((s) => s.url).filter(Boolean),
+    description: site.tagline,
   };
+}
+
+export async function buildOrganizationJsonLd() {
+  const settings = await getCmsSettings();
+  return organizationJsonLdFromSite(settings);
 }
 
 export function buildBreadcrumbJsonLd(

@@ -21,22 +21,20 @@ import {
   writeSupabaseStore,
   writeAuditLog,
 } from "@/lib/cms/supabase-store";
+import {
+  getSnapshotInflight,
+  peekCachedSnapshot,
+  setCachedSnapshot,
+  setSnapshotInflight,
+} from "@/lib/cms/memory-cache";
 
 function cloneSnap(snapshot: CmsStoreSnapshot): CmsStoreSnapshot {
   return JSON.parse(JSON.stringify(snapshot)) as CmsStoreSnapshot;
 }
 
-/**
- * Always reload from disk/Supabase.
- * Next.js can isolate module state between Route Handlers and RSC,
- * so an in-memory cache makes admin saves invisible on the public site.
- *
- * When Supabase is configured but empty, bootstrap once from the local
- * file/seed so local + hosted environments share the same content.
- */
-export async function getCmsSnapshot(): Promise<CmsStoreSnapshot> {
+async function loadCmsSnapshot(): Promise<CmsStoreSnapshot> {
   const remote = await readSupabaseStoreResult();
-  if (remote.status === "ok") return cloneSnap(remote.snapshot);
+  if (remote.status === "ok") return remote.snapshot;
 
   const fromFile = await ensureFileStore();
 
@@ -46,13 +44,37 @@ export async function getCmsSnapshot(): Promise<CmsStoreSnapshot> {
     try {
       await writeSupabaseStore(fromFile);
       const bootstrapped = await readSupabaseStoreResult();
-      if (bootstrapped.status === "ok") return cloneSnap(bootstrapped.snapshot);
+      if (bootstrapped.status === "ok") return bootstrapped.snapshot;
     } catch (err) {
       console.error("cms bootstrap to supabase failed", err);
     }
   }
 
-  return cloneSnap(fromFile);
+  return fromFile;
+}
+
+/**
+ * Short in-process cache + in-flight coalescing.
+ * Admin writes update the cache immediately; TTL covers isolated workers.
+ */
+export async function getCmsSnapshot(): Promise<CmsStoreSnapshot> {
+  const cached = peekCachedSnapshot();
+  if (cached) return cloneSnap(cached);
+
+  const existing = getSnapshotInflight();
+  if (existing) return cloneSnap(await existing);
+
+  const pending = loadCmsSnapshot()
+    .then((snap) => {
+      setCachedSnapshot(snap);
+      return snap;
+    })
+    .finally(() => {
+      setSnapshotInflight(null);
+    });
+
+  setSnapshotInflight(pending);
+  return cloneSnap(await pending);
 }
 
 export async function saveCmsSnapshot(
@@ -85,6 +107,7 @@ export async function saveCmsSnapshot(
     console.warn("audit log failed", err);
   }
 
+  setCachedSnapshot(next);
   return next;
 }
 

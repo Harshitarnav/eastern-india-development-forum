@@ -114,7 +114,7 @@ const DEFAULT_SECTIONS: PublicSite["sections"] = {
   onlineServices: { title: "Online Services", is_visible: true },
   impact: { title: "Impact Stats", is_visible: true },
   about: { title: "About", is_visible: true },
-  focus: { title: "Focus Areas", is_visible: true },
+  focus: { title: "Focus Areas", is_visible: false },
   map: { title: "State Map", is_visible: true },
   schemes: { title: "Schemes", is_visible: true },
   tenders: { title: "Tenders", is_visible: true },

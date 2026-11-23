@@ -86,7 +86,7 @@ export const AiAssistant: React.FC = () => {
       } else {
         botReply = assistant.fallback;
         links = assistant.quickLinks?.slice(0, 2) || [
-          { label: "Browse Focus Areas", href: "/#focus-areas" },
+          { label: "Search Open Tenders", href: "/tenders" },
           { label: "Become a Member", href: "/membership" },
         ];
       }

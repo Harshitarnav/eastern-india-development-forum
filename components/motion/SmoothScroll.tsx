@@ -49,10 +49,10 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     if (!allowMotion) return;
 
     const lenis = new Lenis({
-      duration: 1.05,
+      duration: 0.7,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      touchMultiplier: 1.4,
+      touchMultiplier: 1.2,
     });
     lenisRef.current = lenis;
     if (lockCount.current > 0) lenis.stop();

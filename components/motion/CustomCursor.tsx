@@ -26,7 +26,17 @@ export function CustomCursor() {
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
     const coarse = window.matchMedia("(hover: none)").matches;
-    setEnabled(Boolean(fine && allowMotion && !coarse));
+    const shouldEnable = Boolean(fine && allowMotion && !coarse);
+    if (!shouldEnable) {
+      setEnabled(false);
+      return;
+    }
+    if (window.requestIdleCallback) {
+      const id = window.requestIdleCallback(() => setEnabled(true), { timeout: 800 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(() => setEnabled(true), 120);
+    return () => window.clearTimeout(id);
   }, [allowMotion]);
 
   useEffect(() => {
@@ -77,8 +87,8 @@ export function CustomCursor() {
 
       if (el.closest("input, textarea, select, [contenteditable='true']")) {
         document.documentElement.classList.add("cursor-native");
-        setMode("default");
-        setLabel("");
+        setMode((prev) => (prev === "default" ? prev : "default"));
+        setLabel((prev) => (prev ? "" : prev));
         return;
       }
       document.documentElement.classList.remove("cursor-native");
@@ -88,18 +98,18 @@ export function CustomCursor() {
       ) as HTMLElement | null;
 
       if (!hit) {
-        setMode("default");
-        setLabel("");
+        setMode((prev) => (prev === "default" ? prev : "default"));
+        setLabel((prev) => (prev ? "" : prev));
         return;
       }
 
       const raw = hit.getAttribute("data-cursor");
       if (raw === "VIEW" || raw === "EXPLORE" || raw === "DRAG") {
-        setMode("label");
-        setLabel(raw);
+        setMode((prev) => (prev === "label" ? prev : "label"));
+        setLabel((prev) => (prev === raw ? prev : raw));
       } else {
-        setMode("hover");
-        setLabel("");
+        setMode((prev) => (prev === "hover" ? prev : "hover"));
+        setLabel((prev) => (prev ? "" : prev));
       }
     };
 

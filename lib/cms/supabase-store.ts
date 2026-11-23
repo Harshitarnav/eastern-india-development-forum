@@ -38,8 +38,8 @@ export function isSupabaseConfigured() {
   return true;
 }
 
-const FETCH_TIMEOUT_MS = Number(process.env.SUPABASE_FETCH_TIMEOUT_MS || 4000);
-const DOWN_COOLDOWN_MS = 30_000;
+const FETCH_TIMEOUT_MS = Number(process.env.SUPABASE_FETCH_TIMEOUT_MS || 800);
+const DOWN_COOLDOWN_MS = 60_000;
 
 let supabaseDownUntil = 0;
 
@@ -105,10 +105,20 @@ export async function readSupabaseStore(): Promise<CmsStoreSnapshot | null> {
   return result.status === "ok" ? result.snapshot : null;
 }
 
+let readInflight: Promise<SupabaseReadResult> | null = null;
+
 export async function readSupabaseStoreResult(): Promise<SupabaseReadResult> {
   if (!isSupabaseConfigured()) return { status: "disabled" };
   if (isSupabaseTemporarilyDown()) return { status: "unreachable" };
+  if (readInflight) return readInflight;
 
+  readInflight = readSupabaseStoreResultUncached().finally(() => {
+    readInflight = null;
+  });
+  return readInflight;
+}
+
+async function readSupabaseStoreResultUncached(): Promise<SupabaseReadResult> {
   try {
     const [settingsRows, navigation, items, seo, media, redirects] = await Promise.all([
       sbFetch("cms_settings?id=eq.site&select=data,updated_at"),

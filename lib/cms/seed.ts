@@ -254,7 +254,7 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
       },
       { id: "impact", key: "impact", title: "Impact Stats", is_visible: true },
       { id: "about", key: "about", title: "About", is_visible: true },
-      { id: "focus", key: "focus", title: "Focus Areas", is_visible: true },
+      { id: "focus", key: "focus", title: "Focus Areas", is_visible: false },
       { id: "map", key: "map", title: "State Map", is_visible: true },
       { id: "schemes", key: "schemes", title: "Schemes", is_visible: true },
       { id: "tenders", key: "tenders", title: "Tenders", is_visible: true },

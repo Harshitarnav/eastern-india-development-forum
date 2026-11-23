@@ -1,17 +1,13 @@
 import { NextResponse } from "next/server";
-import { getCmsRedirects } from "@/lib/cms/repository";
+import { getPublicRedirects } from "@/lib/cms/public-redirects";
 
 /** Public read of active redirects for proxy/middleware. */
 export async function GET() {
   try {
-    const redirects = await getCmsRedirects();
+    const redirects = await getPublicRedirects();
     return NextResponse.json(
       {
-        redirects: redirects.map((r) => ({
-          from_path: r.from_path,
-          to_path: r.to_path,
-          status_code: r.status_code || 301,
-        })),
+        redirects,
       },
       {
         headers: {

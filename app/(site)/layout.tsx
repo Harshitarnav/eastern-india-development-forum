@@ -8,7 +8,7 @@ import {
   SmoothScroll,
 } from "@/components/motion";
 import { CmsPublicProvider } from "@/lib/cms/public-provider";
-import { buildOrganizationJsonLd } from "@/lib/cms/jsonld";
+import { organizationJsonLdFromSite } from "@/lib/cms/jsonld";
 import { getPublicCmsBundle } from "@/lib/cms/server";
 
 export const dynamic = "force-dynamic";
@@ -19,10 +19,11 @@ export default async function SiteLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [cms, orgJsonLd] = await Promise.all([
-    getPublicCmsBundle(),
-    buildOrganizationJsonLd(),
-  ]);
+  const cms = await getPublicCmsBundle();
+  const orgJsonLd = organizationJsonLdFromSite({
+    ...cms.site,
+    siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+  });
 
   return (
     <CmsPublicProvider value={cms}>

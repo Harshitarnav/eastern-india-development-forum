@@ -1,6 +1,6 @@
 "use client";
 
-import { AiAssistant } from "@/components/AiAssistant";
+import dynamic from "next/dynamic";
 import { usePublicSite } from "@/lib/cms/public-provider";
 import { DEFAULT_HOMEPAGE } from "@/lib/cms/types";
 import { homepagePreview } from "@/lib/cms/home-preview";
@@ -10,17 +10,41 @@ import { HeroSection } from "./sections/HeroSection";
 import { ServicesSection } from "./sections/ServicesSection";
 import { ImpactSection } from "./sections/ImpactSection";
 import { AboutSection } from "./sections/AboutSection";
-import { SectorsSection } from "./sections/SectorsSection";
-import { MapSection } from "./sections/MapSection";
 import { SchemesSection } from "./sections/SchemesSection";
 import { TendersSection } from "./sections/TendersSection";
-import { ProjectsSection } from "./sections/ProjectsSection";
-import { InvestorsSection } from "./sections/InvestorsSection";
-import { NewsEventsSection } from "./sections/NewsEventsSection";
-import { ResourcesSection } from "./sections/ResourcesSection";
-import { FaqSection } from "./sections/FaqSection";
-import { OfficesSection } from "./sections/OfficesSection";
-import { MembershipCtaSection } from "./sections/MembershipCtaSection";
+
+const MapSection = dynamic(() =>
+  import("./sections/MapSection").then((m) => ({ default: m.MapSection }))
+);
+const ProjectsSection = dynamic(() =>
+  import("./sections/ProjectsSection").then((m) => ({ default: m.ProjectsSection }))
+);
+const InvestorsSection = dynamic(() =>
+  import("./sections/InvestorsSection").then((m) => ({ default: m.InvestorsSection }))
+);
+const NewsEventsSection = dynamic(() =>
+  import("./sections/NewsEventsSection").then((m) => ({
+    default: m.NewsEventsSection,
+  }))
+);
+const ResourcesSection = dynamic(() =>
+  import("./sections/ResourcesSection").then((m) => ({ default: m.ResourcesSection }))
+);
+const FaqSection = dynamic(() =>
+  import("./sections/FaqSection").then((m) => ({ default: m.FaqSection }))
+);
+const OfficesSection = dynamic(() =>
+  import("./sections/OfficesSection").then((m) => ({ default: m.OfficesSection }))
+);
+const MembershipCtaSection = dynamic(() =>
+  import("./sections/MembershipCtaSection").then((m) => ({
+    default: m.MembershipCtaSection,
+  }))
+);
+const AiAssistant = dynamic(
+  () => import("@/components/AiAssistant").then((m) => ({ default: m.AiAssistant })),
+  { ssr: false }
+);
 
 export default function HomePage() {
   const site = usePublicSite();
@@ -64,10 +88,6 @@ export default function HomePage() {
           leaders={site.leaders || []}
           cta={{ label: hp.about.ctaLabel, href: hp.about.ctaHref }}
         />
-      )}
-
-      {show("focus") && (
-        <SectorsSection chrome={hp.focus} focusAreas={site.focusAreas || []} />
       )}
 
       {show("map") && (

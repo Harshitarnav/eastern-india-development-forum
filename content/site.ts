@@ -191,7 +191,6 @@ export const site = {
   nav: [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },
-    { label: "Focus Areas", href: "/#focus-areas" },
     { label: "State Map", href: "/#state-map" },
     { label: "Projects", href: "/projects" },
     { label: "Tenders", href: "/tenders" },

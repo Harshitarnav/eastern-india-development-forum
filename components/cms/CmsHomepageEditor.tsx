@@ -33,11 +33,6 @@ const HOMEPAGE_ONLY_PANELS = [
     hint: "Section header and quick-link tiles under the hero",
   },
   {
-    id: "focus" as const,
-    label: "Focus areas",
-    hint: "Priority Sectors headings and all sector cards — edit everything here",
-  },
-  {
     id: "faqs" as const,
     label: "FAQs",
     hint: "FAQ section title and all questions",
@@ -843,6 +838,7 @@ export function CmsHomepageEditor() {
             {sections
               .slice()
               .sort((a, b) => a.sort_order - b.sort_order)
+              .filter((item) => String(item.data.key || item.id) !== "focus")
               .map((item) => {
                 const visible = item.data.is_visible !== false;
                 const title = String(
@@ -874,119 +870,6 @@ export function CmsHomepageEditor() {
                 );
               })}
             {error && <p className="text-sm text-red-500">{error}</p>}
-          </div>
-        )}
-
-        {panel === "focus" && (
-          <div className="space-y-8">
-            <div className="rounded-2xl border border-gold/30 bg-gold/5 p-4 text-sm text-[var(--admin-text)]">
-              <p className="font-bold">What you are editing</p>
-              <ol className="mt-2 list-decimal space-y-1 pl-5 text-[var(--admin-muted)]">
-                <li>
-                  <strong className="text-[var(--admin-text)]">
-                    Section headings
-                  </strong>{" "}
-                  — “Priority Sectors”, main title, and short intro
-                </li>
-                <li>
-                  <strong className="text-[var(--admin-text)]">
-                    Sector cards
-                  </strong>{" "}
-                  — each focus area (Connectivity, Clean Energy, etc.)
-                </li>
-              </ol>
-            </div>
-
-            <div className="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-surface)] p-5 space-y-4">
-              <div>
-                <h3 className="font-display text-lg font-bold text-[var(--admin-text)]">
-                  1. Section headings
-                </h3>
-                <p className="mt-1 text-xs text-[var(--admin-muted)]">
-                  Shown above the focus area cards on the homepage. Save after
-                  editing.
-                </p>
-              </div>
-              {(
-                [
-                  ["eyebrow", "Small label (e.g. Priority Sectors)"],
-                  ["title", "Main heading"],
-                  ["description", "Short description under the heading"],
-                ] as const
-              ).map(([field, label]) => (
-                <div key={field}>
-                  <AdminFieldLabel>{label}</AdminFieldLabel>
-                  {field === "description" ? (
-                    <textarea
-                      className={cn(adminFieldClass, "min-h-24")}
-                      value={homepage.focus[field] || ""}
-                      onChange={(e) =>
-                        updateSectionCopy("focus", field, e.target.value)
-                      }
-                    />
-                  ) : (
-                    <input
-                      className={adminFieldClass}
-                      value={homepage.focus[field] || ""}
-                      onChange={(e) =>
-                        updateSectionCopy("focus", field, e.target.value)
-                      }
-                    />
-                  )}
-                </div>
-              ))}
-              {message && <p className="text-sm text-emerald">{message}</p>}
-              {error && <p className="text-sm text-red-500">{error}</p>}
-              <SaveCopyButton
-                pending={saveHomepage.isPending}
-                onClick={() => void handleSaveCopy()}
-                label="Save focus headings"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <div className="px-1">
-                <h3 className="font-display text-lg font-bold text-[var(--admin-text)]">
-                  2. Sector cards
-                </h3>
-                <p className="mt-1 text-xs text-[var(--admin-muted)]">
-                  Add, edit, or remove each focus area card. Each item saves on
-                  its own from the list below.
-                </p>
-              </div>
-              <CmsCollectionPage
-                title="Focus area cards"
-                description="These cards appear under Priority Sectors on the homepage."
-                collection="focusAreas"
-                titleKey="title"
-                subtitleKey="tag"
-                fields={[
-                  { key: "title", label: "Title", required: true },
-                  {
-                    key: "tag",
-                    label: "Tag (e.g. CONNECTIVITY)",
-                    placeholder: "CONNECTIVITY",
-                  },
-                  {
-                    key: "desc",
-                    label: "Description",
-                    type: "textarea",
-                    required: true,
-                  },
-                  {
-                    key: "iconName",
-                    label: "Icon name",
-                    placeholder:
-                      "Truck, Zap, Factory, Cpu, GraduationCap, Sprout…",
-                  },
-                  {
-                    key: "activeProjects",
-                    label: "Active projects count",
-                    type: "number",
-                  },
-                ]}
-              />
-            </div>
           </div>
         )}
 

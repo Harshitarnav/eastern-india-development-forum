@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { unstable_noStore as noStore } from "next/cache";
 import { getCmsSnapshot } from "@/lib/cms/repository";
 import {
@@ -8,8 +9,8 @@ import {
 import type { CmsPublicValue } from "@/lib/cms/public-provider";
 import { DEFAULT_HEADER_LAYOUT } from "@/lib/cms/types";
 
-export async function getPublicCmsBundle(): Promise<CmsPublicValue> {
-  // Prevent Next.js from caching CMS-backed RSC payloads
+export const getPublicCmsBundle = cache(async function getPublicCmsBundle(): Promise<CmsPublicValue> {
+  // Prevent Next.js from caching CMS-backed RSC payloads across requests
   noStore();
   const snap = await getCmsSnapshot();
   return {
@@ -25,4 +26,4 @@ export async function getPublicCmsBundle(): Promise<CmsPublicValue> {
       ...(snap.settings.headerLayout || {}),
     },
   };
-}
+});

@@ -419,7 +419,6 @@ export const CMS_COLLECTIONS: { key: CmsCollection; label: string; adminHref: st
   { key: "leaders", label: "Leadership", adminHref: "/admin/leadership" },
   { key: "values", label: "Values", adminHref: "/admin/leadership" },
   { key: "offices", label: "Offices", adminHref: "/admin/offices" },
-  { key: "focusAreas", label: "Focus Areas", adminHref: "/admin/cms?tab=homepage" },
   { key: "onlineServices", label: "Online Services", adminHref: "/admin/cms?tab=homepage" },
   { key: "states", label: "States", adminHref: "/admin/states" },
   { key: "partners", label: "Partners", adminHref: "/admin/partners" },

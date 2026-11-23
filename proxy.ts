@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 import { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE } from "@/lib/auth/constants";
+import { peekPublicRedirects, warmPublicRedirects } from "@/lib/cms/public-redirects";
 
 function getSecret() {
   const secret = process.env.JWT_SECRET || process.env.ADMIN_JWT_SECRET;
@@ -55,16 +56,12 @@ async function applyCmsRedirect(request: NextRequest) {
   }
 
   try {
-    const res = await fetch(new URL("/api/cms/public/redirects", request.url), {
-      headers: { Accept: "application/json" },
-      // Avoid recursive proxy loops; Node fetch to own origin in proxy
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    const data = (await res.json()) as {
-      redirects?: { from_path: string; to_path: string; status_code?: number }[];
-    };
-    const match = (data.redirects || []).find((r) => r.from_path === pathname);
+    const redirects = peekPublicRedirects();
+    if (!redirects) {
+      warmPublicRedirects();
+      return null;
+    }
+    const match = redirects.find((r) => r.from_path === pathname);
     if (!match) return null;
     const url = new URL(match.to_path, request.url);
     return NextResponse.redirect(url, match.status_code === 302 ? 302 : 301);
