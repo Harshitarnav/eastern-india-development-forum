@@ -261,22 +261,15 @@ export function mapSnapshotToPublicSite(snap: CmsStoreSnapshot): PublicSite {
       const rows = itemsOf<PublicSite["focusAreas"][number]>(snap, "focusAreas");
       return rows.length ? rows : seedSite.focusAreas;
     })(),
-    projects: (() => {
-      const rows = itemsOf<PublicSite["projects"][number]>(snap, "projects");
-      return rows.length ? rows : seedSite.projects;
-    })(),
+    projects: itemsOf<PublicSite["projects"][number]>(snap, "projects"),
     // Same source as `projects` — kept for older callers / seed shape.
-    allProjects: (() => {
-      const rows = itemsOf<PublicSite["projects"][number]>(snap, "projects");
-      const list = rows.length ? rows : seedSite.projects;
-      return list.map((p) => ({
-        tag: p.tag,
-        title: p.title,
-        desc: p.desc,
-        img: p.image || "",
-        status: p.status || p.state,
-      }));
-    })(),
+    allProjects: itemsOf<PublicSite["projects"][number]>(snap, "projects").map((p) => ({
+      tag: p.tag,
+      title: p.title,
+      desc: p.desc,
+      img: p.image || "",
+      status: p.status || p.state,
+    })),
     schemes: (() => {
       const rows = itemsOf<PublicSite["schemes"][number]>(snap, "schemes");
       return rows.length ? rows : seedSite.schemes;
