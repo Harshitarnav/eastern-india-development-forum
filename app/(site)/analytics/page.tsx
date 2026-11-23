@@ -23,19 +23,19 @@ export default function AnalyticsPage() {
   const site = usePublicSite();
   const page = site.pages?.analytics || DEFAULT_PAGES.analytics;
   const stateCapitalData = site.analytics?.stateCapital ?? [
-    { name: "Odisha", capital: 14800 },
-    { name: "Jharkhand", capital: 11200 },
-    { name: "West Bengal", capital: 9500 },
-    { name: "Bihar", capital: 8400 },
-    { name: "Assam", capital: 6100 },
-    { name: "NE States", capital: 4200 },
+    { name: "Odisha", capital: 0 },
+    { name: "Jharkhand", capital: 0 },
+    { name: "West Bengal", capital: 0 },
+    { name: "Bihar", capital: 0 },
+    { name: "Assam", capital: 0 },
+    { name: "NE States", capital: 0 },
   ];
 
   const sectorData = site.analytics?.sectors ?? [
-    { name: "Infrastructure & Ports", value: 35, color: "#e8a317" },
-    { name: "Renewable Energy", value: 25, color: "#0d9f6e" },
-    { name: "Manufacturing & SEZ", value: 20, color: "#2e75b6" },
-    { name: "Agri-Tech & Skilling", value: 20, color: "#f07a1a" },
+    { name: "Infrastructure & Ports", value: 0, color: "#e8a317" },
+    { name: "Renewable Energy", value: 0, color: "#0d9f6e" },
+    { name: "Manufacturing & SEZ", value: 0, color: "#2e75b6" },
+    { name: "Agri-Tech & Skilling", value: 0, color: "#f07a1a" },
   ];
 
   const totalCapital = stateCapitalData.reduce((sum, row) => sum + row.capital, 0);
@@ -61,7 +61,7 @@ export default function AnalyticsPage() {
       <section className="metric-strip grid-cols-3">
         <div>
           <div className="font-display text-2xl font-extrabold text-navy md:text-3xl">
-            ₹{totalCapital.toLocaleString("en-IN")} Cr
+            {totalCapital > 0 ? `₹${totalCapital.toLocaleString("en-IN")} Cr` : "—"}
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
             {page.pledgedLabel}
@@ -77,7 +77,7 @@ export default function AnalyticsPage() {
         </div>
         <div>
           <div className="font-display text-2xl font-extrabold text-navy md:text-3xl">
-            {corridors?.value ?? site.projects.length}
+            {corridors?.value ? corridors.value : "—"}
           </div>
           <div className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-muted">
             {page.corridorsLabel}

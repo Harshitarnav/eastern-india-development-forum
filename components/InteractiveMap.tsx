@@ -232,8 +232,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                       )}
                     </div>
                     <div className="mt-1 flex justify-between text-[10px]">
-                      <span className="text-emerald">{st.projectsCount} projects</span>
-                      <span className="text-gold">{st.investmentAmount}</span>
+                      <span className="text-emerald">
+                        {st.projectsCount > 0 ? `${st.projectsCount} projects` : "—"}
+                      </span>
+                      <span className="text-gold">{st.investmentAmount || "—"}</span>
                     </div>
                   </button>
                 );
@@ -280,7 +282,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     <TrendingUp className="h-4 w-4 shrink-0 text-emerald" /> {ui.capitalLabel}
                   </div>
                   <div className="font-display text-xl sm:text-2xl font-bold text-navy break-words">
-                    {selectedState.investmentAmount}
+                    {selectedState.investmentAmount || "—"}
                   </div>
                 </div>
                 <div className="bg-cream-warm p-3.5 sm:p-4 border border-line">
@@ -288,7 +290,9 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     <Building className="h-4 w-4 shrink-0 text-gold" /> {ui.projectsLabel}
                   </div>
                   <div className="font-display text-xl sm:text-2xl font-bold text-navy">
-                    {selectedState.projectsCount} Corridors
+                    {selectedState.projectsCount > 0
+                      ? `${selectedState.projectsCount} Corridors`
+                      : "—"}
                   </div>
                 </div>
               </div>

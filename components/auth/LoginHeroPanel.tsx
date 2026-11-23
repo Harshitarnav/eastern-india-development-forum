@@ -81,9 +81,9 @@ export function LoginHeroPanel() {
 
           <div className="grid grid-cols-3 gap-3 pt-2">
             {[
-              { label: "States & UTs", value: "8+", accent: "text-navy" },
-              { label: "Capital Pipeline", value: "₹25K Cr", accent: "text-amber-600" },
-              { label: "Uptime Target", value: "99.9%", accent: "text-emerald-dark" },
+              { label: "States & UTs", value: "—", accent: "text-navy" },
+              { label: "Capital Pipeline", value: "—", accent: "text-amber-600" },
+              { label: "Uptime Target", value: "—", accent: "text-emerald-dark" },
             ].map((stat) => (
               <div
                 key={stat.label}

@@ -24,8 +24,6 @@ export function ImpactSection({ impactStats }: ImpactSectionProps) {
     <section className="relative overflow-hidden bg-navy-deep px-4 py-16 text-white md:py-24">
       <div className="pointer-events-none absolute inset-0 eidf-depth opacity-80" />
       <div className="pointer-events-none absolute inset-0 eidf-grain opacity-40" />
-      <div className="pointer-events-none absolute inset-y-0 left-1/4 w-px bg-gradient-to-b from-transparent via-gold/35 to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-1/3 w-px bg-gradient-to-b from-transparent via-white/10 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 

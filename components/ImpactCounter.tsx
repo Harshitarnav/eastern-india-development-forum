@@ -19,15 +19,11 @@ export const ImpactCounter: React.FC<ImpactCounterProps> = ({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true });
   const [displayValue, setDisplayValue] = useState(0);
+  const end = Number(value) || 0;
+  const isPlaceholder = end <= 0;
 
   useEffect(() => {
-    if (!isInView) return;
-
-    const end = Number(value) || 0;
-    if (end <= 0) {
-      setDisplayValue(0);
-      return;
-    }
+    if (!isInView || isPlaceholder) return;
 
     const isFloat = end % 1 !== 0;
     const startTime = performance.now();
@@ -47,7 +43,15 @@ export const ImpactCounter: React.FC<ImpactCounterProps> = ({
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [isInView, value, duration]);
+  }, [isInView, isPlaceholder, end, duration]);
+
+  if (isPlaceholder) {
+    return (
+      <span ref={ref} className="tabular-nums">
+        —
+      </span>
+    );
+  }
 
   return (
     <span ref={ref} className="tabular-nums">

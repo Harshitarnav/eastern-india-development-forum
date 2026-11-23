@@ -23,7 +23,7 @@ export const EcosystemDiagram: React.FC = () => {
       role: "Policy formulation, statutory clearances, land allotment, state subsidies & single-window approvals.",
       icon: <Landmark className="h-6 w-6 text-gold" />,
       color: "border-gold bg-gold/10 text-gold",
-      metrics: "38+ Govt Partnerships",
+      metrics: "— Govt Partnerships",
     },
     {
       id: "investors",
@@ -31,7 +31,7 @@ export const EcosystemDiagram: React.FC = () => {
       role: "FDI capital, private equity, impact funds, infrastructure grants & project finance.",
       icon: <Coins className="h-6 w-6 text-emerald" />,
       color: "border-emerald bg-emerald/10 text-emerald",
-      metrics: "₹4,500 Cr+ Pledged",
+      metrics: "— Pledged",
     },
     {
       id: "industry",
@@ -39,7 +39,7 @@ export const EcosystemDiagram: React.FC = () => {
       role: "Anchor manufacturing units, EV supply chains, logistics parks & employment generation.",
       icon: <Building2 className="h-6 w-6 text-blue-400" />,
       color: "border-blue-400 bg-blue-400/10 text-blue-400",
-      metrics: "260+ Enterprise Units",
+      metrics: "— Enterprise Units",
     },
     {
       id: "startups",
@@ -47,7 +47,7 @@ export const EcosystemDiagram: React.FC = () => {
       role: "Agri-tech solutions, renewable micro-grids, digital public infrastructure & tech incubators.",
       icon: <Sprout className="h-6 w-6 text-amber" />,
       color: "border-amber bg-amber/10 text-amber",
-      metrics: "1,850+ Startups",
+      metrics: "— Startups",
     },
     {
       id: "academics",
@@ -55,7 +55,7 @@ export const EcosystemDiagram: React.FC = () => {
       role: "NSDC vocational curricula, patent facilitation, skill labs & university partnerships.",
       icon: <GraduationCap className="h-6 w-6 text-purple-400" />,
       color: "border-purple-400 bg-purple-400/10 text-purple-400",
-      metrics: "45 Academic Partners",
+      metrics: "— Academic Partners",
     },
     {
       id: "citizens",
@@ -63,7 +63,7 @@ export const EcosystemDiagram: React.FC = () => {
       role: "Community mobilization, women empowerment, heritage conservation & grassroots feedback.",
       icon: <Users className="h-6 w-6 text-pink-400" />,
       color: "border-pink-400 bg-pink-400/10 text-pink-400",
-      metrics: "1.2M+ Beneficiaries",
+      metrics: "— Beneficiaries",
     },
   ];
 
