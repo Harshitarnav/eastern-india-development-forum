@@ -85,7 +85,7 @@ export default function HomePage() {
         <AboutSection
           chrome={hp.about}
           values={homeValues}
-          leaders={site.leaders || []}
+          leaders={(site.leaders || []).slice(0, 4)}
           cta={{ label: hp.about.ctaLabel, href: hp.about.ctaHref }}
         />
       )}

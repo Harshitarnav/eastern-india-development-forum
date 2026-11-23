@@ -77,7 +77,7 @@ export function RouteProgress() {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="h-full origin-left bg-gradient-to-r from-navy via-emerald to-gold shadow-[0_0_12px_rgba(16,185,129,0.45)]"
+              className="h-full origin-left bg-gradient-to-r from-gold via-gold-soft to-gold shadow-[0_0_12px_rgba(201,168,75,0.45)]"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: progress / 100 }}
               transition={{ ease: "easeOut", duration: 0.25 }}

@@ -227,79 +227,6 @@ function DepthPlane({
   );
 }
 
-function BridgesBar({
-  skipMotion,
-  label,
-  tagline,
-  nodes,
-}: {
-  skipMotion: boolean;
-  label: string;
-  tagline: string;
-  nodes: { label: string; href: string }[];
-}) {
-  const [active, setActive] = useState(Math.min(2, Math.max(0, nodes.length - 1)));
-
-  return (
-    <motion.div
-      className="relative mt-4 w-full max-w-xl overflow-hidden rounded-[22px] border border-white/10 bg-[#0c141c]/80 px-3 py-2.5 shadow-[0_18px_40px_-22px_rgba(0,0,0,0.7),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md sm:px-3.5 sm:py-3"
-      initial={skipMotion ? false : { opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.5,
-        delay: skipMotion ? 0 : 0.24,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,168,75,0.12),transparent_55%)]"
-      />
-      <div className="relative mb-2 flex items-baseline justify-between gap-3">
-        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/80">
-          {label}
-        </span>
-        <span className="shrink-0 text-[10px] font-medium text-gold-soft/85">
-          {tagline}
-        </span>
-      </div>
-      <div className="relative flex items-center overflow-x-auto pb-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {nodes.map((node, i) => (
-          <div key={`${node.label}-${i}`} className="flex items-center">
-            <div className="relative">
-              {active === i && (
-                <span
-                  aria-hidden
-                  className="absolute left-1/2 top-0 z-10 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-gold bg-transparent shadow-[0_0_10px_rgba(201,168,75,0.55)]"
-                />
-              )}
-              <Link
-                href={node.href}
-                onMouseEnter={() => setActive(i)}
-                onFocus={() => setActive(i)}
-                className="relative z-[1] inline-flex whitespace-nowrap rounded-full border border-gold/55 bg-[#161c24] px-2.5 py-1 text-[10px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_0_12px_-6px_rgba(201,168,75,0.7)] transition-colors hover:border-gold hover:bg-[#1c2430] sm:px-3 sm:py-1.5 sm:text-[11px]"
-                data-cursor="VIEW"
-              >
-                {node.label}
-              </Link>
-            </div>
-            {i < nodes.length - 1 && (
-              <div className="relative mx-0.5 h-px w-3 bg-gold/70 sm:mx-1 sm:w-5">
-                {active === i + 1 && (
-                  <span
-                    aria-hidden
-                    className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-[9px] rounded-full bg-gold shadow-[0_0_8px_rgba(201,168,75,0.8)]"
-                  />
-                )}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </motion.div>
-  );
-}
-
 export function HeroSection({ site }: HeroSectionProps) {
   const { hero } = site;
   const sectionRef = useRef<HTMLElement>(null);
@@ -366,7 +293,9 @@ export function HeroSection({ site }: HeroSectionProps) {
   const imageSrc = cmsMediaUrl(hero.image, "/images/hero-banner.jpg");
   const planeA = cmsMediaUrl(hero.depthImage1, DEFAULT_HERO_BRIDGES.depthImage1);
   const planeB = cmsMediaUrl(hero.depthImage2, DEFAULT_HERO_BRIDGES.depthImage2);
-  const metrics = (hero.floatingMetrics || []).slice(0, 2);
+  const metrics = (hero.floatingMetrics || [])
+    .filter((m) => m.value && m.value !== "—" && m.value !== "0")
+    .slice(0, 2);
   const gallery: HeroLightboxImage[] = [
     { src: imageSrc, label: hero.headline },
     {
@@ -425,7 +354,7 @@ export function HeroSection({ site }: HeroSectionProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative flex h-[calc(100svh-6.75rem)] max-h-[820px] min-h-[520px] overflow-hidden text-white"
+      className="relative flex h-[calc(100svh-6.75rem)] max-h-[720px] min-h-[460px] overflow-hidden text-white"
       onPointerMove={onSectionMove}
       onPointerLeave={onSectionLeave}
     >
@@ -438,14 +367,14 @@ export function HeroSection({ site }: HeroSectionProps) {
         style={{ perspective: "1200px", transformStyle: "preserve-3d" }}
       >
         <motion.div
-          className="absolute -left-24 top-10 h-64 w-64 rounded-full bg-emerald/22 blur-3xl"
+          className="absolute -left-24 top-10 h-64 w-64 rounded-full bg-gold/16 blur-3xl"
           style={{ x: ringNearX, y: ringNearY }}
         />
         <motion.div
           className="absolute -right-10 top-0 h-72 w-72 rounded-full bg-gold/18 blur-3xl"
           style={{ x: ringFarX, y: ringFarY }}
         />
-        <div className="absolute bottom-0 left-1/2 h-52 w-[82%] -translate-x-1/2 rounded-full bg-brand-blue/22 blur-3xl" />
+        <div className="absolute bottom-0 left-1/2 h-52 w-[82%] -translate-x-1/2 rounded-full bg-gold/10 blur-3xl" />
 
         <motion.div
           className="absolute -right-[8%] top-[4%] h-[420px] w-[420px] rounded-full border border-gold/25"
@@ -469,12 +398,12 @@ export function HeroSection({ site }: HeroSectionProps) {
           }}
         />
         <motion.div
-          className="absolute -left-[10%] bottom-[16%] h-[300px] w-[300px] rounded-full border border-emerald/20"
+          className="absolute -left-[10%] bottom-[16%] h-[300px] w-[300px] rounded-full border border-gold/20"
           style={{
             x: ringNearX,
             y: ringNearY,
             rotateX: 64,
-            boxShadow: "0 40px 80px -30px rgba(26,154,114,0.25)",
+            boxShadow: "0 40px 80px -30px rgba(201,168,75,0.22)",
           }}
           animate={skipMotion ? { rotateZ: 22 } : { rotateZ: [22, 28, 22] }}
           transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
@@ -557,7 +486,7 @@ export function HeroSection({ site }: HeroSectionProps) {
           </motion.h1>
 
           <motion.p
-            className="mt-3 max-w-xl text-[13px] leading-relaxed text-white/65 line-clamp-3 md:mt-3.5 md:text-sm md:leading-relaxed md:line-clamp-4"
+            className="mt-3 max-w-lg text-[13px] leading-relaxed text-white/65 md:mt-4 md:text-sm"
             initial={skipMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -569,17 +498,8 @@ export function HeroSection({ site }: HeroSectionProps) {
             {hero.subheading}
           </motion.p>
 
-          <BridgesBar
-            skipMotion={skipMotion}
-            label={hero.bridgesLabel || DEFAULT_HERO_BRIDGES.bridgesLabel}
-            tagline={hero.bridgesTagline || DEFAULT_HERO_BRIDGES.bridgesTagline}
-            nodes={
-              hero.bridges?.length ? hero.bridges : DEFAULT_HERO_BRIDGES.bridges
-            }
-          />
-
           <motion.div
-            className="mt-3.5 flex flex-wrap items-center gap-2.5 md:mt-4"
+            className="mt-5 flex flex-wrap items-center gap-2.5 md:mt-6"
             initial={skipMotion ? false : { opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -607,14 +527,6 @@ export function HeroSection({ site }: HeroSectionProps) {
             >
               {hero.ctas.secondary.label}
             </Link>
-            {hero.ctas.tertiary?.label && (
-              <Link
-                href={hero.ctas.tertiary.href || "/investors"}
-                className="btn-secondary !hidden !px-4 !py-2.5 xl:!inline-flex"
-              >
-                {hero.ctas.tertiary.label}
-              </Link>
-            )}
           </motion.div>
         </div>
 
@@ -647,7 +559,7 @@ export function HeroSection({ site }: HeroSectionProps) {
             >
               <motion.div
                 aria-hidden
-                className="pointer-events-none absolute left-[8%] top-[10%] h-[78%] w-[84%] rounded-2xl bg-gradient-to-br from-gold/25 via-emerald/15 to-brand-blue/20 blur-xl"
+                className="pointer-events-none absolute left-[8%] top-[10%] h-[78%] w-[84%] rounded-2xl bg-gradient-to-br from-gold/30 via-gold/10 to-white/5 blur-xl"
                 style={{ transform: "translateZ(-60px) rotateY(-8deg)" }}
                 animate={
                   skipMotion ? undefined : { opacity: [0.45, 0.7, 0.45] }

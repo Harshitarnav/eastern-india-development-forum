@@ -149,7 +149,7 @@ export function CtaBand({
   return (
     <section className="relative overflow-hidden px-4 py-20 text-white md:py-24 eidf-grain">
       <div className="absolute inset-0 eidf-depth" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald/10 via-transparent to-gold/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-gold/12 via-transparent to-gold/10" />
       <div className="pointer-events-none absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 
       <div className="relative mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-end md:justify-between">

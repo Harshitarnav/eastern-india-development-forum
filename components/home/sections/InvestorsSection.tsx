@@ -76,7 +76,7 @@ export function InvestorsSection({ zones, chrome }: InvestorsSectionProps) {
                 <div className="grid gap-4 p-5 md:grid-cols-12 md:items-center md:p-6">
                   <div className="flex items-start gap-3 md:col-span-4">
                     <motion.span
-                      className="mt-1 flex h-3 w-3 shrink-0 rounded-full bg-emerald ring-4 ring-emerald/20"
+                      className="mt-1 flex h-3 w-3 shrink-0 rounded-full bg-gold ring-4 ring-gold/20"
                       animate={
                         reduced
                           ? undefined
@@ -90,14 +90,14 @@ export function InvestorsSection({ zones, chrome }: InvestorsSectionProps) {
                       aria-hidden
                     />
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-dark">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-gold-label">
                         {zone.state} · {zone.area}
                       </div>
                       <h3 className="mt-1 font-display text-lg font-bold text-navy">
                         {zone.name}
                       </h3>
                       <div className="mt-1 flex items-center gap-1 text-xs text-muted">
-                        <MapPin className="h-3 w-3 text-emerald" />{" "}
+                        <MapPin className="h-3 w-3 text-gold" />{" "}
                         {zone.location}
                       </div>
                     </div>

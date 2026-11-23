@@ -93,7 +93,7 @@ export const Footer: React.FC = () => {
   }
 
   return (
-    <footer className="relative overflow-hidden border-t border-gold/25 bg-black text-white eidf-grain">
+    <footer className="relative overflow-hidden border-t border-gold/25 bg-navy-deep text-white eidf-grain">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-gold/8 to-transparent" />
       <div className="pointer-events-none absolute -bottom-28 -right-8 hidden h-[22rem] w-[22rem] select-none opacity-[0.08] sm:block lg:h-[26rem] lg:w-[26rem]" aria-hidden>
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -153,7 +153,7 @@ export const Footer: React.FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={item.platform}
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-800 bg-zinc-950 text-gold-soft/80 transition hover:border-gold hover:bg-gold hover:text-black"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-navy text-gold-soft/80 transition hover:border-gold hover:bg-gold hover:text-navy-deep"
                   >
                     <SocialGlyph platform={item.platform} />
                   </a>
@@ -223,7 +223,7 @@ export const Footer: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Professional email"
                     disabled={status === "loading"}
-                    className="w-full rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/40 disabled:opacity-60 sm:flex-1"
+                    className="w-full rounded-lg border border-white/15 bg-navy px-4 py-3 text-sm text-white placeholder-white/35 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold/40 disabled:opacity-60 sm:flex-1"
                   />
                   <button
                     type="submit"
@@ -253,7 +253,7 @@ export const Footer: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative mt-14 border-t border-gold/35 bg-zinc-950">
+      <div className="relative mt-14 border-t border-gold/35 bg-slate-dark">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-5 pb-24 text-sm text-zinc-200 md:px-6 lg:flex-row lg:pb-5 lg:pr-56">
           <div className="flex flex-col items-center gap-1 sm:items-start">
             <span className="font-medium text-zinc-100">

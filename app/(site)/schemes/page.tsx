@@ -6,6 +6,7 @@ import { CtaBand, PageHero, SectionHeader } from "@/components/ui";
 import { buildPageMetadata } from "@/lib/cms/seo";
 import { matchesStateFilter, stateDisplayName } from "@/lib/state-filter";
 import { DEFAULT_PAGES } from "@/lib/cms/page-settings";
+import { displayCmsText } from "@/lib/cms/home-preview";
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPageMetadata("/schemes", { title: "Government Schemes" });
@@ -84,15 +85,17 @@ export default async function SchemesPage({
                   <div className="lg:col-span-4">
                     <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-emerald-dark">
                       <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden />
-                      {sch.category}
+                      {displayCmsText(sch.category, "Category")}
                     </div>
                     <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-navy">
-                      {sch.title}
+                      {displayCmsText(sch.title)}
                     </h3>
-                    <p className="mt-2 text-sm text-muted">{sch.authority}</p>
-                    {sch.state && (
-                      <p className="mt-1 text-xs font-semibold text-gold-label">{sch.state}</p>
-                    )}
+                    <p className="mt-2 text-sm text-muted">
+                      Authority · {displayCmsText(sch.authority)}
+                    </p>
+                    <p className="mt-1 text-xs font-semibold text-gold-label">
+                      State · {displayCmsText(sch.state)}
+                    </p>
                   </div>
 
                   <div className="lg:col-span-5">
@@ -101,27 +104,30 @@ export default async function SchemesPage({
                         Benefits
                       </div>
                       <p className="mt-1.5 text-sm font-medium leading-relaxed text-navy">
-                        {sch.benefits}
+                        {displayCmsText(sch.benefits)}
                       </p>
                     </div>
-                    {(sch.eligibility?.length ?? 0) > 0 && (
-                      <>
-                        <div className="mb-2 text-[11px] font-bold uppercase tracking-widest text-muted">
-                          Eligibility
-                        </div>
-                        <ul className="space-y-2">
-                          {sch.eligibility.map((el) => (
-                            <li
-                              key={el}
-                              className="flex items-start gap-2 text-sm text-muted"
-                            >
-                              <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald" />
-                              {el}
-                            </li>
-                          ))}
-                        </ul>
-                      </>
-                    )}
+                    <div className="mb-2 text-[11px] font-bold uppercase tracking-widest text-muted">
+                      Eligibility
+                    </div>
+                    <ul className="space-y-2">
+                      {(sch.eligibility?.length
+                        ? sch.eligibility
+                        : ["—"]
+                      ).map((el, i) => (
+                        <li
+                          key={`${sch.id}-el-${i}`}
+                          className="flex items-start gap-2 text-sm text-muted"
+                        >
+                          <CheckCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald" />
+                          {displayCmsText(el)}
+                        </li>
+                      ))}
+                    </ul>
+                    <p className="mt-4 text-xs text-muted">
+                      <span className="font-bold text-navy">Deadline · </span>
+                      {displayCmsText(sch.deadline)}
+                    </p>
                   </div>
 
                   <div className="flex lg:col-span-3 lg:items-start lg:justify-end">

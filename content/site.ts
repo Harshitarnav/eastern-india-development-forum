@@ -203,13 +203,13 @@ export const site = {
   ],
 
   hero: {
-    eyebrow: "OFFICIAL DEVELOPMENT ECOSYSTEM FOR EASTERN INDIA",
-    headline: "Uniting Stakeholders. Unleashing Regional Capital. Empowering Communities.",
+    eyebrow: "Official development forum",
+    headline: "Uniting Stakeholders. Empowering Communities.",
     subheading:
-      "EIDF is the apex facilitating authority connecting Governments, Global Investors, Enterprise Leaders, Startups, NGOs, and Diaspora to build sustainable infrastructure, industrial parks, and human potential across Bihar, Jharkhand, Odisha, West Bengal, Assam, and the North Eastern States.",
+      "Connecting governments, investors, enterprise and communities across Eastern India.",
     ctas: {
-      primary: { label: "Join the Movement", href: "/membership" },
-      secondary: { label: "Submit Development Proposal", href: "/proposals/submit" },
+      primary: { label: "Join Us", href: "/membership" },
+      secondary: { label: "Submit Proposal", href: "/proposals/submit" },
       tertiary: { label: "Explore Opportunities", href: "/investors" },
     },
     floatingMetrics: [
@@ -478,46 +478,14 @@ export const site = {
   schemes: [
     {
       id: "sch-1",
-      title: "Eastern Industrial Capital Subsidy Scheme 2026",
-      authority: "State Development Department",
-      category: "Industrial Subsidies",
-      state: "All Eastern States",
-      eligibility: [
-        "Manufacturing units establishing operations in designated tier-2/3 districts",
-        "Minimum capital investment of —",
-        "Commitment to hire at least 60% local workforce",
-      ],
-      benefits: "Capital investment subsidy and stamp duty exemption (figures to be published).",
-      applicationProcess: "Online application submission via EIDF Single Window Portal with DPR and Land Clearance.",
-      deadline: "31 Dec 2026",
-    },
-    {
-      id: "sch-2",
-      title: "North East Startup & Innovation Catalyst Fund",
-      authority: "DPIIT & PM-DevINE",
-      category: "Startup Funding",
-      state: "Assam & North East",
-      eligibility: [
-        "DPIIT-recognized startups registered in North Eastern states",
-        "Tech or Agri-Tech focus with working prototype",
-      ],
-      benefits: "Seed grant and equity matching fund (figures to be published).",
-      applicationProcess: "Pitch submission through EIDF Startup Hub followed by investor jury panel review.",
-      deadline: "Rolling Basis",
-    },
-    {
-      id: "sch-3",
-      title: "Heritage Restoration & Eco-Tourism PPP Grant",
-      authority: "Ministry of Tourism & State Chapters",
-      category: "Tourism",
-      state: "Bihar, Odisha & West Bengal",
-      eligibility: [
-        "Heritage resort operators, conservation trusts, or social enterprises",
-        "Property listed under regional heritage registry",
-      ],
-      benefits: "Matching grant and tourism marketing assistance (figures to be published).",
-      applicationProcess: "Submit heritage conservation plan and community benefit charter.",
-      deadline: "15 Oct 2026",
+      title: "—",
+      authority: "—",
+      category: "—",
+      state: "—",
+      eligibility: ["—"],
+      benefits: "—",
+      applicationProcess: "—",
+      deadline: "—",
     },
   ] as SchemeItem[],
 
@@ -676,17 +644,19 @@ export const site = {
   ] as NewsItem[],
 
   leaders: [
-    { name: "Shri Sanjeev Kumar", role: "Chairman, EIDF · CMD, Diamond City Group", image: "/images/leaders/placeholder-male.png" },
-    { name: "Mr. Arnab Sinha", role: "Joint Director & Chief Operating Officer", image: "/images/leaders/placeholder-male.png" },
-    { name: "Dr. Sita Kumari", role: "Senior Advisor — Human Rights & Inclusive Social Policy", image: "/images/leaders/placeholder-female.png" },
-    { name: "Smt. Nesha Oraon, IRS", role: "Distinguished Policy Advisor", image: "/images/leaders/placeholder-female.png" },
+    { name: "Mr. Arnav Sinha", role: "Chief Innovator", image: "/images/leaders/placeholder-male.png" },
+    { name: "Narendra Kumar Singh", role: "Legal Advisor", image: "/images/leaders/placeholder-male.png" },
+    { name: "Rakesh Singh", role: "Bihta, Bihar", image: "/images/leaders/placeholder-male.png" },
+    { name: "Manoj Jena", role: "Distinguished Policy Advisor", image: "/images/leaders/placeholder-male.png" },
+    { name: "Gajanand Ram", role: "Diamond City Ranchi", image: "/images/leaders/placeholder-male.png" },
+    { name: "Shantmanu Ji", role: "Ranchi, Jharkhand", image: "/images/leaders/placeholder-male.png" },
   ],
 
   values: [
-    { title: "Regional Unity", desc: "Forging seamless cooperation between state governments, private capital, and citizens." },
-    { title: "Inclusive Growth", desc: "Ensuring development benefits tribal communities, women entrepreneurs, and rural youth." },
-    { title: "Uncompromising Integrity", desc: "Rigorous transparency, open RFP processes, and clear governance metrics." },
-    { title: "Future Innovation", desc: "Leveraging AI, renewable technology, and modern logistics to build sustainable prosperity." },
+    { title: "Regional Unity", desc: "States, capital, and citizens together." },
+    { title: "Inclusive Growth", desc: "Benefits that reach every community." },
+    { title: "Integrity", desc: "Open process and clear governance." },
+    { title: "Innovation", desc: "Technology for lasting prosperity." },
   ],
 
   faqs: [

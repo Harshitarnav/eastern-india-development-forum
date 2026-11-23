@@ -1,27 +1,57 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, ChevronDown } from "lucide-react";
-import { ClipReveal, usePrefersReducedMotion } from "@/components/motion";
+import {
+  ArrowRight,
+  Building2,
+  Calendar,
+  ClipboardCheck,
+  Gift,
+  Landmark,
+  MapPin,
+} from "lucide-react";
+import { ClipReveal } from "@/components/motion";
 import { SectionHeader } from "@/components/ui";
 import type { SchemeItem } from "@/content/site";
 import type { CmsHomepageSectionCopy } from "@/lib/cms/types";
+import { displayCmsText } from "@/lib/cms/home-preview";
 
 type SchemesSectionProps = {
   schemes: SchemeItem[];
   chrome: CmsHomepageSectionCopy;
 };
 
+function Fact({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof Landmark;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0 rounded-xl border border-navy/8 bg-white/90 px-4 py-3.5">
+      <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.14em] text-gold-label">
+        <Icon className="h-3.5 w-3.5 text-gold" aria-hidden />
+        {label}
+      </div>
+      <p className="mt-1.5 text-sm font-medium leading-snug text-navy">
+        {value}
+      </p>
+    </div>
+  );
+}
+
 export function SchemesSection({ schemes, chrome }: SchemesSectionProps) {
-  const [openId, setOpenId] = useState<string>(schemes[0]?.id || "");
-  const reduced = usePrefersReducedMotion();
+  const scheme = schemes[0];
 
   return (
-    <section className="border-y border-line bg-cream-warm px-4 py-16 md:py-24">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-2 flex flex-wrap items-end justify-between gap-4">
+    <section id="schemes" className="relative overflow-hidden px-4 py-16 md:py-24">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_45%_at_8%_0%,rgba(61,126,176,0.08),transparent_55%)]" />
+
+      <div className="relative mx-auto max-w-7xl">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <ClipReveal direction="up">
             <SectionHeader
               eyebrow={chrome.eyebrow}
@@ -44,94 +74,86 @@ export function SchemesSection({ schemes, chrome }: SchemesSectionProps) {
           )}
         </div>
 
-        <div className="space-y-2">
-          {schemes.map((sch, i) => {
-            const open = openId === sch.id;
-            return (
-              <ClipReveal key={sch.id} direction="up" delay={0.05 * i}>
-                <article
-                  className={`overflow-hidden rounded-xl border bg-white transition-shadow ${
-                    open
-                      ? "border-gold/40 shadow-[0_12px_40px_-24px_rgba(10,31,61,0.45)]"
-                      : "border-line"
-                  }`}
-                  style={{
-                    transform: open && !reduced ? `translateY(-2px)` : undefined,
-                  }}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setOpenId(open ? "" : sch.id)}
-                    className="flex w-full items-start justify-between gap-4 p-5 text-left md:items-center md:gap-6"
-                    aria-expanded={open}
-                  >
-                    <div className="grid flex-1 gap-3 md:grid-cols-12 md:items-center md:gap-6">
-                      <div className="md:col-span-5">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-dark">
-                          {sch.category}
-                        </div>
-                        <h3 className="mt-1 font-display text-lg font-bold text-navy">
-                          {sch.title}
-                        </h3>
-                        <p className="mt-1 text-xs text-muted">{sch.authority}</p>
-                      </div>
-                      <div className="hidden text-sm leading-relaxed text-navy/80 md:col-span-6 md:block">
-                        {sch.benefits}
-                      </div>
-                    </div>
-                    <ChevronDown
-                      className={`mt-1 h-4 w-4 shrink-0 text-gold transition-transform duration-300 ${
-                        open ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
+        <ClipReveal direction="up" delay={0.08} className="w-full">
+          <article className="relative overflow-hidden rounded-[1.75rem] border border-line bg-cream shadow-[0_40px_90px_-48px_rgba(8,19,31,0.45)]">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
 
-                  <AnimatePresence initial={false}>
-                    {open && (
-                      <motion.div
-                        initial={
-                          reduced
-                            ? false
-                            : { height: 0, opacity: 0 }
-                        }
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={
-                          reduced
-                            ? { opacity: 0 }
-                            : { height: 0, opacity: 0 }
-                        }
-                        transition={{
-                          duration: 0.35,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                        className="overflow-hidden border-t border-line/70"
-                      >
-                        <div className="grid gap-4 px-5 py-4 md:grid-cols-12 md:items-end">
-                          <p className="text-sm leading-relaxed text-navy/80 md:col-span-8 md:hidden">
-                            {sch.benefits}
-                          </p>
-                          <div className="text-xs text-muted md:col-span-8">
-                            <span className="font-bold text-navy">Eligibility · </span>
-                            {sch.eligibility?.slice(0, 2).join(" · ")}
-                            {sch.deadline ? ` · Deadline: ${sch.deadline}` : ""}
-                          </div>
-                          <div className="md:col-span-4 md:text-right">
-                            <Link
-                              href="/schemes"
-                              className="inline-flex items-center gap-1 text-xs font-bold text-navy hover:text-gold"
-                            >
-                              Details <ArrowRight className="h-3.5 w-3.5" />
-                            </Link>
-                          </div>
-                        </div>
-                      </motion.div>
+            <div className="grid grid-cols-1 lg:grid-cols-12">
+              <div className="relative flex flex-col gap-6 overflow-hidden bg-gradient-to-br from-navy-mid via-navy to-navy-deep p-6 text-white sm:flex-row sm:items-end sm:justify-between sm:p-8 lg:col-span-5 lg:min-h-full lg:flex-col lg:items-start lg:justify-between">
+                <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gold/15 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-14 -left-8 h-44 w-44 rounded-full bg-gold/10 blur-3xl" />
+
+                <div className="relative min-w-0">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gold-soft">
+                    Featured programme
+                  </p>
+                  <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.16em] text-gold-soft/80">
+                    {displayCmsText(scheme?.category, "Category")}
+                  </p>
+                  <h3 className="mt-2 max-w-sm font-display text-2xl font-bold tracking-tight sm:text-3xl">
+                    {displayCmsText(scheme?.title)}
+                  </h3>
+                  <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/60">
+                    Authority · {displayCmsText(scheme?.authority)}
+                  </p>
+                </div>
+
+                <Link
+                  href="/schemes"
+                  className="group relative inline-flex shrink-0 items-center gap-2 rounded-full bg-gradient-to-b from-gold-soft to-gold px-5 py-2.5 text-xs font-bold text-navy-deep shadow-[0_12px_28px_-14px_rgba(201,168,75,0.85)] transition-transform hover:scale-[1.02]"
+                  data-cursor="VIEW"
+                >
+                  Programme details
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              </div>
+
+              <div className="min-w-0 bg-cream-warm/60 p-5 sm:p-7 lg:col-span-7">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-gold-label">
+                  Programme snapshot
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  Benefits, eligibility, coverage, and how to apply.
+                </p>
+
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <Fact
+                    icon={Gift}
+                    label="Benefits"
+                    value={displayCmsText(scheme?.benefits)}
+                  />
+                  <Fact
+                    icon={ClipboardCheck}
+                    label="Eligibility"
+                    value={displayCmsText(
+                      (scheme?.eligibility || []).filter(Boolean).join(" · ")
                     )}
-                  </AnimatePresence>
-                </article>
-              </ClipReveal>
-            );
-          })}
-        </div>
+                  />
+                  <Fact
+                    icon={Calendar}
+                    label="Deadline"
+                    value={displayCmsText(scheme?.deadline)}
+                  />
+                  <Fact
+                    icon={MapPin}
+                    label="State"
+                    value={displayCmsText(scheme?.state)}
+                  />
+                  <Fact
+                    icon={Building2}
+                    label="Authority"
+                    value={displayCmsText(scheme?.authority)}
+                  />
+                  <Fact
+                    icon={Landmark}
+                    label="How to apply"
+                    value={displayCmsText(scheme?.applicationProcess)}
+                  />
+                </div>
+              </div>
+            </div>
+          </article>
+        </ClipReveal>
       </div>
     </section>
   );

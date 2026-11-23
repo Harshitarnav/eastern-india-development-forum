@@ -3,8 +3,8 @@
  * a dedicated page. Full pages always render the complete collection.
  */
 export const HOMEPAGE_PREVIEW_LIMITS = {
-  schemes: 3,
-  tenders: 3,
+  schemes: 1,
+  tenders: 0,
   projects: 4,
   investments: 2,
   news: 2,
@@ -18,6 +18,13 @@ export function homepagePreview<T>(
   key: keyof typeof HOMEPAGE_PREVIEW_LIMITS
 ): T[] {
   return (items ?? []).slice(0, HOMEPAGE_PREVIEW_LIMITS[key]);
+}
+
+/** Show a dash when CMS copy is empty so the field still reads as present. */
+export function displayCmsText(value?: string | null, fallback = "—") {
+  const text = (value ?? "").trim();
+  if (!text || text === "—") return fallback;
+  return text;
 }
 
 /** Accept real image URLs/paths; treat CMS placeholders like "SKILL_CENTRE" as missing. */

@@ -119,7 +119,7 @@ export const AiAssistant: React.FC = () => {
           >
             <span className="relative flex h-9 w-9 items-center justify-center border border-gold/40 bg-gold/10">
               <Bot className="h-4 w-4 text-gold" />
-              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-emerald" />
+              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-gold" />
             </span>
             <span className="hidden sm:flex flex-col items-start">
               <span className="font-display text-xs font-bold tracking-wider uppercase">
@@ -180,9 +180,9 @@ export const AiAssistant: React.FC = () => {
                 </button>
                 <button
                   onClick={() => handleSend("What investment opportunities exist?")}
-                  className="flex shrink-0 items-center gap-1.5 border border-white/15 bg-white/5 px-3 py-1.5 text-white/80 hover:border-emerald hover:text-emerald"
+                  className="flex shrink-0 items-center gap-1.5 border border-white/15 bg-white/5 px-3 py-1.5 text-white/80 hover:border-gold hover:text-gold"
                 >
-                  <Briefcase className="h-3 w-3 text-emerald" /> Investors
+                  <Briefcase className="h-3 w-3 text-gold" /> Investors
                 </button>
                 <button
                   onClick={() => handleSend("How to submit a project proposal?")}

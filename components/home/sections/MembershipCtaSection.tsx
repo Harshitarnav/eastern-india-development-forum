@@ -21,7 +21,7 @@ export function MembershipCtaSection({
     <section className="relative overflow-hidden px-4 py-20 text-white md:py-28">
       <div className="absolute inset-0 bg-navy-deep" />
       <div className="absolute inset-0 eidf-depth" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-emerald/15 via-transparent to-gold/15" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-gold/12 via-transparent to-gold/10" />
       <div className="pointer-events-none absolute inset-0 eidf-grain" />
       <div className="pointer-events-none absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
 
@@ -44,7 +44,7 @@ export function MembershipCtaSection({
             {chrome.bullets.map((bullet, i) => (
               <ClipReveal key={bullet} direction="left" delay={0.08 * i}>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
+                  <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                   <span>{bullet}</span>
                 </li>
               </ClipReveal>

@@ -298,6 +298,7 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
   const paths = [
     "/",
     "/about",
+    "/leadership",
     "/projects",
     "/schemes",
     "/tenders",
@@ -318,6 +319,7 @@ export function buildSeedSnapshot(): CmsStoreSnapshot {
     const titleMap: Record<string, string> = {
       "/": "Eastern India Development Forum (EIDF)",
       "/about": "About EIDF",
+      "/leadership": "Leadership & Governance",
       "/projects": "Projects",
       "/schemes": "Government Schemes",
       "/tenders": "Tender Assistance Center",

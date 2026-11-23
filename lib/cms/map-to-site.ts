@@ -270,10 +270,7 @@ export function mapSnapshotToPublicSite(snap: CmsStoreSnapshot): PublicSite {
       img: p.image || "",
       status: p.status || p.state,
     })),
-    schemes: (() => {
-      const rows = itemsOf<PublicSite["schemes"][number]>(snap, "schemes");
-      return rows.length ? rows : seedSite.schemes;
-    })(),
+    schemes: itemsOf<PublicSite["schemes"][number]>(snap, "schemes"),
     tenders: (() => {
       const rows = itemsOf<PublicSite["tenders"][number]>(snap, "tenders");
       return rows.length ? rows : seedSite.tenders;

@@ -51,11 +51,7 @@ export function ImpactSection({ impactStats }: ImpactSectionProps) {
             >
               <div
                 className={`font-display text-3xl font-extrabold tracking-tight md:text-4xl lg:text-[2.65rem] ${
-                  i % 3 === 0
-                    ? "text-white"
-                    : i % 3 === 1
-                      ? "text-emerald"
-                      : "text-gold"
+                  i % 2 === 0 ? "text-white" : "text-gold"
                 }`}
               >
                 <ImpactCounter

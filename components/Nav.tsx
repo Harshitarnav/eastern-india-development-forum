@@ -28,6 +28,7 @@ import {
   usePublicSite,
 } from "@/lib/cms/public-provider";
 import { GlobalSearch } from "./GlobalSearch";
+import { BrandLogo } from "@/components/BrandLogo";
 import { cn } from "@/lib/utils";
 import { useLenisLock } from "@/components/motion";
 
@@ -53,12 +54,12 @@ const PORTAL_META: Record<
   "/investors": {
     blurb: "Zones & capital access",
     detail: "Explore PPP corridors, industrial parks, and investment facilitation.",
-    tone: "from-emerald/25 to-brand-blue/10",
+    tone: "from-gold/20 to-gold/5",
   },
   "/schemes": {
     blurb: "Govt programmes",
     detail: "Central and state schemes mapped for enterprise and community impact.",
-    tone: "from-brand-blue/20 to-navy-light/10",
+    tone: "from-gold/15 to-white/5",
   },
   "/resources": {
     blurb: "Reports & briefs",
@@ -68,12 +69,12 @@ const PORTAL_META: Record<
   "/analytics": {
     blurb: "Regional intelligence",
     detail: "Track corridors, outcomes, and development signals in one view.",
-    tone: "from-emerald/20 to-gold/5",
+    tone: "from-gold/20 to-gold/5",
   },
   "/events": {
     blurb: "Forums & conclaves",
     detail: "Upcoming summits, dialogues, and stakeholder convenings.",
-    tone: "from-brand-blue/20 to-emerald/10",
+    tone: "from-gold/15 to-white/5",
   },
   "/gallery": {
     blurb: "Visual archive",
@@ -204,6 +205,17 @@ export const Nav: React.FC = () => {
       ? site.shortName || "EIDF"
       : site.name || "Eastern India Development Forum";
 
+  const brandLines = useMemo(() => {
+    if (layout.brandTextMode === "short") return [brandName];
+    const indiaSplit = brandName.match(/^(.*?India)\s+(.+)$/i);
+    if (indiaSplit) return [indiaSplit[1], indiaSplit[2]];
+    const parts = brandName.trim().split(/\s+/);
+    if (parts.length >= 4) {
+      return [parts.slice(0, 2).join(" "), parts.slice(2).join(" ")];
+    }
+    return [brandName];
+  }, [brandName, layout.brandTextMode]);
+
   const NavItem = ({
     href,
     label,
@@ -216,18 +228,13 @@ export const Nav: React.FC = () => {
       <Link
         href={href}
         className={cn(
-          "relative px-2 py-1.5 text-[12px] font-semibold whitespace-nowrap transition-colors duration-200 2xl:px-3 2xl:text-[13px]",
-          active ? "text-white" : "text-white/60 hover:text-white"
+          "relative rounded-full px-3 py-2 text-[13px] font-semibold whitespace-nowrap transition-all duration-200",
+          active
+            ? "bg-gold text-navy-deep shadow-[0_6px_16px_-8px_rgba(201,168,75,0.9)]"
+            : "text-white/70 hover:bg-white/10 hover:text-white"
         )}
       >
         {label}
-        {active && (
-          <motion.span
-            layoutId="nav-underline"
-            className="absolute inset-x-2 -bottom-0.5 h-[2px] rounded-full bg-gold"
-            transition={{ type: "spring", stiffness: 420, damping: 34 }}
-          />
-        )}
       </Link>
     );
   };
@@ -253,10 +260,10 @@ export const Nav: React.FC = () => {
         }}
         onFocus={openDropdown}
         className={cn(
-          "relative flex items-center gap-1 px-2 py-1.5 text-[12px] font-semibold cursor-pointer transition-colors duration-200 2xl:px-3 2xl:text-[13px]",
+          "relative flex items-center gap-1 rounded-full px-3 py-2 text-[13px] font-semibold cursor-pointer transition-all duration-200",
           portalsActive || dropdownOpen
-            ? "text-white"
-            : "text-white/60 hover:text-white"
+            ? "bg-gold text-navy-deep shadow-[0_6px_16px_-8px_rgba(201,168,75,0.9)]"
+            : "text-white/70 hover:bg-white/10 hover:text-white"
         )}
         aria-expanded={dropdownOpen}
         aria-haspopup="true"
@@ -265,16 +272,9 @@ export const Nav: React.FC = () => {
         <ChevronDown
           className={cn(
             "h-3.5 w-3.5 transition-transform duration-200",
-            dropdownOpen ? "rotate-180 text-gold" : "text-white/35"
+            dropdownOpen || portalsActive ? "rotate-180" : "opacity-60"
           )}
         />
-        {(portalsActive || dropdownOpen) && (
-          <motion.span
-            layoutId="nav-underline"
-            className="absolute inset-x-2 -bottom-0.5 h-[2px] rounded-full bg-gold"
-            transition={{ type: "spring", stiffness: 420, damping: 34 }}
-          />
-        )}
       </button>
     </div>
   );
@@ -289,14 +289,14 @@ export const Nav: React.FC = () => {
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            "absolute inset-x-0 top-full z-[80] hidden pt-3 xl:block",
+            "absolute inset-x-0 top-full z-[80] hidden pt-3 lg:block",
             scrolled ? "px-1 sm:px-2" : "px-3 sm:px-4"
           )}
           onMouseEnter={openDropdown}
           onMouseLeave={scheduleCloseDropdown}
         >
           <div className="pointer-events-none absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
-          <div className="mx-auto max-h-[min(80vh,720px)] max-w-7xl overflow-y-auto overflow-x-hidden rounded-2xl border border-gold/35 bg-gradient-to-b from-[#214868] to-[#173552] shadow-[0_40px_100px_-30px_rgba(0,0,0,0.55),0_0_0_1px_rgba(201,168,75,0.12)]">
+          <div className="mx-auto max-h-[min(80vh,720px)] max-w-7xl overflow-y-auto overflow-x-hidden rounded-2xl border border-gold/35 bg-navy-deep shadow-[0_40px_100px_-30px_rgba(0,0,0,0.7),0_0_0_1px_rgba(212,175,55,0.18)]">
             <div className="grid lg:grid-cols-12">
               {/* Featured panel */}
               {featuredPortal && (
@@ -311,8 +311,8 @@ export const Nav: React.FC = () => {
                     alt=""
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#173552] via-[#173552]/88 to-[#214868]/45" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-gold/15 via-transparent to-emerald/20 opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/88 to-navy/45" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-gold/20 via-transparent to-gold/10 opacity-80" />
                   <div className="relative flex h-full min-h-[160px] flex-col justify-between xl:min-h-[200px] 2xl:min-h-[240px]">
                     <div>
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-gold/30 bg-gold/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-gold">
@@ -469,17 +469,17 @@ export const Nav: React.FC = () => {
         className={cn(
           "z-[70] w-full text-white transition-[padding] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
           layout.sticky || scrolled ? "sticky top-0" : "relative",
-          scrolled ? "xl:px-4 xl:pt-3" : "xl:px-0 xl:pt-0"
+          scrolled ? "lg:px-4 lg:pt-3" : "lg:px-0 lg:pt-0"
         )}
       >
         {/* Meta strip — desktop only */}
         {layout.showTopBar && (
           <div
             className={cn(
-              "hidden overflow-hidden border-white/10 bg-[#050b14] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] xl:block",
+              "hidden overflow-hidden border-gold/20 bg-navy-deep transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lg:block",
               scrolled
-                ? "xl:max-h-0 xl:border-b-0 xl:py-0 xl:opacity-0"
-                : "xl:max-h-12 xl:border-b xl:px-5 xl:py-1.5 xl:opacity-100"
+                ? "lg:max-h-0 lg:border-b-0 lg:py-0 lg:opacity-0"
+                : "lg:max-h-12 lg:border-b lg:px-5 lg:py-1.5 lg:opacity-100"
             )}
             aria-hidden={scrolled}
           >
@@ -499,7 +499,7 @@ export const Nav: React.FC = () => {
                   className="flex items-center gap-1.5 transition-colors hover:text-gold-soft"
                   aria-label="Call"
                 >
-                  <Phone className="h-3 w-3 text-emerald" />
+                      <Phone className="h-3 w-3 text-gold" />
                   <span className="hidden sm:inline">{site.phone}</span>
                 </a>
                 <span className="hidden h-3 w-px bg-white/12 sm:block" />
@@ -514,41 +514,39 @@ export const Nav: React.FC = () => {
           </div>
         )}
 
-        {/* Split-islands stage */}
+        {/* Main bar */}
         <div
           className={cn(
             "relative overflow-visible transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-            "border-b border-gold/35 bg-gradient-to-b from-[#214868] to-[#173552] px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]",
+            "border-b border-gold/30 bg-navy-deep px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]",
             scrolled
-              ? "xl:rounded-2xl xl:border xl:border-white/20 xl:bg-[#1a3a5c]/88 xl:px-4 xl:py-2.5 xl:pt-2.5 xl:shadow-[0_18px_50px_-18px_rgba(0,0,0,0.72),0_0_0_1px_rgba(201,168,75,0.16)] xl:backdrop-blur-xl"
-              : "xl:border-x-0 xl:border-t-0 xl:px-5 xl:py-4 xl:pt-4"
+              ? "lg:rounded-2xl lg:border lg:border-gold/35 lg:bg-navy-deep/92 lg:px-4 lg:py-2.5 lg:pt-2.5 lg:shadow-[0_18px_50px_-18px_rgba(0,0,0,0.8),0_0_0_1px_rgba(212,175,55,0.22)] lg:backdrop-blur-xl"
+              : "lg:border-x-0 lg:border-t-0 lg:px-5 lg:py-3.5 lg:pt-3.5"
           )}
         >
           {/* Mobile */}
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 xl:hidden">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 lg:hidden">
             <Link href="/" className="flex min-w-0 items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-[2px]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={site.logo || "/images/logo.png"}
-                  alt="EIDF"
-                  className="h-full w-full rounded-full object-contain"
-                />
-              </span>
+              <BrandLogo size="md" className="shadow-[0_0_0_3px_rgba(201,168,75,0.18)]" />
               {layout.showBrandText && (
-                <span className="truncate font-display text-base font-extrabold tracking-tight">
-                  {site.shortName || "EIDF"}
+                <span className="min-w-0">
+                  <span className="block truncate font-display text-[15px] font-extrabold leading-tight tracking-tight">
+                    {site.shortName || "EIDF"}
+                  </span>
+                  <span className="mt-0.5 block truncate text-[10px] font-medium tracking-[0.14em] text-gold/80 uppercase">
+                    Development Forum
+                  </span>
                 </span>
               )}
             </Link>
-            <div className="flex shrink-0 items-center gap-1">
+            <div className="flex shrink-0 items-center gap-1.5">
               {layout.showSearch && (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-white/80 cursor-pointer"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 cursor-pointer transition-colors hover:border-gold/40 hover:text-gold"
                   aria-label="Search"
                 >
-                  <Search className="h-5 w-5" />
+                  <Search className="h-4 w-4" />
                 </button>
               )}
               <button
@@ -558,7 +556,7 @@ export const Nav: React.FC = () => {
                   e.stopPropagation();
                   setMobileMenuOpen((open) => !open);
                 }}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-white cursor-pointer"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-gold/40 bg-gold text-navy-deep cursor-pointer shadow-[0_8px_18px_-10px_rgba(201,168,75,0.9)]"
                 aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
@@ -572,45 +570,38 @@ export const Nav: React.FC = () => {
             </div>
           </div>
 
-          {/* Desktop: two islands */}
-          <div className="relative mx-auto hidden max-w-7xl items-center justify-between gap-3 xl:flex 2xl:gap-4">
-            {/* Brand island */}
+          {/* Desktop */}
+          <div className="relative mx-auto hidden max-w-7xl items-center justify-between gap-4 lg:flex">
             <Link
               href="/"
-              className="nav-island group flex min-w-0 max-w-[11.5rem] shrink-0 items-center gap-3 rounded-2xl py-2 pl-2 pr-3 2xl:max-w-none 2xl:pr-4"
+              className="group flex min-w-0 shrink-0 items-center gap-3"
             >
-              <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white p-[3px] 2xl:h-11 2xl:w-11">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={site.logo || "/images/logo.png"}
-                  alt="EIDF"
-                  className="h-full w-full rounded-[0.6rem] object-contain"
-                />
-              </span>
+              <BrandLogo
+                size="lg"
+                className="shadow-[0_0_0_4px_rgba(201,168,75,0.16),0_10px_24px_-10px_rgba(201,168,75,0.55)] transition-transform duration-300 group-hover:scale-[1.04]"
+              />
               {layout.showBrandText && (
                 <div className="min-w-0">
-                  <div className="truncate font-display text-[13px] font-extrabold leading-tight tracking-tight text-white transition-colors group-hover:text-gold-soft 2xl:text-[14px]">
-                    <span className="2xl:hidden">{site.shortName || "EIDF"}</span>
-                    <span className="hidden 2xl:inline">{brandName}</span>
+                  <div className="font-display text-[15px] font-extrabold leading-[1.12] tracking-tight text-white transition-colors group-hover:text-gold-soft">
+                    <span className="xl:hidden">{site.shortName || "EIDF"}</span>
+                    <span className="hidden xl:flex xl:flex-col">
+                      {brandLines.map((line) => (
+                        <span key={line}>{line}</span>
+                      ))}
+                    </span>
                   </div>
                   {layout.brandTextMode === "full" && (
-                    <div className="mt-0.5 hidden truncate text-[10px] text-white/40 2xl:block">
-                      {site.poweredBy}
+                    <div className="mt-1 flex items-center gap-2 text-[10px] font-medium tracking-[0.04em] text-gold/75">
+                      <span className="h-px w-4 shrink-0 bg-gold/50" />
+                      <span className="truncate">{site.poweredBy}</span>
                     </div>
                   )}
                 </div>
               )}
             </Link>
 
-            {/* Subtle bridge */}
-            <div
-              aria-hidden
-              className="hidden h-px min-w-4 flex-1 bg-gradient-to-r from-white/10 via-gold/25 to-white/10 2xl:block"
-            />
-
-            {/* Nav island */}
-            <div className="nav-island flex min-w-0 items-center gap-1 rounded-2xl p-1 2xl:gap-2 2xl:p-1.5">
-              <nav className="flex min-w-0 items-center gap-0 overflow-x-auto px-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden 2xl:gap-0.5 2xl:px-1">
+            <div className="flex min-w-0 items-center gap-2">
+              <nav className="flex min-w-0 items-center gap-0.5 overflow-x-auto rounded-full border border-white/12 bg-white/[0.05] p-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {beforePortals.map((link, i) => (
                   <NavItem
                     key={`nav-before-${link.href}-${i}`}
@@ -637,15 +628,10 @@ export const Nav: React.FC = () => {
                   PortalsTrigger}
               </nav>
 
-              <span
-                aria-hidden
-                className="mx-0.5 hidden h-6 w-px bg-white/15 2xl:block"
-              />
-
               {layout.showSearch && (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-white/55 transition-colors hover:bg-white/[0.07] hover:text-gold-soft cursor-pointer 2xl:h-9 2xl:w-9"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/5 text-white/70 transition-colors hover:border-gold/40 hover:text-gold cursor-pointer"
                   aria-label="Search"
                 >
                   <Search className="h-4 w-4" />
@@ -655,7 +641,7 @@ export const Nav: React.FC = () => {
               {layout.showCta && (
                 <Link
                   href={layout.ctaHref || "/membership"}
-                  className="group inline-flex shrink-0 items-center gap-1 rounded-xl bg-gold px-2.5 py-1.5 text-[11px] font-bold text-navy-deep transition-colors hover:bg-gold-hover 2xl:gap-1.5 2xl:px-3.5 2xl:py-2 2xl:text-xs"
+                  className="group inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gold px-4 py-2.5 text-xs font-bold text-navy-deep shadow-[0_10px_24px_-12px_rgba(201,168,75,0.95)] transition-colors hover:bg-gold-hover"
                   data-cursor="VIEW"
                 >
                   {layout.ctaLabel || "Join Us"}
@@ -682,7 +668,7 @@ export const Nav: React.FC = () => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="fixed inset-0 z-[200] flex h-dvh w-full flex-col overflow-hidden text-white xl:hidden"
+                className="fixed inset-0 z-[200] flex h-dvh w-full flex-col overflow-hidden bg-navy-deep text-white lg:hidden"
                 style={{
                   paddingTop: "env(safe-area-inset-top)",
                   paddingBottom: "env(safe-area-inset-bottom)",
@@ -691,30 +677,28 @@ export const Nav: React.FC = () => {
                 <div className="pointer-events-none absolute inset-0 hero-mesh" />
                 <div className="pointer-events-none absolute inset-0 eidf-grain opacity-40" />
                 <div className="pointer-events-none absolute -right-16 top-24 h-56 w-56 rounded-full bg-gold/15 blur-3xl" />
-                <div className="pointer-events-none absolute -left-10 bottom-24 h-48 w-48 rounded-full bg-emerald/15 blur-3xl" />
+                <div className="pointer-events-none absolute -left-10 bottom-24 h-48 w-48 rounded-full bg-gold/10 blur-3xl" />
 
-                <div className="relative z-10 flex shrink-0 items-center justify-between px-5 py-4">
+                <div className="relative z-10 flex shrink-0 items-center justify-between border-b border-gold/20 px-5 py-4">
                   <Link
                     href="/"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex min-w-0 items-center gap-2.5"
+                    className="flex min-w-0 items-center gap-3"
                   >
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white p-[1.5px]">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={site.logo || "/images/logo.png"}
-                        alt=""
-                        className="h-full w-full rounded-full object-contain"
-                      />
-                    </span>
-                    <span className="truncate text-[11px] font-bold uppercase tracking-[0.22em] text-white/55">
-                      {site.shortName || "EIDF"}
+                    <BrandLogo size="md" />
+                    <span className="min-w-0">
+                      <span className="block truncate font-display text-sm font-extrabold text-white">
+                        {site.shortName || "EIDF"}
+                      </span>
+                      <span className="mt-0.5 block text-[10px] font-medium uppercase tracking-[0.16em] text-gold/80">
+                        Development Forum
+                      </span>
                     </span>
                   </Link>
                   <button
                     type="button"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white cursor-pointer"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-gold/40 bg-gold text-navy-deep cursor-pointer"
                     aria-label="Close menu"
                   >
                     <X className="h-4 w-4" />

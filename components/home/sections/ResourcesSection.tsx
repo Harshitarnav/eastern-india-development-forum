@@ -15,7 +15,7 @@ type ResourcesSectionProps = {
 const coverTone = [
   "from-navy to-navy-deep",
   "from-slate-dark to-navy",
-  "from-navy-deep to-emerald-dark",
+  "from-navy-deep to-navy-mid",
 ];
 
 export function ResourcesSection({ reports, chrome }: ResourcesSectionProps) {

@@ -90,7 +90,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 </h3>
               </div>
               <div className="inline-flex w-fit items-center gap-2 border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] sm:text-xs text-white/80">
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-emerald" />
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-gold" />
                 <span>{ui.hint}</span>
               </div>
             </div>
@@ -104,7 +104,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                 aria-label="Eastern India interactive map"
               >
                 <defs>
-                  <filter id="glow">
+                  <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
                     <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
                     <feMerge>
                       <feMergeNode in="coloredBlur" />
@@ -142,18 +142,17 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                           active
                             ? "rgba(232,163,23,0.35)"
                             : hovered
-                              ? "rgba(13,159,110,0.28)"
+                              ? "rgba(201,168,75,0.22)"
                               : "rgba(255,255,255,0.08)"
                         }
                         stroke={active ? "#e8a317" : "rgba(255,255,255,0.25)"}
                         strokeWidth={active ? 2 : 1}
                         filter={active ? "url(#glow)" : undefined}
-                        className="cursor-pointer transition-colors"
+                        className="cursor-pointer transition-colors outline-none focus:outline-none focus-visible:outline-none"
                         onClick={() => setSelectedStateId(st.id)}
                         onMouseEnter={() => setHoveredId(st.id)}
                         onMouseLeave={() => setHoveredId(null)}
-                        whileHover={undefined}
-                        style={undefined}
+                        style={{ outline: "none" }}
                         tabIndex={0}
                         role="button"
                         aria-label={`Select ${st.name}`}
@@ -228,11 +227,11 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
                     <div className="flex items-center justify-between gap-2">
                       <span className="font-display text-sm font-bold truncate">{st.name}</span>
                       {active && (
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald shrink-0" />
+                        <span className="h-1.5 w-1.5 rounded-full bg-gold shrink-0" />
                       )}
                     </div>
                     <div className="mt-1 flex justify-between text-[10px]">
-                      <span className="text-emerald">
+                      <span className="text-gold-soft">
                         {st.projectsCount > 0 ? `${st.projectsCount} projects` : "—"}
                       </span>
                       <span className="text-gold">{st.investmentAmount || "—"}</span>
@@ -261,7 +260,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               aria-live="polite"
             >
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <span className="bg-emerald/10 px-3 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-dark">
+                <span className="bg-gold/10 px-3 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-gold-label">
                   {selectedState.badge || selectedState.name}
                 </span>
                 <span className="text-[10px] sm:text-xs font-bold text-muted">
@@ -279,7 +278,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               <div className="grid grid-cols-1 min-[360px]:grid-cols-2 gap-3 sm:gap-4 mb-5 sm:mb-6">
                 <div className="bg-cream-warm p-3.5 sm:p-4 border border-line">
                   <div className="flex items-center gap-2 text-xs text-muted mb-1">
-                    <TrendingUp className="h-4 w-4 shrink-0 text-emerald" /> {ui.capitalLabel}
+                    <TrendingUp className="h-4 w-4 shrink-0 text-gold" /> {ui.capitalLabel}
                   </div>
                   <div className="font-display text-xl sm:text-2xl font-bold text-navy break-words">
                     {selectedState.investmentAmount || "—"}

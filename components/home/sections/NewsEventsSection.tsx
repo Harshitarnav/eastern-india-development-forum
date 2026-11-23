@@ -124,7 +124,7 @@ export function NewsEventsSection({
                     </h4>
                     <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted">
                       <span className="inline-flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5 text-emerald" />{" "}
+                        <Calendar className="h-3.5 w-3.5 text-gold" />{" "}
                         {ev.date}
                       </span>
                       <span className="inline-flex items-center gap-1">

@@ -35,39 +35,39 @@ export function AboutSection({
   const spotlight = leaders[safeActive];
 
   return (
-    <section className="relative overflow-hidden px-4 py-16 md:py-24 lg:py-28">
+    <section className="relative overflow-hidden px-4 py-12 md:py-16 lg:py-20">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_12%_0%,rgba(61,126,176,0.1),transparent_55%),radial-gradient(ellipse_50%_40%_at_88%_18%,rgba(201,168,75,0.08),transparent_50%)]" />
 
       <div className="relative mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-12">
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-10">
           <div className="lg:col-span-6">
             <ClipReveal direction="clip">
               <p className="section-eyebrow">{chrome.eyebrow}</p>
-              <h2 className="mt-4 max-w-xl font-display text-3xl font-bold tracking-tight text-navy md:text-4xl lg:text-[2.85rem] lg:leading-[1.12] text-balance">
+              <h2 className="mt-3 max-w-lg font-display text-2xl font-bold tracking-tight text-navy md:text-3xl lg:text-[2.15rem] lg:leading-[1.15] text-balance">
                 {chrome.title}
               </h2>
             </ClipReveal>
-            <ClipReveal direction="up" delay={0.1} className="mt-5">
-              <p className="max-w-xl text-sm leading-relaxed text-muted md:text-[15px] md:leading-7">
+            <ClipReveal direction="up" delay={0.1} className="mt-3">
+              <p className="max-w-lg text-sm leading-relaxed text-muted">
                 {chrome.description}
               </p>
             </ClipReveal>
           </div>
 
           <div className="lg:col-span-6">
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-2 sm:grid-cols-2">
               {values.map((v, i) => (
                 <ClipReveal key={v.title} direction="up" delay={0.05 * i}>
-                  <div className="group relative overflow-hidden rounded-2xl border border-navy/8 bg-white/80 px-4 py-4 backdrop-blur-sm transition-all duration-300 hover:border-gold/35 hover:shadow-[0_18px_40px_-28px_rgba(10,31,61,0.3)]">
+                  <div className="group relative overflow-hidden rounded-xl border border-navy/8 bg-white/80 px-3.5 py-3 backdrop-blur-sm transition-all duration-300 hover:border-gold/35">
                     <div className="flex items-baseline gap-2">
-                      <span className="font-display text-lg font-bold tabular-nums text-gold">
+                      <span className="font-display text-sm font-bold tabular-nums text-gold">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <h3 className="font-display text-sm font-bold text-navy sm:text-[15px]">
+                      <h3 className="font-display text-sm font-bold text-navy">
                         {v.title}
                       </h3>
                     </div>
-                    <p className="mt-2 text-xs leading-relaxed text-muted">
+                    <p className="mt-1 text-xs leading-snug text-muted">
                       {v.desc}
                     </p>
                   </div>
@@ -78,7 +78,7 @@ export function AboutSection({
         </div>
 
         {/* Photo-free leadership board — brand navy / gold / cream */}
-        <ClipReveal direction="up" delay={0.12} className="mt-14 md:mt-16">
+        <ClipReveal direction="up" delay={0.12} className="mt-10 md:mt-12">
           <div className="relative overflow-hidden rounded-[1.75rem] border border-line bg-cream shadow-[0_40px_90px_-48px_rgba(8,19,31,0.45)]">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
 
@@ -86,7 +86,7 @@ export function AboutSection({
               {/* Spotlight — navy stage */}
               <div className="relative flex flex-col justify-between overflow-hidden border-b border-white/10 bg-gradient-to-br from-navy-mid via-navy to-navy-deep p-6 text-white sm:p-8 lg:col-span-5 lg:border-b-0 lg:border-r lg:border-white/10">
                 <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-gold/15 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-brand-blue/20 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-gold/10 blur-3xl" />
 
                 <div className="relative flex items-start justify-between gap-3">
                   <div>

@@ -106,11 +106,11 @@ export const DEFAULT_HOMEPAGE: CmsHomepageSettings = {
   },
   about: {
     eyebrow: "About the Forum",
-    title: "Apex development council for Eastern India",
+    title: "Eastern India's development council",
     description:
-      "EIDF operates under Umanand Eastern Foundation as a non-governmental development council bridging state administrations, industry, global investors, and communities across Bihar, Jharkhand, Odisha, West Bengal, Assam, and the North East.",
+      "Connecting governments, industry, and communities across Bihar, Jharkhand, Odisha, West Bengal, Assam, and the North East.",
     ctaLabel: "Read full charter & leadership",
-    ctaHref: "/about",
+    ctaHref: "/leadership",
     leadersTitle: "Leadership & Governance",
   },
   focus: {

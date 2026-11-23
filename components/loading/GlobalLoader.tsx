@@ -36,16 +36,16 @@ export function GlobalLoader({
           className={cn(
             "fixed inset-0 z-[100] flex items-center justify-center overflow-hidden",
             variant === "fullscreen"
-              ? "bg-[#060d1a]"
-              : "bg-[#060d1a]/80 backdrop-blur-xl"
+              ? "bg-navy-deep"
+              : "bg-navy-deep/80 backdrop-blur-xl"
           )}
         >
           {/* Atmosphere */}
           <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(30,62,98,0.55)_0%,transparent_55%)]" />
-            <div className="absolute -top-32 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-emerald/15 blur-[120px] motion-safe:animate-[pulse_4s_ease-in-out_infinite]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(201,168,75,0.14)_0%,transparent_55%)]" />
+            <div className="absolute -top-32 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-gold/12 blur-[120px] motion-safe:animate-[pulse_4s_ease-in-out_infinite]" />
             <div className="absolute bottom-0 right-0 h-72 w-72 translate-x-1/4 translate-y-1/4 rounded-full bg-gold/10 blur-[100px]" />
-            <div className="absolute bottom-1/4 left-0 h-56 w-56 -translate-x-1/3 rounded-full bg-sky-500/10 blur-[90px]" />
+            <div className="absolute bottom-1/4 left-0 h-56 w-56 -translate-x-1/3 rounded-full bg-gold/8 blur-[90px]" />
             {/* Soft grid */}
             <div
               className="absolute inset-0 opacity-[0.07]"
@@ -73,7 +73,7 @@ export function GlobalLoader({
                 aria-hidden="true"
               >
                 <span className="absolute top-0 left-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold shadow-[0_0_12px_rgba(245,158,11,0.8)]" />
-                <span className="absolute bottom-3 right-4 h-1.5 w-1.5 rounded-full bg-emerald shadow-[0_0_10px_rgba(16,185,129,0.7)]" />
+                <span className="absolute bottom-3 right-4 h-1.5 w-1.5 rounded-full bg-gold-soft shadow-[0_0_10px_rgba(201,168,75,0.7)]" />
               </motion.div>
 
               {/* Mid dashed ring */}
@@ -181,7 +181,7 @@ export function GlobalLoader({
               aria-hidden="true"
             >
               <motion.div
-                className="h-full w-1/2 rounded-full bg-gradient-to-r from-emerald via-gold to-emerald"
+                className="h-full w-1/2 rounded-full bg-gradient-to-r from-gold via-gold-soft to-gold"
                 animate={{ x: ["-100%", "200%"] }}
                 transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
               />
