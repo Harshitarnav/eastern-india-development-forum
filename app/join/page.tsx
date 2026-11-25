@@ -23,7 +23,7 @@ const facts = [
   {
     en: "Headquarters",
     hi: "मुख्यालय",
-    value: "Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 834001",
+    value: "Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 828134",
   },
 ];
 
@@ -124,7 +124,7 @@ export default function JoinPage() {
           <p className="font-display text-base font-bold text-white">Eastern India Development Forum</p>
           <p className="font-hi mt-1 text-white/80">पूर्वी भारत विकास मंच</p>
           <p className="mt-3">
-            Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 834001
+            Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 828134
           </p>
           <p className="mt-2 text-xs tracking-wide text-gold-soft">U85500JH2025NPL024051</p>
           <Link href="/" className="mt-4 inline-block font-semibold text-gold-soft">

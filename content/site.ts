@@ -125,8 +125,8 @@ export const site = {
   phone: "+91 (0651) 291-2025",
   regNo: "U85500JH2025NPL024051",
   president: "Sanjeev Kumar",
-  headquarters: "Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 834001",
-  address: ["Umanand Auditorium", "Diamond City, Oyna", "Ranchi, Jharkhand 834001"],
+  headquarters: "Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 828134",
+  address: ["Umanand Auditorium", "Diamond City, Oyna", "Ranchi, Jharkhand 828134"],
 
   benefits: [
     { title: "Be Part of the Change", desc: "Direct your time, skill or funds toward projects transforming your home region." },
@@ -721,7 +721,7 @@ export const site = {
     {
       city: "Ranchi (Headquarters)",
       tag: "Jharkhand HQ",
-      address: "Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 834001",
+      address: "Umanand Auditorium, Diamond City, Oyna, Ranchi, Jharkhand 828134",
       phone: "+91 651 291 3840",
       email: "hq.ranchi@eidf.org.in",
     },
